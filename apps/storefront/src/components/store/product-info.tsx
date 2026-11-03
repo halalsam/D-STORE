@@ -1,8 +1,9 @@
 "use client"
 
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Bell, Check, RotateCcw, Truck, Wallet } from "@/components/ui/icons"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -71,12 +72,43 @@ export function ProductPurchase({ product }: { product: Product }) {
   const [notify, setNotify] = useState(false)
   const soldOut = isSoldOut(product)
   const apparel = product.sizes.length > 1
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const [barVisible, setBarVisible] = useState(false)
+
+  // Phones: once the main buttons scroll above the viewport, show a sticky bar.
+  useEffect(() => {
+    const el = ctaRef.current
+    if (!el || soldOut) return
+    // The root is stretched far below the viewport, so the buttons only stop
+    // "intersecting" once they are above the top edge, even after a fast flick.
+    const io = new IntersectionObserver(([entry]) => setBarVisible(!entry.isIntersecting), {
+      rootMargin: "0px 0px 100000px 0px",
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [soldOut])
+
+  const addToBag = async () => {
+    if (!size) return
+    setPending("add")
+    await add(product, size, { open: true })
+    setPending(null)
+  }
 
   return (
     <section className="shrink-0 rounded-xl bg-surface p-4 ring-1 ring-line ring-inset md:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="type-overline text-ink-muted">{product.collectionTitle ?? "D-STORE"} · {product.type}</p>
+          <p className="type-overline text-ink-muted">
+            {product.collection ? (
+              <Link href={`/collections/${product.collection}`} className="pressable inline-block hover:text-accent-ink">
+                {product.collectionTitle ?? "Collection"}
+              </Link>
+            ) : (
+              "D-STORE"
+            )}
+            {product.type && ` · ${product.type}`}
+          </p>
           <h1 className="mt-1.5 type-heading-md">{product.title}</h1>
           <div className="mt-1 flex items-baseline gap-2">
             <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} className="type-body-lg" />
@@ -98,7 +130,7 @@ export function ProductPurchase({ product }: { product: Product }) {
         </div>
       )}
 
-      <div className="mt-3 grid grid-cols-2 gap-1.5">
+      <div ref={ctaRef} className="mt-3 grid grid-cols-2 gap-1.5">
         {soldOut ? (
           <>
             <Button size="xl" disabled>Sold out</Button>
@@ -113,12 +145,7 @@ export function ProductPurchase({ product }: { product: Product }) {
               size="xl"
               disabled={!size || pending !== null}
               loading={pending === "add"}
-              onClick={async () => {
-                if (!size) return
-                setPending("add")
-                await add(product, size, { open: true })
-                setPending(null)
-              }}
+              onClick={addToBag}
             >
               Add to bag
             </Button>
@@ -140,13 +167,38 @@ export function ProductPurchase({ product }: { product: Product }) {
         )}
       </div>
 
-      <ul className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line pt-3.5">
+      <ul className="mt-4 grid grid-cols-3 gap-2 border-t border-line pt-3.5">
         {perks.map(({ icon: Icon, label }) => (
-          <li key={label} className="flex items-center gap-1.5 type-caption text-ink-muted">
-            <Icon className="size-3.5" strokeWidth={1.8} /> {label}
+          <li key={label} className="flex flex-col items-center gap-1 text-center type-caption text-ink-muted sm:flex-row sm:justify-center sm:gap-1.5">
+            <Icon className="size-4 shrink-0 sm:size-3.5" strokeWidth={1.8} /> {label}
           </li>
         ))}
       </ul>
+
+      {/* Phone sticky add-to-bag bar */}
+      {!soldOut && (
+        <div
+          aria-hidden={!barVisible}
+          inert={!barVisible}
+          className={
+            "fixed inset-x-0 bottom-0 z-(--z-header) px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-[transform,opacity] duration-(--duration-sheet) ease-ios md:hidden " +
+            (barVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-[120%] opacity-0")
+          }
+        >
+          <div className="flex items-center gap-3 rounded-pill material bg-surface/85 p-1.5 pl-5 shadow-lg ring-1 ring-line">
+            <div className="min-w-0 flex-1">
+              <p className="truncate type-body-sm font-medium">{product.title}</p>
+              <div className="flex items-baseline gap-1 type-caption text-ink-muted tabular-nums">
+                <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} />
+                {apparel && size && <span>· {size}</span>}
+              </div>
+            </div>
+            <Button size="lg" disabled={!size || pending !== null} loading={pending === "add"} onClick={addToBag} className="px-6">
+              Add to bag
+            </Button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

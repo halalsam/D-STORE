@@ -68,7 +68,7 @@ async function ProductContent({ params }: { params: PageProps<"/products/[handle
         <section className="page-x pt-section pb-[calc(var(--spacing-section)*0.5)]">
           <div className="panel">
             <SectionHeader title="You may also like" href={`/collections/${product.collection}`} onPanel />
-            <ProductGrid products={related} reveal={false} />
+            <ProductGrid products={related} reveal={false} layout="rail" />
           </div>
         </section>
       )}

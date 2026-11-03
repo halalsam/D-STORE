@@ -17,21 +17,21 @@ export default async function HomePage() {
       <main className="sheet sheet-overlap pb-[calc(var(--spacing-section)*0.5)]">
         {latest.length > 0 && (
           <Section title="Latest drop" href="/collections/new-arrivals">
-            <ProductGrid products={latest.slice(0, 4)} priorityCount={4} />
+            <ProductGrid products={latest.slice(0, 4)} priorityCount={4} layout="rail" />
           </Section>
         )}
         {bags.length > 0 && (
           <Section title="Bags" href="/collections/accessories" inset>
-            <ProductGrid products={bags.slice(0, 4)} reveal={false} />
+            <ProductGrid products={bags.slice(0, 4)} reveal={false} layout="rail" />
           </Section>
         )}
         {coastline.length > 0 && (
           <Section title="Coastline Collection" href="/collections/coastline">
-            <ProductGrid products={coastline.slice(0, 4)} reveal={false} />
+            <ProductGrid products={coastline.slice(0, 4)} reveal={false} layout="rail" />
           </Section>
         )}
         <Section title="Shop by collection">
-          <div className="grid gap-tile md:grid-cols-3">
+          <div className="product-rail md:grid md:grid-cols-3 md:gap-tile [&>*]:max-md:flex-[0_0_80%] [&>*]:max-md:snap-start">
             {collections
               .filter((c) => c.handle !== "new-arrivals")
               .slice(0, 3)

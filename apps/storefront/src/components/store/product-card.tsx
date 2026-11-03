@@ -39,7 +39,7 @@ export function ProductCard({ product, density = "default", priority, className 
       <div className={cn("relative aspect-card overflow-hidden rounded-card bg-surface-muted", soldOut && "opacity-45")}>
         <MediaCarousel product={product} href={href} priority={priority} />
         {soldOut ? (
-          <span className="pointer-events-none absolute top-3 left-3 type-caption text-ink-on-media">Sold out</span>
+          <span className="pointer-events-none absolute top-3 left-3 rounded-xs material-dark px-2 py-0.5 type-caption text-ink-on-media">Sold out</span>
         ) : product.badge ? (
           <span className="pointer-events-none absolute top-3 left-3 rounded-xs material-dark px-2 py-0.5 type-caption text-ink-on-media">
             {product.badge}

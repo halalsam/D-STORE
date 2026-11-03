@@ -53,9 +53,9 @@ export function CollectionTile({ title, href, tone, blurb }: TileProps) {
         style={{ background: `radial-gradient(90% 70% at 30% 10%, ${tone[1]}, transparent 70%), linear-gradient(165deg, ${tone[0]}, ${tone[1]})` }}
       />
       <div className="absolute inset-0 scrim-bottom" />
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-6">
         <div>
-          <p className="type-heading-lg">{title}</p>
+          <p className="type-heading-md md:type-heading-lg">{title}</p>
           {blurb && <p className="mt-1 max-w-xs type-body-sm opacity-85">{blurb}</p>}
         </div>
         <span className="pressable grid h-10 shrink-0 place-items-center rounded-pill bg-white px-5 type-body-sm text-ink transition-transform duration-(--duration-spring) ease-spring group-hover:-translate-y-0.5">

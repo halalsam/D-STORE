@@ -79,7 +79,7 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
       <aside className="pdp-pinned mt-tile flex min-w-0 flex-col gap-tile lg:mt-0 lg:h-(--pdp-pinned-h)">
         {details}
         {pairs.length > 0 && (
-          <section className="hidden shrink-0 rounded-xl bg-surface p-3 ring-1 ring-line ring-inset lg:block">
+          <section className="shrink-0 rounded-xl bg-surface p-3 ring-1 ring-line ring-inset">
             <p className="px-1 pb-2.5 type-overline text-ink-muted">Complete the look</p>
             <div className="grid grid-cols-3 gap-2">
               {pairs.slice(0, 3).map((p) => (
@@ -118,17 +118,25 @@ function ZoomButton({ product, index, className }: { product: Product; index: nu
 
 function MobileCarousel({ product, tag }: { product: Product; tag?: string }) {
   const [index, setIndex] = useState(0)
+  const views = productViews(product)
   return (
     <div className="relative lg:hidden">
       <div
-        onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))}
-        className="no-scrollbar -mx-gutter flex snap-x snap-mandatory gap-tile overflow-x-auto px-gutter"
+        onScroll={(e) => {
+          const el = e.currentTarget
+          const slide = (el.firstElementChild as HTMLElement | null)?.offsetWidth ?? el.clientWidth
+          setIndex(Math.min(views.length - 1, Math.round(el.scrollLeft / slide)))
+        }}
+        className="no-scrollbar -mx-gutter flex snap-x snap-mandatory gap-tile overflow-x-auto overscroll-x-contain px-gutter scroll-px-gutter"
       >
         {productViews(product).map(({ tone, src }, i) => (
-          <div key={i} className="relative aspect-card w-full shrink-0 snap-center overflow-hidden rounded-card">
+          <div key={i} className="relative aspect-card w-[86%] shrink-0 snap-center overflow-hidden rounded-card sm:w-[70%]">
             <ProductMedia tone={tone} src={src} silhouette={product.silhouette} alt={`${product.title}, ${label(i)}`} priority={i === 0} />
             {i === 0 && tag && <span className="absolute top-3 left-3 rounded-xs material-dark px-2.5 py-1 type-caption text-ink-on-media">{tag}</span>}
-            {i === 0 && <ZoomButton product={product} index={0} className="absolute top-3 right-3" />}
+            <ZoomButton product={product} index={i} className="absolute top-3 right-3" />
+            <span className="absolute bottom-3 left-3 rounded-pill material-dark px-2.5 py-0.5 type-caption text-ink-on-media tabular-nums">
+              {i + 1} / {views.length}
+            </span>
           </div>
         ))}
       </div>
