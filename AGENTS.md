@@ -25,6 +25,9 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Storefront Medusa client | `apps/storefront/src/lib/medusa.ts` |
 | Storefront API calls | `apps/storefront/src/lib/data/` (server-side, via the SDK client) |
 | Storefront routes | `apps/storefront/src/app/` |
+| UI primitives / store / account / checkout components | `apps/storefront/src/components/{ui,store,account,checkout}/` |
+| Mock data (replace with Medusa API) | `apps/storefront/src/lib/mock/` |
+| Client stores: bag, saved, mock account (localStorage) | `apps/storefront/src/lib/stores/` |
 | Design system (tokens, rules, layout spec) | `apps/storefront/DESIGN.md`, `apps/storefront/src/styles/` |
 
 ## Commands (from repo root)

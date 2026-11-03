@@ -30,7 +30,7 @@ export function TextField({
   const describedBy = error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined
 
   return (
-    <div className={cn("grid gap-1.5", className)}>
+    <div className={cn("grid min-w-0 gap-1.5", className)}>
       <label htmlFor={inputId} className={hideLabel ? "sr-only" : "type-body-sm text-ink"}>
         {label}
       </label>
@@ -49,7 +49,7 @@ export function TextField({
           id={inputId}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className="h-full min-w-0 flex-1 bg-transparent type-body text-ink outline-none"
+          className="h-full w-full min-w-0 flex-1 bg-transparent type-body text-ink outline-none"
           {...props}
         />
         {trailing}

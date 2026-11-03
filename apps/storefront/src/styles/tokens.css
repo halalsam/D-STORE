@@ -250,6 +250,7 @@
   --animate-drawer-out: drawer-out var(--duration-base) var(--ease-ios) both;
   --animate-pop: pop var(--duration-bounce) var(--ease-spring-bounce) both;
   --animate-shimmer: shimmer 1.6s var(--ease-linear) infinite;
+  --animate-shake: shake 420ms var(--ease-out) both;
 
   @keyframes spin {
     to { transform: rotate(360deg); }
@@ -289,6 +290,12 @@
   }
   @keyframes pop {
     from { opacity: 0; transform: scale(0.5); }
+  }
+  @keyframes shake {
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(2px); }
   }
   @keyframes shimmer {
     from { background-position: 150% 0; }

@@ -8,7 +8,7 @@ import { useRef, useState, useSyncExternalStore } from "react"
 import { Button } from "@/components/ui/button"
 import { CountBubble } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { useBag } from "./bag-provider"
+import { useBag } from "@/lib/stores/bag"
 import { MegaMenu } from "./mega-menu"
 
 function subscribeScroll(cb: () => void) {
@@ -84,10 +84,10 @@ export function SiteHeader() {
               </Button>
             </Popover.Trigger>
             <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
-              <Link href="/sign-in" aria-label="Account"><User strokeWidth={1.6} /></Link>
+              <Link href="/account" aria-label="Account"><User strokeWidth={1.6} /></Link>
             </Button>
             <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
-              <Link href="/sign-in" aria-label="Saved items"><Bookmark strokeWidth={1.6} /></Link>
+              <Link href="/account/saved" aria-label="Saved items"><Bookmark strokeWidth={1.6} /></Link>
             </Button>
             <Button variant="ghost" size="icon" aria-label={`Bag, ${count} items`} onClick={() => setBagOpen(true)} className="relative">
               <ShoppingBag strokeWidth={1.6} />

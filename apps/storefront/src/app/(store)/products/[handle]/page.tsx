@@ -23,7 +23,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[hand
 
   return (
     <main className="sheet">
-      <div className="page-x grid gap-grid pb-section lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(21rem,0.85fr)]">
+      <div className="page-x grid grid-cols-1 gap-grid pb-section lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(21rem,0.85fr)]">
         <ProductGallery product={product} />
         <aside className="lg:sticky lg:top-(--header-h) lg:flex lg:h-[calc(100dvh-var(--header-h))] lg:flex-col lg:justify-end lg:self-start lg:pb-gutter">
           <ProductInfo product={product} />

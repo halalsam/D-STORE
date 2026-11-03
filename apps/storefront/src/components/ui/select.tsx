@@ -16,6 +16,11 @@ type Props = {
   /** "field": bordered input look. "plain": text + chevron (Sort by row). */
   appearance?: "field" | "plain"
   className?: string
+  /** Form field name; Radix renders a hidden native select for form data. */
+  name?: string
+  required?: boolean
+  invalid?: boolean
+  id?: string
 }
 
 export function Select({
@@ -27,16 +32,24 @@ export function Select({
   label,
   appearance = "field",
   className,
+  name,
+  required,
+  invalid,
+  id,
 }: Props) {
   return (
-    <SelectPrimitive.Root value={value} defaultValue={defaultValue} onValueChange={onValueChange}>
+    <SelectPrimitive.Root value={value} defaultValue={defaultValue} onValueChange={onValueChange} name={name} required={required}>
       <SelectPrimitive.Trigger
+        id={id}
         aria-label={label}
+        aria-invalid={invalid || undefined}
         className={cn(
           "group pressable inline-flex items-center justify-between gap-3 type-body text-ink outline-none",
           appearance === "field" &&
             "h-12 w-full rounded-md bg-surface px-4 ring-1 ring-line-strong ring-inset focus-visible:ring-2 focus-visible:ring-accent",
           appearance === "plain" && "h-10 rounded-pill px-3 hover:bg-surface-muted",
+          invalid && "ring-danger",
+          "data-[placeholder]:text-ink-subtle",
           className
         )}
       >

@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
 import { isSoldOut, type Product } from "@/lib/mock/catalog"
 import { cn } from "@/lib/utils"
-import { useBag } from "./bag-provider"
+import { useBag } from "@/lib/stores/bag"
+import { toggleSaved, useSaved } from "@/lib/stores/saved"
 import { ProductMedia } from "./product-media"
 
 type Props = {
@@ -44,7 +45,7 @@ export function ProductCard({ product, density = "default", priority, className 
             {product.badge}
           </span>
         ) : null}
-        <SaveToggle title={product.title} className="absolute top-2 right-2" />
+        <SaveToggle handle={product.handle} title={product.title} className="absolute top-2 right-2" />
       </div>
 
       <div className={cn("flex items-start justify-between gap-3 px-3 pt-2.5", soldOut && "opacity-45")}>
@@ -122,9 +123,22 @@ function MediaCarousel({ product, href, priority }: { product: Product; href: st
   )
 }
 
-export function SaveToggle({ title, className, tone = "media" }: { title: string; className?: string; tone?: "media" | "ink" }) {
+export function SaveToggle({
+  handle,
+  title,
+  className,
+  tone = "media",
+}: {
+  handle: string
+  title: string
+  className?: string
+  tone?: "media" | "ink"
+}) {
+  const saved = useSaved()
   return (
     <Toggle.Root
+      pressed={saved.includes(handle)}
+      onPressedChange={(on) => toggleSaved(handle, on)}
       aria-label={`Save ${title}`}
       className={cn(
         "group/save pressable grid size-9 place-items-center rounded-pill",

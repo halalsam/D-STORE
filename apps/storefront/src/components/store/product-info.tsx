@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { SizeSelector } from "@/components/ui/size-selector"
 import { Tabs } from "@/components/ui/tabs"
 import { isSoldOut, type Product } from "@/lib/mock/catalog"
-import { useBag } from "./bag-provider"
+import { useBag } from "@/lib/stores/bag"
 import { SaveToggle } from "./product-card"
 
 const chart = [
@@ -67,7 +67,7 @@ export function ProductInfo({ product }: { product: Product }) {
           <div className="min-w-0">
             <div className="flex items-center gap-1">
               <h1 className="type-heading-sm">{product.title}</h1>
-              <SaveToggle title={product.title} tone="ink" className="size-8" />
+              <SaveToggle handle={product.handle} title={product.title} tone="ink" className="size-8" />
             </div>
             <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} className="type-body text-ink-muted" />
           </div>

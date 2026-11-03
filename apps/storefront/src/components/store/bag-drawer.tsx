@@ -5,7 +5,7 @@ import { Minus, Plus, ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent } from "@/components/ui/sheet"
 import { formatPrice } from "@/lib/format"
-import { useBag } from "./bag-provider"
+import { useBag } from "@/lib/stores/bag"
 import { ProductMedia } from "./product-media"
 
 export function BagDrawer() {
@@ -26,8 +26,11 @@ export function BagDrawer() {
               <SheetClose asChild>
                 <Button variant="secondary" size="xl">Keep shopping</Button>
               </SheetClose>
-              {/* TODO: route to Medusa checkout once the cart API is wired */}
-              <Button size="xl">Checkout</Button>
+              <SheetClose asChild>
+                <Button asChild size="xl">
+                  <Link href="/checkout">Checkout</Link>
+                </Button>
+              </SheetClose>
             </>
           ) : undefined
         }

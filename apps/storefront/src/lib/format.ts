@@ -18,3 +18,9 @@ export function formatPrice(amount: number, currencyCode = "inr", locale = "en-I
   }
   return f.format(amount)
 }
+
+const dateFormatter = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" })
+
+export function formatDate(iso: string) {
+  return dateFormatter.format(new Date(iso))
+}
