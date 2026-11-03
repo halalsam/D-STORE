@@ -4,8 +4,9 @@ import { Section } from "@/components/ui/section"
 import { listCollections, listProducts } from "@/lib/data/catalog"
 
 export default async function HomePage() {
-  const [collections, latest, bags, coastline] = await Promise.all([
+  const [collections, godzilla, latest, bags, coastline] = await Promise.all([
     listCollections(),
+    listProducts({ collectionHandle: "bluorng-x-godzilla" }),
     listProducts({ collectionHandle: "new-arrivals" }),
     listProducts({ collectionHandle: "accessories" }),
     listProducts({ collectionHandle: "coastline" }),
@@ -15,9 +16,14 @@ export default async function HomePage() {
     <>
       <Hero kicker="Winter Edit 2025" title="Built for the cold" cta={{ label: "Shop now", href: "/collections/new-arrivals" }} />
       <main className="sheet sheet-overlap pb-[calc(var(--spacing-section)*0.5)]">
+        {godzilla.length > 0 && (
+          <Section title="BLUORNG x Godzilla" href="/collections/bluorng-x-godzilla">
+            <ProductGrid products={godzilla.slice(0, 4)} priorityCount={4} layout="rail" />
+          </Section>
+        )}
         {latest.length > 0 && (
           <Section title="Latest drop" href="/collections/new-arrivals">
-            <ProductGrid products={latest.slice(0, 4)} priorityCount={4} layout="rail" />
+            <ProductGrid products={latest.slice(0, 4)} priorityCount={godzilla.length ? 0 : 4} layout="rail" />
           </Section>
         )}
         {bags.length > 0 && (

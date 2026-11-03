@@ -61,7 +61,7 @@ const PRODUCTS: Product[] = catalog.products.map((p) => ({
   color: p.color as ColorFamily,
   silhouette: p.silhouette as Silhouette,
   tones: p.tones as unknown as Tone[],
-  images: [],
+  images: "images" in p && Array.isArray(p.images) ? p.images : [],
   sizes: p.sizes.map((s) => ({ label: s.label, available: s.stock > 0, variantId: `${p.handle}::${s.label}` })),
   badge: "badge" in p && typeof p.badge === "string" ? p.badge : undefined,
   description: p.description,
@@ -125,6 +125,7 @@ function toBag(cart: DemoCart): Bag {
       unitPrice: hit.product.price,
       tone: hit.product.tones[0],
       silhouette: hit.product.silhouette,
+      thumbnail: hit.product.images[0],
     })
   }
   const subtotal = lines.reduce((n, l) => n + l.unitPrice * l.quantity, 0)
@@ -238,7 +239,7 @@ function expandOrder(o: DemoOrder): Order {
   const lines = o.l.flatMap(([v, quantity, unitPrice]) => {
     const hit = variant(v)
     return hit
-      ? [{ id: v, handle: hit.product.handle, title: hit.product.title, size: hit.size.label, quantity, unitPrice, tone: hit.product.tones[0], silhouette: hit.product.silhouette }]
+      ? [{ id: v, handle: hit.product.handle, title: hit.product.title, size: hit.size.label, quantity, unitPrice, tone: hit.product.tones[0], silhouette: hit.product.silhouette, thumbnail: hit.product.images[0] }]
       : []
   })
   const subtotal = lines.reduce((n, l) => n + l.unitPrice * l.quantity, 0)
