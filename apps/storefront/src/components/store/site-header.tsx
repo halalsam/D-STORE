@@ -129,12 +129,16 @@ export function SiteHeader() {
             if ((e.target as HTMLElement).closest("a")) setMenuOpen(false)
           }}
           className={cn(
-            "z-(--z-header) w-[calc(var(--radix-popper-anchor-width)-1.25rem)] origin-top",
-            "max-h-[calc(100dvh-var(--header-h)-0.75rem)] overflow-y-auto overscroll-contain rounded-panel bg-canvas shadow-lg",
+            // Edge-to-edge white wrapper continuing the header, rounded at the
+            // bottom; its corner stays concentric with the panel inside.
+            "z-(--z-header) flex w-(--radix-popper-anchor-width) origin-top flex-col bg-surface px-3 pb-3 shadow-lg",
+            "max-h-[calc(100dvh-var(--header-h))] rounded-b-[calc(var(--radius-panel)+0.75rem)]",
             "data-[state=open]:animate-menu-in data-[state=closed]:animate-menu-out"
           )}
         >
-          <MegaMenu searchRef={searchRef} />
+          <div className="min-h-0 overflow-y-auto overscroll-contain rounded-panel bg-canvas">
+            <MegaMenu searchRef={searchRef} />
+          </div>
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
