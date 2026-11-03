@@ -75,3 +75,32 @@
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Browser autofill: keep our field styling instead of the UA highlight.
+ * Chromium/WebKit: delay the UA background change indefinitely so the
+ * field stays transparent over its wrapper. Firefox paints an !important
+ * UA background, so cover it with an inset shadow in the field colour
+ * (set --autofill-bg on wrappers that are not --color-surface).
+ */
+@layer base {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: var(--color-ink);
+    caret-color: var(--color-ink);
+    transition:
+      background-color 600000s 0s,
+      color 600000s 0s;
+  }
+
+  input:autofill,
+  textarea:autofill,
+  select:autofill {
+    box-shadow: 0 0 0 100vmax var(--autofill-bg, var(--color-surface)) inset;
+    -webkit-text-fill-color: var(--color-ink);
+  }
+}

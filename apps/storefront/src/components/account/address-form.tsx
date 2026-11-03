@@ -39,6 +39,14 @@ export function AddressForm({ id, initial, allowDefault = false, onSubmit, child
   const [errors, setErrors] = useState<Errors>({})
   const [shake, setShake] = useState(0)
 
+  const clear = (name: string) =>
+    setErrors((prev) => {
+      if (!(name in prev)) return prev
+      const next = { ...prev }
+      delete next[name as keyof Address]
+      return next
+    })
+
   const handle = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const f = new FormData(e.currentTarget)
@@ -76,7 +84,13 @@ export function AddressForm({ id, initial, allowDefault = false, onSubmit, child
   )
 
   return (
-    <form id={id} noValidate onSubmit={handle} className={cn("grid gap-4", className)}>
+    <form
+      id={id}
+      noValidate
+      onSubmit={handle}
+      onInput={(e) => clear((e.target as HTMLInputElement).name)}
+      className={cn("grid gap-4", className)}
+    >
       <div key={shake} className={cn("grid gap-4", shake > 0 && "animate-shake")}>
         {allowDefault && field("label", "Label (optional)", { placeholder: "Home, Studio..." })}
         <div className="grid gap-4 sm:grid-cols-2">
@@ -96,6 +110,7 @@ export function AddressForm({ id, initial, allowDefault = false, onSubmit, child
               placeholder="Select"
               defaultValue={initial?.state}
               invalid={!!errors.state}
+              onValueChange={() => clear("state")}
               options={indianStates.map((s) => ({ value: s, label: s }))}
             />
             {errors.state && <p className="animate-rise-in type-caption text-danger">{errors.state}</p>}

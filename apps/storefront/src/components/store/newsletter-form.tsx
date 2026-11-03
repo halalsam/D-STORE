@@ -31,7 +31,7 @@ export function NewsletterForm() {
         hideLabel
         placeholder="Email address"
         autoComplete="email"
-        fieldClassName="rounded-pill bg-canvas ring-0"
+        fieldClassName="rounded-pill bg-canvas ring-0 [--autofill-bg:var(--color-canvas)]"
         trailing={
           <Button type="submit" size="icon" aria-label="Subscribe">
             <ArrowRight strokeWidth={1.6} />
