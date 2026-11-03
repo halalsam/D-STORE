@@ -1,29 +1,41 @@
-import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata, Viewport } from "next"
 import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-})
+/*
+ * Fonts: Amulya (display) + Synonym (body) by Indian Type Foundry,
+ * served by Fontshare (free for commercial use).
+ * To self-host later, download the woff2 files into src/app/fonts and
+ * switch to next/font/local with the same family names.
+ */
+const FONTSHARE_CSS =
+  "https://api.fontshare.com/v2/css?f[]=amulya@500,700&f[]=synonym@400,500,600&display=swap"
 
 export const metadata: Metadata = {
-  title: "D-STORE",
+  title: {
+    default: "D-STORE",
+    template: "%s | D-STORE",
+  },
   description: "D-STORE clothing storefront",
+}
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  viewportFit: "cover",
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col">{children}</body>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link
+          rel="preconnect"
+          href="https://cdn.fontshare.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="stylesheet" href={FONTSHARE_CSS} />
+      </head>
+      <body>{children}</body>
     </html>
   )
 }

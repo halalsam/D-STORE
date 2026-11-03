@@ -25,7 +25,7 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Storefront Medusa client | `apps/storefront/src/lib/medusa.ts` |
 | Storefront API calls | `apps/storefront/src/lib/data/` (server-side, via the SDK client) |
 | Storefront routes | `apps/storefront/src/app/` |
-| Design tokens | `apps/storefront/src/app/globals.css` (Tailwind v4 `@theme`) |
+| Design system (tokens, rules, layout spec) | `apps/storefront/DESIGN.md`, `apps/storefront/src/styles/` |
 
 ## Commands (from repo root)
 

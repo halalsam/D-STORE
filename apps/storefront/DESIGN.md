@@ -1,0 +1,125 @@
+# D-STORE Design System
+
+Foundations for the storefront. Living reference: `/design-system` (run `pnpm storefront:dev`).
+
+| File | What |
+| --- | --- |
+| `src/styles/tokens.css` | All tokens (`@theme`): colour, type, radius, shadow, layout, motion, keyframes |
+| `src/styles/base.css` | Element defaults, focus ring, selection, reduced motion |
+| `src/styles/utilities.css` | Type roles, interaction utilities, layout primitives |
+| `src/lib/design/tokens.ts` | Motion and breakpoint values for JS |
+| `src/lib/utils.ts` | `cn()` class merger |
+
+Default Tailwind colours, radii, shadows, eases and fonts are **removed**. Anything not listed in `tokens.css` is not part of the system.
+
+## Colour
+
+Brand swatches: Navy `#2F4156`, Teal `#567C8D`, Sky Blue `#C8D9E6`, Beige `#F5EFEB`, White `#FFFFFF`. Each has an 11-step ramp (`navy-50` to `navy-950`, etc.). Components use the **semantic** tokens only:
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `canvas` | beige-100 | Rounded page sheet |
+| `surface` | white | Header, cards, inset panels |
+| `surface-muted` | beige-200 | Chips, inputs, menu pill |
+| `surface-strong` | beige-300 | Pressed chip, disabled fill |
+| `surface-inverse` | navy-800 | Filled CTA, selected size pill |
+| `surface-tint` | sky-100 | Soft brand highlight |
+| `ink` | navy-800 | Primary text (9.2:1 on canvas) |
+| `ink-muted` | navy-600 | Prices, secondary text (4.9:1) |
+| `ink-subtle` | navy-400 | Placeholders, decoration only |
+| `ink-inverse` / `ink-on-media` | white | Text on navy / on photos |
+| `line` / `line-strong` | navy at 11% / 22% | Hairlines, outlined buttons |
+| `accent` | teal-500 | Focus ring, active indicators |
+| `accent-ink` | teal-700 | Accent text and links (6:1) |
+| `accent-soft` | sky-200 | Selected chip, text selection |
+| `success` / `warning` / `danger` (+ `-soft`) | custom | Stock, pre-order, errors, sale |
+
+Mapping from the reference layout: **black becomes navy, grey becomes beige, teal is only a signal.**
+
+## Typography
+
+Amulya Bold (display) + Synonym Regular (body), from Fontshare. Use the `type-*` role utilities, not raw sizes.
+
+| Role | Font | Size | Use |
+| --- | --- | --- | --- |
+| `type-display-2xl/xl/lg` | Amulya 700 | fluid 36 to 136 | Hero, campaign |
+| `type-heading-xl/lg/md/sm` | Amulya 700 | 36 / 28 / 22 / 18 | Page and block headings, PDP title (sm) |
+| `type-title` | Amulya 700 | 16 | Section titles ("Latest drop") |
+| `type-body-lg/body/body-sm` | Synonym 400 | 17 / 15 / 13 | Copy; card title and price use body-sm |
+| `type-caption` | Synonym 400 | 12 | Legal, helper text |
+| `type-label` | Synonym 500, caps, +6% | 13 | Button labels ("ADD TO BAG") |
+| `type-overline` | Synonym 500, caps, +10% | 11 | Kickers ("FILTER") |
+| `type-price` | tabular numbers | inherit | Prices |
+
+To self-host the fonts, download the woff2 files into `src/app/fonts/` and switch `layout.tsx` to `next/font/local` with the same family names.
+
+## Shape
+
+| Token | px | Use |
+| --- | --- | --- |
+| `rounded-xs` | 6 | Tags, badges, "Size guide" chip |
+| `rounded-sm` | 10 | Small icon buttons |
+| `rounded-md` | 14 | Thumbnails, inputs, dense grid tiles |
+| `rounded-lg` = `rounded-card` | 18 | Product media |
+| `rounded-xl` | 24 | PDP info card, drawers, popovers |
+| `rounded-2xl` = `rounded-panel` | 32 | Inset panels, mega menu |
+| `rounded-3xl` = `rounded-sheet` | 44 | Page sheet top corners |
+| `rounded-pill` | full | Every button and chip |
+
+**Concentric rule:** inner radius = outer radius minus the padding between them. `squircle` adds continuous corners where supported.
+
+Elevation stays flat: `shadow-xs/sm/md/lg/glass`, navy tinted. `material` / `material-dark` give iOS frosted glass for bars and chips over photography.
+
+## Motion
+
+Press fast, release on a spring, glide overlays on the iOS sheet curve.
+
+| Ease | Duration | Use |
+| --- | --- | --- |
+| `ease-standard` | 180 to 280ms | Colour, opacity, small state |
+| `ease-ios` | 520ms | Sheets, drawers, mega menu |
+| `ease-spring` | 600ms | Press release, sliding indicators, reveals |
+| `ease-spring-snappy` | 450ms | Popovers, tooltips |
+| `ease-spring-bounce` | 900ms | Confirmations only (bag badge) |
+
+Springs are sampled damped oscillators in CSS `linear()` (physics in `tokens.ts`). Durations are CSS vars: `duration-(--duration-spring)`.
+
+Utilities and animations:
+- `pressable` on every control: scales to 0.96 in 90ms on press, springs back.
+- `pressable-soft` on large tap targets (cards): 0.985.
+- `media-zoom` on card images inside a `group`: slow 3.5% zoom on hover.
+- `animate-rise-in` (stagger 45ms per item), `animate-scale-in/out` (popovers, use with Radix `data-[state]`), `animate-menu-in/out`, `animate-sheet-in/out`, `animate-drawer-in/out`, `animate-pop`, `animate-fade-in/out`, `skeleton`.
+- `prefers-reduced-motion` collapses all motion to ~1ms.
+
+## Layout (from the reference)
+
+```
+html (surface, white)
+├─ header         .header-grid   h 64 / 88, columns 1fr auto 1fr
+│   left: New in, Collections   center: wordmark   right: icons (40px) + menu pill (56x36, surface-muted)
+│   over the hero: transparent, ink-on-media, menu pill white
+├─ hero           full bleed image, header sits on top
+└─ main           .sheet (.sheet-overlap after a hero)  canvas, rounded-sheet top
+    ├─ .section           gutter padding
+    │   ├─ .section-head  type-title left, "Discover more" pill right (surface on canvas, inverse on panel)
+    │   └─ .product-grid  2 / 3 / 4 cols, gap 8px   (.product-grid-dense: 4 / 6 / 12, image only)
+    ├─ .page-x > .panel   white inset container, rounded-panel, its own section-head + grid
+    └─ footer             SEO block + link tabs in a panel
+```
+
+- **Gutter** `px-gutter` 16 to 28px. **Grid gap** `gap-grid` 8px. **Section spacing** `py-section`.
+- **Product card:** media `aspect-[3/4] rounded-card`, bookmark top right, carousel dots bottom center, "Sold out" top left with the whole card at ~45% opacity. Meta row `px-3 pt-2.5`: title `type-body-sm font-medium`, price `type-body-sm type-price text-ink-muted`, 32px "+" quick add on the right.
+- **Product page:** `lg:grid-cols-[1fr_1fr_minmax(20rem,0.85fr)]`, two-up gallery (`rounded-card`, zoom button top left), info column bottom-aligned and sticky. Info card `rounded-xl hairline p-3`: title `type-heading-sm` + bookmark, price, "Size guide" chip; size pills 5 columns, h 44, selected = `surface-inverse`, unavailable = `surface-muted` + strike; CTAs 2 columns, h 56, outlined "Add to bag" + filled "Buy now". Tabs card below with a sliding 2px underline.
+- **Mega menu:** drops below the header as a `rounded-panel` canvas sheet (`animate-menu-in`). Collections list left (`type-title`), category groups with white chip pills, "Shop by color" chips with overlapping swatch dots. Menu pill becomes an X.
+- **Filter drawer:** right side (`animate-drawer-in`), centered overline title + product count, chip groups separated by hairlines, "Sort by" select, sticky footer with outlined "Remove all" + filled "Apply".
+- **Sign in:** centered single column (max 24rem), wordmark top, email field with an inline arrow button, consent checkbox, caption legal line.
+
+## Rules
+
+1. Black becomes navy (`surface-inverse`). Grey becomes beige. No neutral greys.
+2. Teal is a signal, never a large fill. Small teal text uses `accent-ink`.
+3. Every action is a pill. Rectangles are for media and containers.
+4. Concentric corners. A child never has a larger radius than its parent.
+5. Every interactive element is `pressable`. Overlays use `ease-ios`. Bounce only confirms.
+6. Use `type-*` roles. Amulya for display, headings and titles. Synonym for everything you read.
+7. Photography leads: hairlines over shadows, generous gutters, 8px between cards.

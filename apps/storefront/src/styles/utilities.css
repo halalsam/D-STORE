@@ -1,0 +1,288 @@
+/*
+ * D-STORE composite utilities
+ * Type roles, iOS interaction feel, and the page layout primitives
+ * taken from the reference layout (header, sheet, panel, grid).
+ */
+
+/* ------------------------------------------------------------------
+ * Type roles. Use these instead of raw text-* sizes in components.
+ * ---------------------------------------------------------------- */
+@utility type-display-2xl {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-display-2xl);
+  line-height: var(--text-display-2xl--line-height);
+  letter-spacing: var(--text-display-2xl--letter-spacing);
+}
+@utility type-display-xl {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-display-xl);
+  line-height: var(--text-display-xl--line-height);
+  letter-spacing: var(--text-display-xl--letter-spacing);
+}
+@utility type-display-lg {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-display-lg);
+  line-height: var(--text-display-lg--line-height);
+  letter-spacing: var(--text-display-lg--letter-spacing);
+}
+@utility type-heading-xl {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-heading-xl);
+  line-height: var(--text-heading-xl--line-height);
+  letter-spacing: var(--text-heading-xl--letter-spacing);
+}
+@utility type-heading-lg {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-heading-lg);
+  line-height: var(--text-heading-lg--line-height);
+  letter-spacing: var(--text-heading-lg--letter-spacing);
+}
+@utility type-heading-md {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-heading-md);
+  line-height: var(--text-heading-md--line-height);
+  letter-spacing: var(--text-heading-md--letter-spacing);
+}
+@utility type-heading-sm {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-heading-sm);
+  line-height: var(--text-heading-sm--line-height);
+  letter-spacing: var(--text-heading-sm--letter-spacing);
+}
+@utility type-title {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-title);
+  line-height: var(--text-title--line-height);
+  letter-spacing: var(--text-title--letter-spacing);
+}
+@utility type-body-lg {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--text-body-lg);
+  line-height: var(--text-body-lg--line-height);
+}
+@utility type-body {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+}
+@utility type-body-sm {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--text-body-sm);
+  line-height: var(--text-body-sm--line-height);
+}
+@utility type-caption {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--text-caption);
+  line-height: var(--text-caption--line-height);
+}
+@utility type-label {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+}
+@utility type-overline {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-overline);
+  line-height: var(--text-overline--line-height);
+  letter-spacing: var(--text-overline--letter-spacing);
+  text-transform: uppercase;
+}
+@utility type-price {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------
+ * Interaction feel (iOS)
+ * Press: shrink fast on touch-down, spring back on release.
+ * ---------------------------------------------------------------- */
+@utility pressable {
+  transition-property: transform, background-color, color, border-color,
+    box-shadow, opacity;
+  transition-duration: var(--duration-spring), var(--duration-fast),
+    var(--duration-fast), var(--duration-fast), var(--duration-fast),
+    var(--duration-fast);
+  transition-timing-function: var(--ease-spring), var(--ease-standard),
+    var(--ease-standard), var(--ease-standard), var(--ease-standard),
+    var(--ease-standard);
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    transform: scale(var(--press-scale));
+    transition-duration: var(--duration-instant);
+    transition-timing-function: var(--ease-out);
+  }
+}
+
+/* Large tappable areas (product cards): a subtler press. */
+@utility pressable-soft {
+  transition: transform var(--duration-spring) var(--ease-spring);
+  touch-action: manipulation;
+
+  &:active {
+    transform: scale(var(--press-scale-soft));
+    transition-duration: var(--duration-instant);
+    transition-timing-function: var(--ease-out);
+  }
+}
+
+/* Slow photographic zoom. Put on the <img>, `group` on the card. */
+@utility media-zoom {
+  transition: transform var(--duration-media) var(--ease-ios);
+  will-change: transform;
+
+  :where(.group):hover & {
+    transform: scale(1.035);
+  }
+}
+
+/* iOS material: frosted, saturated glass for bars over imagery. */
+@utility material {
+  background-color: color-mix(in oklab, var(--color-surface) 72%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+@utility material-dark {
+  background-color: color-mix(in oklab, var(--color-navy-950) 38%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+/* Continuous (squircle) corners where the browser supports them. */
+@utility squircle {
+  @supports (corner-shape: squircle) {
+    corner-shape: superellipse(1.6);
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Layout primitives (from the reference layout)
+ *
+ *   <header>        white, h = --header-h, 3 columns
+ *   .sheet          beige canvas, big rounded top, slides over hero
+ *     .section      gutter padding, .section-head row, product grid
+ *     .panel        white inset container inside the sheet
+ * ---------------------------------------------------------------- */
+@utility page-x {
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility header-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  height: var(--header-h);
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility sheet {
+  position: relative;
+  z-index: var(--z-sheet);
+  background-color: var(--color-canvas);
+  border-top-left-radius: var(--radius-sheet);
+  border-top-right-radius: var(--radius-sheet);
+  padding-top: calc(var(--radius-sheet) * 0.75);
+}
+
+/* Pull the sheet up over the element above it (hero image). */
+@utility sheet-overlap {
+  margin-top: calc(var(--radius-sheet) * -1);
+}
+
+@utility section {
+  padding-inline: var(--spacing-gutter);
+  padding-block: calc(var(--spacing-section) * 0.5);
+}
+
+@utility section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@utility panel {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-panel);
+  padding: clamp(1rem, 0.6rem + 1.2vw, 2.25rem);
+}
+
+@utility product-grid {
+  display: grid;
+  gap: var(--spacing-grid);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @media (width >= 64rem) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Dense "image wall" view toggled from the collection toolbar. */
+@utility product-grid-dense {
+  display: grid;
+  gap: var(--spacing-grid);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  @media (width >= 80rem) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@utility hairline {
+  border: 1px solid var(--color-line);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Loading placeholder that matches the canvas tones. */
+@utility skeleton {
+  background-color: var(--color-surface-muted);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in oklab, var(--color-surface) 70%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Readability scrim for text on photography. */
+@utility scrim-bottom {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-navy-950) 55%, transparent),
+    transparent 55%
+  );
+}
