@@ -9,52 +9,20 @@ import { Price } from "@/components/ui/price"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { SizeSelector } from "@/components/ui/size-selector"
 import { Tabs } from "@/components/ui/tabs"
+import { genericChart } from "@/lib/size-chart"
 import { isSoldOut, type Product, type SizeChart } from "@/lib/types"
 import { useBag } from "@/lib/stores/bag"
 import { SaveToggle } from "./product-card"
-
-/** Fallback when a product carries no chart of its own. */
-const genericChart: SizeChart = {
-  columns: ["Chest", "Length", "Shoulder"],
-  rows: [
-    ["XXS", "38", "26", "21"],
-    ["XS", "40", "27", "21.5"],
-    ["S", "42", "28", "22"],
-    ["M", "44", "29", "22.5"],
-    ["L", "46", "30", "23"],
-    ["XL", "48", "31", "23.5"],
-    ["XXL", "50", "32", "24"],
-  ],
-}
+import { SizeTable } from "./size-table"
 
 function SizeGuide({ chart }: { chart?: SizeChart }) {
-  const { columns, rows } = chart ?? genericChart
   return (
     <Sheet>
       <SheetTrigger asChild>
         <button className="pressable type-caption text-accent-ink underline underline-offset-4">Size guide</button>
       </SheetTrigger>
       <SheetContent side="adaptive" title="Size guide" subtitle="Measurements in inches" bodyClassName="p-4 md:p-6">
-        <div className="overflow-hidden rounded-lg bg-surface">
-          <table className="w-full text-left type-body-sm tabular-nums">
-            <thead className="bg-surface-muted type-overline text-ink-muted">
-              <tr>
-                {["Size", ...columns].map((h) => (
-                  <th key={h} className="px-4 py-3 font-medium">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row[0]} className="border-t border-line">
-                  {row.map((c, i) => (
-                    <td key={i} className={i === 0 ? "px-4 py-3 font-medium" : "px-4 py-3 text-ink-muted"}>{c}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <SizeTable chart={chart ?? genericChart} />
         {!chart && <p className="mt-4 type-caption text-ink-muted">Boxy fit. Size down for a closer silhouette.</p>}
       </SheetContent>
     </Sheet>
@@ -211,7 +179,7 @@ export function ProductPurchase({ product }: { product: Product }) {
 /** Details / Washcare / Shipping. */
 export function ProductTabs({ product }: { product: Product }) {
   return (
-    <section className="flex min-h-0 flex-col rounded-xl bg-surface px-3 pb-1 ring-1 ring-line ring-inset lg:flex-1">
+    <section className="flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface px-3 pb-1 ring-1 ring-line ring-inset lg:min-h-36 lg:flex-1">
       <Tabs
         defaultValue="details"
         className="flex min-h-0 flex-1 flex-col"
