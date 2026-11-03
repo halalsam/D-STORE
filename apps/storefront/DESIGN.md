@@ -111,7 +111,7 @@ html (surface, white)
     └─ footer             SEO block + link tabs in a panel
 ```
 
-- **Gutter** `px-gutter` 16 to 28px. **Grid gap** `gap-grid` 8px. **Section spacing** `py-section`.
+- **Gutter** `px-gutter` 16 to 28px. **Grid gap** `gap-tile` 8px. **Section spacing** `py-section`.
 - **Card ratio:** every card and product image uses `aspect-card` (3:4, token `--aspect-card`). Do not use ad-hoc ratios.
 - **Product card:** media `aspect-card rounded-card`, bookmark top right, carousel dots bottom center, "Sold out" top left with the whole card at ~45% opacity. Meta row `px-3 pt-2.5`: title `type-body-sm font-medium`, price `type-body-sm type-price text-ink-muted`, 32px "+" quick add on the right.
 - **Product page:** `.pdp-grid` = three columns from `lg`: pinned main image (`aspect-card`, width capped so it always fits the viewport height) | vertical list of every view that scrolls with the page (click to swap the main image) | pinned details column (`.pdp-pinned`) that starts at the top and fills the height: purchase card (collection kicker, title, price, 4-per-row size pills, Add to bag + Buy now, perks row), tabs card that grows, "Complete the look" row. Sold out swaps the CTAs for Sold out + Notify me. Below `lg`: swipe carousel, then details.

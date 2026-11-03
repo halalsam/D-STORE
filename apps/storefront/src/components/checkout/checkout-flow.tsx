@@ -144,7 +144,7 @@ export function CheckoutFlow({ initialBag, session }: { initialBag: Bag; session
   const summary = <OrderSummary bag={bag} onBag={updateBag} />
 
   return (
-    <div className="grid grid-cols-1 gap-grid lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)] lg:gap-6">
+    <div className="grid grid-cols-1 gap-tile lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)] lg:gap-6">
       <div className="panel p-0 lg:hidden">
         <button onClick={() => setSummaryOpen((o) => !o)} aria-expanded={summaryOpen} className="flex w-full items-center justify-between gap-3 p-5">
           <span className="flex items-center gap-2 type-body-sm text-accent-ink">
@@ -157,7 +157,7 @@ export function CheckoutFlow({ initialBag, session }: { initialBag: Bag; session
         <Expand open={summaryOpen}><div className="px-5 pb-5">{summary}</div></Expand>
       </div>
 
-      <div className="grid content-start gap-grid">
+      <div className="grid content-start gap-tile">
         <div id="step-1" className="scroll-mt-(--header-h)">
           <StepCard
             index={1}

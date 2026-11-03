@@ -17,7 +17,7 @@ const linkSets = {
 export function SeoBlock({ title, body }: { title: string; body: string }) {
   const [expanded, setExpanded] = useState(false)
   const chips = (items: string[]) => (
-    <div className="flex flex-wrap gap-2 pt-4">
+    <div className="flex flex-wrap gap-2 pt-3">
       {items.map((t) => (
         <Link key={t} href={`/collections/new-arrivals?q=${encodeURIComponent(t)}`} className={chipVariants({ tone: "muted", size: "sm" })}>
           {t}
@@ -28,7 +28,7 @@ export function SeoBlock({ title, body }: { title: string; body: string }) {
 
   return (
     <div className="page-x pb-section">
-      <div className="panel grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-16">
+      <div className="panel grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-16">
         <div>
           <h2 className="type-title">{title}</h2>
           <p className={cn("mt-2 type-body-sm text-ink-muted", !expanded && "line-clamp-2")}>{body}</p>
@@ -37,6 +37,8 @@ export function SeoBlock({ title, body }: { title: string; body: string }) {
           </button>
         </div>
         <Tabs
+          variant="pills"
+          contentClassName="animate-fade-in"
           items={[
             { value: "popular", label: "Popular searches", content: chips(linkSets.popular) },
             { value: "category", label: "Shop by category", content: chips(linkSets.category) },

@@ -25,7 +25,7 @@ function ProductSkeleton() {
       <div className="page-x pdp-grid">
         <div className="aspect-card w-full rounded-card skeleton" />
         <div className="hidden aspect-card rounded-card skeleton lg:block" />
-        <div className="grid content-start gap-grid">
+        <div className="grid content-start gap-tile">
           <div className="h-72 rounded-xl skeleton" />
           <div className="h-40 rounded-xl skeleton" />
         </div>

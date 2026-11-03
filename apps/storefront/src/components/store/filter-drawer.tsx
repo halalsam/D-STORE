@@ -3,8 +3,7 @@
 import { useState, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { ChipGroup, ChipGroupItem, SwatchStack } from "@/components/ui/chip"
-import { Select } from "@/components/ui/select"
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { colorFamilies, productTypes } from "@/lib/site"
 
 export type Filters = {
@@ -26,71 +25,88 @@ export const sortOptions = [
 
 const SIZES = ["XXS", "XS", "S", "M", "L", "XL", "XXL"]
 
-function Group({ title, children }: { title: string; children: ReactNode }) {
+export function activeCount(f: Filters) {
+  return f.sizes.length + f.availability.length + f.types.length + f.colors.length
+}
+
+function Group({ title, count, children }: { title: string; count: number; children: ReactNode }) {
   return (
-    <fieldset className="border-b border-line px-6 py-5">
-      <legend className="float-left mb-3 w-full type-title">{title}</legend>
+    <fieldset className="border-b border-line px-5 py-5 md:px-6">
+      <legend className="float-left mb-3 flex w-full items-baseline justify-between">
+        <span className="type-title">{title}</span>
+        {count > 0 && <span className="animate-fade-in type-caption text-ink-muted">{count} selected</span>}
+      </legend>
       <div className="clear-both">{children}</div>
     </fieldset>
   )
 }
 
 type Props = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
   value: Filters
   onApply: (filters: Filters) => void
-  resultCount: number
-  trigger: ReactNode
+  /** Live result count for the draft filters, shown on the Apply button. */
+  countFor: (filters: Filters) => number
 }
 
-export function FilterDrawer({ value, onApply, resultCount, trigger }: Props) {
-  const [open, setOpen] = useState(false)
+/** Bottom sheet on phones, right drawer from md. Sort lives in the toolbar. */
+export function FilterDrawer({ open, onOpenChange, value, onApply, countFor }: Props) {
   const [draft, setDraft] = useState(value)
   const set = <K extends keyof Filters>(key: K, v: Filters[K]) => setDraft((d) => ({ ...d, [key]: v }))
+  const results = countFor(draft)
 
   return (
     <Sheet
       open={open}
       onOpenChange={(o) => {
         if (o) setDraft(value)
-        setOpen(o)
+        onOpenChange(o)
       }}
     >
-      <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent
+        side="responsive"
         title="Filter"
-        subtitle={`${resultCount} products`}
+        subtitle={activeCount(draft) ? `${activeCount(draft)} selected` : "Refine the collection"}
         footer={
           <>
-            <Button variant="secondary" size="xl" onClick={() => setDraft({ ...emptyFilters, sort: draft.sort })}>
-              Remove all
+            <Button variant="secondary" size="xl" disabled={!activeCount(draft)} onClick={() => setDraft({ ...emptyFilters, sort: draft.sort })}>
+              Clear all
             </Button>
-            <SheetClose asChild>
-              <Button size="xl" onClick={() => onApply(draft)}>Apply</Button>
-            </SheetClose>
+            <Button
+              size="xl"
+              disabled={results === 0}
+              onClick={() => {
+                onApply(draft)
+                onOpenChange(false)
+              }}
+            >
+              {results === 0 ? "No matches" : `Show ${results}`}
+            </Button>
           </>
         }
       >
-        <Group title="Size">
-          <ChipGroup type="multiple" value={draft.sizes} onValueChange={(v) => set("sizes", v)} aria-label="Size">
+        <Group title="Size" count={draft.sizes.length}>
+          <ChipGroup type="multiple" value={draft.sizes} onValueChange={(v) => set("sizes", v)} aria-label="Size" className="grid grid-cols-4 gap-2 sm:flex">
             {SIZES.map((s) => (
-              <ChipGroupItem key={s} value={s} className="min-w-16 justify-center">{s}</ChipGroupItem>
+              <ChipGroupItem key={s} value={s} className="justify-center sm:min-w-16">{s}</ChipGroupItem>
             ))}
           </ChipGroup>
         </Group>
-        <Group title="Availability">
+        <Group title="Availability" count={draft.availability.length}>
           <ChipGroup type="multiple" value={draft.availability} onValueChange={(v) => set("availability", v)} aria-label="Availability">
             <ChipGroupItem value="in-stock">In stock</ChipGroupItem>
             <ChipGroupItem value="sold-out">Out of stock</ChipGroupItem>
           </ChipGroup>
         </Group>
-        <Group title="Type">
+        <Group title="Type" count={draft.types.length}>
           <ChipGroup type="multiple" value={draft.types} onValueChange={(v) => set("types", v)} aria-label="Type">
             {productTypes.map((t) => (
               <ChipGroupItem key={t} value={t}>{t}</ChipGroupItem>
             ))}
           </ChipGroup>
         </Group>
-        <Group title="Color">
+        <Group title="Color" count={draft.colors.length}>
           <ChipGroup type="multiple" value={draft.colors} onValueChange={(v) => set("colors", v)} aria-label="Color">
             {colorFamilies.map((c) => (
               <ChipGroupItem key={c.name} value={c.name}>
@@ -100,10 +116,6 @@ export function FilterDrawer({ value, onApply, resultCount, trigger }: Props) {
             ))}
           </ChipGroup>
         </Group>
-        <div className="flex items-center justify-between px-6 py-5">
-          <p className="type-title">Sort by</p>
-          <Select label="Sort by" appearance="plain" options={sortOptions} value={draft.sort} onValueChange={(v) => set("sort", v)} />
-        </div>
       </SheetContent>
     </Sheet>
   )

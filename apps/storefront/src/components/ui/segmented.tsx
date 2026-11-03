@@ -24,8 +24,7 @@ export function Segmented({ options, value, onValueChange, label, iconOnly = fal
       value={value}
       onValueChange={(v) => v && onValueChange(v)}
       aria-label={label}
-      className={cn("relative inline-grid rounded-pill bg-surface-muted p-1", className)}
-      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+      className={cn("relative inline-grid shrink-0 auto-cols-fr grid-flow-col rounded-pill bg-surface-muted p-1", className)}
     >
       <span
         aria-hidden

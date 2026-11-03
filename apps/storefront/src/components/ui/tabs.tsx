@@ -8,18 +8,33 @@ export type TabItem = { value: string; label: string; content: ReactNode }
 
 type Props = {
   items: TabItem[]
+  /** "underline": equal-width tabs. "pills": scrollable chip row, never truncates. */
+  variant?: "underline" | "pills"
   defaultValue?: string
   className?: string
   contentClassName?: string
 }
 
 /** Equal-width tabs with an underline that springs between them. */
-export function Tabs({ items, defaultValue, className, contentClassName }: Props) {
+export function Tabs({ items, defaultValue, className, contentClassName, variant = "underline" }: Props) {
   const [value, setValue] = useState(defaultValue ?? items[0]?.value)
   const index = Math.max(0, items.findIndex((i) => i.value === value))
 
   return (
     <TabsPrimitive.Root value={value} onValueChange={setValue} className={className}>
+      {variant === "pills" ? (
+        <TabsPrimitive.List className="no-scrollbar -mx-1 flex gap-1.5 overflow-x-auto px-1 py-0.5">
+          {items.map((item) => (
+            <TabsPrimitive.Trigger
+              key={item.value}
+              value={item.value}
+              className="pressable h-9 shrink-0 rounded-pill bg-surface-muted px-4 type-body-sm whitespace-nowrap text-ink transition-colors duration-(--duration-fast) hover:bg-surface-strong data-[state=active]:bg-surface-inverse data-[state=active]:text-ink-inverse"
+            >
+              {item.label}
+            </TabsPrimitive.Trigger>
+          ))}
+        </TabsPrimitive.List>
+      ) : (
       <TabsPrimitive.List
         className="relative grid border-b border-line"
         style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
@@ -28,7 +43,7 @@ export function Tabs({ items, defaultValue, className, contentClassName }: Props
           <TabsPrimitive.Trigger
             key={item.value}
             value={item.value}
-            className="h-12 truncate px-2 type-body text-ink-muted transition-colors duration-(--duration-fast) hover:text-ink data-[state=active]:text-ink"
+            className="h-12 truncate rounded-md px-2 type-body text-ink-muted transition-colors duration-(--duration-fast) hover:text-ink focus-visible:-outline-offset-2 data-[state=active]:text-ink"
           >
             {item.label}
           </TabsPrimitive.Trigger>
@@ -39,6 +54,7 @@ export function Tabs({ items, defaultValue, className, contentClassName }: Props
           style={{ width: `${100 / items.length}%`, transform: `translateX(${index * 100}%)` }}
         />
       </TabsPrimitive.List>
+      )}
       {items.map((item) => (
         <TabsPrimitive.Content
           key={item.value}

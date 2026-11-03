@@ -19,6 +19,12 @@ const contentVariants = cva(
         /** Filters, bag. Floats with a small inset like an iPad sheet. */
         right:
           "inset-y-2 right-2 w-[min(28rem,calc(100vw-1rem))] rounded-xl data-[state=open]:animate-drawer-in data-[state=closed]:animate-drawer-out",
+        /** Bottom sheet on phones, right drawer from md (filters). */
+        responsive: [
+          "inset-x-0 bottom-0 max-h-[88dvh] rounded-t-sheet pb-[env(safe-area-inset-bottom)] data-[state=open]:animate-sheet-in data-[state=closed]:animate-sheet-out",
+          "md:inset-x-auto md:inset-y-2 md:right-2 md:bottom-2 md:max-h-none md:w-[min(28rem,calc(100vw-1rem))] md:rounded-xl md:pb-0",
+          "md:data-[state=open]:animate-drawer-in md:data-[state=closed]:animate-drawer-out",
+        ],
         /** Mobile actions. */
         bottom:
           "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-sheet pb-[env(safe-area-inset-bottom)] data-[state=open]:animate-sheet-in data-[state=closed]:animate-sheet-out",
@@ -62,7 +68,7 @@ export function SheetContent({
         className={cn(contentVariants({ side }), className)}
         {...props}
       >
-        {(side === "bottom" || side === "adaptive") && (
+        {(side === "bottom" || side === "adaptive" || side === "responsive") && (
           <span aria-hidden className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-pill bg-line-strong md:hidden" />
         )}
         <header className="relative grid shrink-0 place-items-center border-b border-line px-14 py-4 text-center">

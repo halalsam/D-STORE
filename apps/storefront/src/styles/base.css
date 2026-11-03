@@ -14,6 +14,9 @@
 
   body {
     min-height: 100dvh;
+    /* Safety net: a stray wide element must never widen the layout
+       viewport on phones (clip, unlike hidden, keeps sticky working). */
+    overflow-x: clip;
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
   }

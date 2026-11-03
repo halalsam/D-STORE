@@ -16,8 +16,8 @@ export default function CheckoutPage() {
   return (
     <Suspense
       fallback={
-        <div className="grid gap-grid lg:grid-cols-[minmax(0,1fr)_26rem]">
-          <div className="grid gap-grid">{[0, 1, 2].map((i) => <div key={i} className="h-24 rounded-panel skeleton" />)}</div>
+        <div className="grid gap-tile lg:grid-cols-[minmax(0,1fr)_26rem]">
+          <div className="grid gap-tile">{[0, 1, 2].map((i) => <div key={i} className="h-24 rounded-panel skeleton" />)}</div>
           <div className="h-96 rounded-panel skeleton" />
         </div>
       }

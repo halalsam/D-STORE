@@ -62,7 +62,7 @@ export function MotionLab() {
   const [menu, setMenu] = useState<"idle" | "open" | "closed">("idle")
 
   return (
-    <div className="grid gap-grid">
+    <div className="grid gap-tile">
       {/* Curves + race */}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between gap-4">
@@ -104,7 +104,7 @@ export function MotionLab() {
         </div>
       </div>
 
-      <div className="grid gap-grid lg:grid-cols-2">
+      <div className="grid gap-tile lg:grid-cols-2">
         {/* Press */}
         <div className="panel">
           <h3 className="type-heading-sm">Press</h3>
@@ -174,7 +174,7 @@ export function MotionLab() {
               Replay
             </button>
           </div>
-          <div key={reveal} className="mt-5 grid grid-cols-4 gap-grid">
+          <div key={reveal} className="mt-5 grid grid-cols-4 gap-tile">
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="animate-rise-in" style={{ animationDelay: `${i * 45}ms` }}>
                 <div className="aspect-card rounded-card bg-sky-200" />

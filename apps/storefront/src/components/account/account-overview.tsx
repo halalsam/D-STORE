@@ -23,7 +23,7 @@ export function AccountOverview({ customer, orders, addresses, products }: Props
     <div className="animate-rise-in">
       <PageTitle title={customer.firstName ? `Hi, ${customer.firstName}` : "Your account"} description="Track orders, manage addresses and update your details." />
 
-      <div className="grid gap-grid xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid gap-tile xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         {latest ? (
           <section className="panel">
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -68,7 +68,7 @@ export function AccountOverview({ customer, orders, addresses, products }: Props
             <Button asChild variant="ghost" size="sm"><Link href="/account/saved">See all ({saved.length})</Link></Button>
           </div>
           {savedProducts.length ? (
-            <div className="grid grid-cols-3 gap-grid sm:max-w-xl">
+            <div className="grid grid-cols-3 gap-tile sm:max-w-xl">
               {savedProducts.map((p) => (
                 <Link key={p.id} href={`/products/${p.handle}`} className="group pressable-soft relative aspect-card overflow-hidden rounded-card">
                   <ProductMedia tone={p.tones[0]} src={p.images[0]} silhouette={p.silhouette} alt={p.title} className="media-zoom" />

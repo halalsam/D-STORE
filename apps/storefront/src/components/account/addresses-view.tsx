@@ -50,7 +50,7 @@ export function AddressesView({ addresses }: { addresses: Address[] }) {
           </Button>
         }
       />
-      <div className="grid gap-grid md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid gap-tile md:grid-cols-2 2xl:grid-cols-3">
         {addresses.map((a, i) => (
           <AddressCard
             key={a.id}

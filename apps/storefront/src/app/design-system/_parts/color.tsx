@@ -3,9 +3,9 @@ import { contrast, grade } from "./contrast"
 
 export function ColorPalette() {
   return (
-    <div className="grid gap-grid">
+    <div className="grid gap-tile">
       {/* Base palette: in the style of the brand palette card */}
-      <div className="grid grid-cols-2 gap-grid md:grid-cols-5">
+      <div className="grid grid-cols-2 gap-tile md:grid-cols-5">
         {baseSwatches.map((s, i) => (
           <div
             key={s.name}

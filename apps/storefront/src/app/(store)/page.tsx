@@ -31,7 +31,7 @@ export default async function HomePage() {
           </Section>
         )}
         <Section title="Shop by collection">
-          <div className="grid gap-grid md:grid-cols-3">
+          <div className="grid gap-tile md:grid-cols-3">
             {collections
               .filter((c) => c.handle !== "new-arrivals")
               .slice(0, 3)

@@ -2,7 +2,7 @@ import { typeRoles } from "./data"
 
 export function TypeSpecimen() {
   return (
-    <div className="grid gap-grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid gap-tile lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       {/* Pairing card */}
       <div className="relative flex min-h-[28rem] flex-col justify-between overflow-hidden rounded-panel bg-surface-inverse p-7 text-beige-100 md:p-10">
         <p className="type-caption text-sky-200/80">

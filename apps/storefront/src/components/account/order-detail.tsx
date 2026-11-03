@@ -25,8 +25,8 @@ export function OrderDetail({ order }: { order: Order }) {
         <StatusBadge status={order.status} />
       </div>
 
-      <div className="grid gap-grid xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <div className="grid content-start gap-grid">
+      <div className="grid gap-tile xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div className="grid content-start gap-tile">
           <section className="panel">
             <OrderTracker status={order.status} />
             {order.tracking && (
@@ -59,7 +59,7 @@ export function OrderDetail({ order }: { order: Order }) {
           </section>
         </div>
 
-        <div className="grid content-start gap-grid">
+        <div className="grid content-start gap-tile">
           <section className="panel">
             <h2 className="mb-3 type-title">Shipping to</h2>
             <AddressLines address={order.shippingAddress} />

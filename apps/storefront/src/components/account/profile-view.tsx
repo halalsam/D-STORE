@@ -48,7 +48,7 @@ export function ProfileView({ customer }: { customer: Customer }) {
   return (
     <div>
       <PageTitle title="Profile" description="Your details and how we keep in touch." />
-      <div className="grid gap-grid xl:grid-cols-2">
+      <div className="grid gap-tile xl:grid-cols-2">
         <section className="panel">
           <h2 className="type-title">Personal details</h2>
           <form onSubmit={saveDetails} className="mt-5 grid gap-4">
@@ -69,7 +69,7 @@ export function ProfileView({ customer }: { customer: Customer }) {
           </form>
         </section>
 
-        <div className="grid content-start gap-grid">
+        <div className="grid content-start gap-tile">
           <section className="panel">
             <h2 className="type-title">Notifications</h2>
             <div className="mt-5 grid gap-5">

@@ -209,7 +209,9 @@
    * Layout
    * ------------------------------------------------------------- */
   --spacing-gutter: clamp(1rem, 0.55rem + 1.5vw, 1.75rem); /* page edge */
-  --spacing-grid: 0.5rem; /* product grid gap */
+  /* Card gap. Named "tile", not "grid": Tailwind would turn "inline-grid"
+   * into an inline-size utility for a spacing token called "grid". */
+  --spacing-tile: 0.5rem;
   --spacing-section: clamp(2.5rem, 1.9rem + 2vw, 4rem); /* between sections */
   --spacing-header: var(--header-h);
 
@@ -334,5 +336,12 @@
 @media (width >= 64rem) {
   :root {
     --header-h: 5.5rem;
+  }
+}
+
+/* Phones: a tighter page-sheet corner keeps content closer to the header. */
+@media (width < 48rem) {
+  :root {
+    --radius-3xl: 1.75rem;
   }
 }

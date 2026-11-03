@@ -14,7 +14,7 @@ export function OrdersView({ orders }: { orders: Order[] }) {
       {orders.length === 0 ? (
         <EmptyCard icon={<Package />} title="No orders yet" body="When you place an order it will show up here." href="/collections/new-arrivals" cta="Shop new in" />
       ) : (
-        <ul className="grid gap-grid">
+        <ul className="grid gap-tile">
           {orders.map((o, i) => (
             <li key={o.id} className="animate-rise-in" style={{ animationDelay: `${i * 45}ms` }}>
               <Link href={`/account/orders/${o.id}`} className="group pressable-soft flex items-center gap-4 rounded-panel bg-surface p-4 transition-shadow hover:shadow-md md:p-5">

@@ -76,7 +76,7 @@ export default function DesignSystemPage() {
           <LayoutBlueprint />
         </DsSection>
         <DsSection id="rules" index="06" title="Rules" kicker="What keeps it consistent when components arrive.">
-          <div className="grid gap-grid sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-tile sm:grid-cols-2 xl:grid-cols-4">
             {rules.map(([title, body], i) => (
               <div key={title} className="panel">
                 <p className="type-overline text-accent-ink tabular-nums">{String(i + 1).padStart(2, "0")}</p>

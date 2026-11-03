@@ -52,7 +52,7 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
       </div>
 
       {/* Vertical image list (lg+) */}
-      <ul aria-label="Product images" className="hidden gap-grid lg:grid">
+      <ul aria-label="Product images" className="hidden gap-tile lg:grid">
         {images.map(({ tone, src }, i) => (
           <li key={i}>
             <button
@@ -76,7 +76,7 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
       </ul>
 
       {/* Pinned details, top aligned, filling the column */}
-      <aside className="pdp-pinned mt-grid flex min-w-0 flex-col gap-grid lg:mt-0 lg:h-(--pdp-pinned-h)">
+      <aside className="pdp-pinned mt-tile flex min-w-0 flex-col gap-tile lg:mt-0 lg:h-(--pdp-pinned-h)">
         {details}
         {pairs.length > 0 && (
           <section className="hidden shrink-0 rounded-xl bg-surface p-3 ring-1 ring-line ring-inset lg:block">
@@ -122,7 +122,7 @@ function MobileCarousel({ product, tag }: { product: Product; tag?: string }) {
     <div className="relative lg:hidden">
       <div
         onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))}
-        className="no-scrollbar -mx-gutter flex snap-x snap-mandatory gap-grid overflow-x-auto px-gutter"
+        className="no-scrollbar -mx-gutter flex snap-x snap-mandatory gap-tile overflow-x-auto px-gutter"
       >
         {productViews(product).map(({ tone, src }, i) => (
           <div key={i} className="relative aspect-card w-full shrink-0 snap-center overflow-hidden rounded-card">

@@ -229,7 +229,7 @@
 
 @utility product-grid {
   display: grid;
-  gap: var(--spacing-grid);
+  gap: var(--spacing-tile);
   grid-template-columns: repeat(2, minmax(0, 1fr));
 
   @media (width >= 48rem) {
@@ -243,8 +243,8 @@
 /* Dense "image wall" view toggled from the collection toolbar. */
 @utility product-grid-dense {
   display: grid;
-  gap: var(--spacing-grid);
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-tile);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   @media (width >= 48rem) {
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -297,7 +297,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: var(--spacing-grid);
+  gap: var(--spacing-tile);
 
   @media (width >= 64rem) {
     grid-template-columns:

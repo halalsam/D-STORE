@@ -21,7 +21,7 @@ function ShellFallback() {
   return (
     <>
       <div className="h-72 rounded-panel skeleton" />
-      <div className="grid content-start gap-grid">
+      <div className="grid content-start gap-tile">
         <div className="h-10 w-48 rounded-pill skeleton" />
         <div className="h-64 rounded-panel skeleton" />
       </div>
@@ -32,7 +32,7 @@ function ShellFallback() {
 export default function AccountLayout({ children }: LayoutProps<"/account">) {
   return (
     <main className="sheet">
-      <div className="page-x grid grid-cols-1 gap-grid pb-section lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-6">
+      <div className="page-x grid grid-cols-1 gap-tile pb-section lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-6">
         <Suspense fallback={<ShellFallback />}>
           <AccountShell>{children}</AccountShell>
         </Suspense>

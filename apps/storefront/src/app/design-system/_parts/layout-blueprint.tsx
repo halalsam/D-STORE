@@ -44,7 +44,7 @@ function Note({ children }: { children: React.ReactNode }) {
 
 export function LayoutBlueprint() {
   return (
-    <div className="grid gap-grid">
+    <div className="grid gap-tile">
       <p className="type-overline text-ink-muted">Home and collection</p>
       {/* Page anatomy */}
       <div className="overflow-hidden rounded-panel bg-surface shadow-md">
@@ -100,7 +100,7 @@ export function LayoutBlueprint() {
       <p className="mt-6 type-overline text-ink-muted">Product page</p>
       {/* Product page anatomy */}
       <div className="overflow-hidden rounded-panel bg-canvas p-gutter ring-1 ring-line ring-inset">
-        <div className="grid gap-grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(20rem,0.85fr)]">
+        <div className="grid gap-tile lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(20rem,0.85fr)]">
           <div className={`relative aspect-card rounded-card ${tones[0]}`}>
             <span className="absolute top-3 left-3"><Note>gallery · 2 up · radius 18</Note></span>
           </div>
@@ -109,7 +109,7 @@ export function LayoutBlueprint() {
               <ZoomIn className="size-3.5" />
             </span>
           </div>
-          <div className="flex flex-col justify-end gap-grid">
+          <div className="flex flex-col justify-end gap-tile">
             <div className="relative rounded-xl bg-surface p-3 hairline">
               <span className="absolute -top-2.5 right-4"><Note>info card · sticky · radius 24</Note></span>
               <div className="flex items-start justify-between px-1.5 pt-1">

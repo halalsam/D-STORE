@@ -18,7 +18,7 @@ export function toast(message: string, tone: Toast["tone"] = "default") {
 export function Toaster() {
   const toasts = useStore(toastStore)
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-(--z-toast) grid justify-items-center gap-2 px-gutter">
+    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-[max(5.25rem,calc(env(safe-area-inset-bottom)+4.5rem))] md:bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-(--z-toast) grid justify-items-center gap-2 px-gutter">
       {toasts.map((t) => (
         <div
           key={t.id}

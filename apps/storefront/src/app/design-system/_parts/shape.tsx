@@ -2,8 +2,8 @@ import { radii, shadows } from "./data"
 
 export function ShapeAndDepth() {
   return (
-    <div className="grid gap-grid">
-      <div className="grid gap-grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+    <div className="grid gap-tile">
+      <div className="grid gap-tile lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         {/* Radius scale */}
         <div className="panel">
           <h3 className="mb-5 type-heading-sm">Radius</h3>
@@ -49,7 +49,7 @@ export function ShapeAndDepth() {
       </div>
 
       {/* Elevation + material */}
-      <div className="grid gap-grid lg:grid-cols-2">
+      <div className="grid gap-tile lg:grid-cols-2">
         <div className="panel">
           <h3 className="mb-5 type-heading-sm">Elevation</h3>
           <div className="grid grid-cols-2 gap-4 rounded-xl bg-canvas p-5 sm:grid-cols-5">
