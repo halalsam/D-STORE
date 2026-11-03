@@ -74,6 +74,8 @@ const COLLECTIONS: Collection[] = catalog.collections.map((c) => ({
   title: c.title,
   blurb: c.blurb,
   tone: c.tone as unknown as Tone,
+  image: "image" in c && typeof c.image === "string" ? c.image : undefined,
+  imageMobile: "imageMobile" in c && typeof c.imageMobile === "string" ? c.imageMobile : undefined,
 }))
 
 export const demoCatalog = {

@@ -30,7 +30,17 @@ export type Product = {
   washcare: string[]
 }
 
-export type Collection = { id: string; handle: string; title: string; blurb: string; tone: Tone }
+export type Collection = {
+  id: string
+  handle: string
+  title: string
+  blurb: string
+  tone: Tone
+  /** Campaign banner, landscape. */
+  image?: string
+  /** Portrait crop of the banner for phones. */
+  imageMobile?: string
+}
 
 export type Address = {
   id: string

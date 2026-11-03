@@ -17,6 +17,7 @@ export const productTypes = ["T-shirt", "Shirt", "Hoodie", "Bag", "Cap"] as cons
 
 export const menu = {
   collections: [
+    { label: "BLUORNG x Godzilla", href: "/collections/bluorng-x-godzilla" },
     { label: "New Arrivals", href: "/collections/new-arrivals" },
     { label: "Coastline Collection", href: "/collections/coastline" },
     { label: "Essentials", href: "/collections/essentials" },

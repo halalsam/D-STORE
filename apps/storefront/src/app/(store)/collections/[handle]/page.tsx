@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import { CollectionView } from "@/components/store/collection-view"
+import { CollectionBanner } from "@/components/store/hero"
 import { SeoBlock } from "@/components/store/seo-block"
 import { getCollection, listCollections, listProducts } from "@/lib/data/catalog"
 
@@ -48,6 +49,7 @@ async function Collection({ params }: { params: PageProps<"/collections/[handle]
 
   return (
     <main className="sheet">
+      {collection.image && <CollectionBanner title={collection.title} blurb={collection.blurb} src={collection.image} mobileSrc={collection.imageMobile} />}
       <CollectionView title={collection.title} products={products} />
       <SeoBlock
         title={`${collection.title}${collection.blurb ? `: ${collection.blurb.replace(/\.$/, "")}` : ""}`}

@@ -1,24 +1,38 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 type Props = {
   kicker?: string
   title: string
   cta: { label: string; href: string }
   src?: string
+  /** Portrait art for phones; falls back to `src`. */
+  mobileSrc?: string
   alt?: string
+}
+
+/** Landscape image from md up, portrait below, when both are given. */
+function ArtDirected({ src, mobileSrc, alt, priority, sizes, className }: { src: string; mobileSrc?: string; alt: string; priority?: boolean; sizes: string; className?: string }) {
+  if (!mobileSrc) return <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className={className} />
+  return (
+    <>
+      <Image src={mobileSrc} alt={alt} fill priority={priority} sizes="100vw" className={cn(className, "md:hidden")} />
+      <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className={cn(className, "max-md:hidden")} />
+    </>
+  )
 }
 
 /**
  * Full-bleed campaign hero. Sits under the transparent header (pulled up by
  * the header height) and is followed by a `.sheet .sheet-overlap`.
  */
-export function Hero({ kicker, title, cta, src, alt = "" }: Props) {
+export function Hero({ kicker, title, cta, src, mobileSrc, alt = "" }: Props) {
   return (
     <section className="relative isolate -mt-(--header-h) h-[100svh] min-h-[36rem] overflow-hidden bg-navy-950 text-ink-on-media">
       {src ? (
-        <Image src={src} alt={alt} fill priority sizes="100vw" className="-z-10 object-cover" />
+        <ArtDirected src={src} mobileSrc={mobileSrc} alt={alt} priority sizes="100vw" className="-z-10 object-cover" />
       ) : (
         <div
           aria-hidden
@@ -30,6 +44,7 @@ export function Hero({ kicker, title, cta, src, alt = "" }: Props) {
         />
       )}
       <div aria-hidden className="absolute inset-0 -z-10 scrim-bottom" />
+      {src && <div aria-hidden className="absolute inset-0 -z-10 scrim-top" />}
 
       <div className="flex h-full flex-col items-center justify-end px-gutter pb-[calc(var(--radius-sheet)+3.5rem)] text-center">
         {kicker && <p className="animate-rise-in type-overline opacity-85">{kicker}</p>}
@@ -42,16 +57,20 @@ export function Hero({ kicker, title, cta, src, alt = "" }: Props) {
   )
 }
 
-type TileProps = { title: string; href: string; tone: readonly [string, string]; blurb?: string }
+type TileProps = { title: string; href: string; tone: readonly [string, string]; blurb?: string; src?: string }
 
 /** Rounded editorial tile linking to a collection. */
-export function CollectionTile({ title, href, tone, blurb }: TileProps) {
+export function CollectionTile({ title, href, tone, blurb, src }: TileProps) {
   return (
     <Link href={href} className="group pressable-soft relative block aspect-card overflow-hidden rounded-panel text-ink-on-media">
-      <div
-        className="absolute inset-0 media-zoom"
-        style={{ background: `radial-gradient(90% 70% at 30% 10%, ${tone[1]}, transparent 70%), linear-gradient(165deg, ${tone[0]}, ${tone[1]})` }}
-      />
+      {src ? (
+        <Image src={src} alt="" fill sizes="(min-width: 768px) 33vw, 80vw" className="media-zoom object-cover" />
+      ) : (
+        <div
+          className="absolute inset-0 media-zoom"
+          style={{ background: `radial-gradient(90% 70% at 30% 10%, ${tone[1]}, transparent 70%), linear-gradient(165deg, ${tone[0]}, ${tone[1]})` }}
+        />
+      )}
       <div className="absolute inset-0 scrim-bottom" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-6">
         <div>
@@ -63,5 +82,23 @@ export function CollectionTile({ title, href, tone, blurb }: TileProps) {
         </span>
       </div>
     </Link>
+  )
+}
+
+type BannerProps = { title: string; blurb?: string; src: string; mobileSrc?: string }
+
+/**
+ * Rounded campaign banner at the top of a collection page. The page heading
+ * follows it, so the banner only carries the blurb.
+ */
+export function CollectionBanner({ title, blurb, src, mobileSrc }: BannerProps) {
+  return (
+    <section className="page-x pt-2 md:pt-[calc(var(--spacing-section)*0.5)]">
+      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-panel bg-navy-950 text-ink-on-media md:aspect-[2/1] lg:aspect-[5/2]">
+        <ArtDirected src={src} mobileSrc={mobileSrc} alt={`${title} campaign`} priority sizes="100vw" className="-z-10 object-cover object-[center_30%]" />
+        <div aria-hidden className="absolute inset-0 -z-10 scrim-bottom" />
+        {blurb && <p className="absolute inset-x-0 bottom-0 max-w-xl p-5 type-title md:p-10 md:type-heading-lg">{blurb}</p>}
+      </div>
+    </section>
   )
 }

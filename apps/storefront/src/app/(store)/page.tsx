@@ -12,9 +12,22 @@ export default async function HomePage() {
     listProducts({ collectionHandle: "coastline" }),
   ])
 
+  const campaign = godzilla.length ? collections.find((c) => c.handle === "bluorng-x-godzilla" && c.image) : undefined
+
   return (
     <>
-      <Hero kicker="Winter Edit 2025" title="Built for the cold" cta={{ label: "Shop now", href: "/collections/new-arrivals" }} />
+      {campaign ? (
+        <Hero
+          kicker={campaign.title}
+          title="Kaiju season"
+          cta={{ label: "Shop the collection", href: `/collections/${campaign.handle}` }}
+          src={campaign.image}
+          mobileSrc={campaign.imageMobile}
+          alt={`${campaign.title} campaign`}
+        />
+      ) : (
+        <Hero kicker="Winter Edit 2025" title="Built for the cold" cta={{ label: "Shop now", href: "/collections/new-arrivals" }} />
+      )}
       <main className="sheet sheet-overlap pb-[calc(var(--spacing-section)*0.5)]">
         {godzilla.length > 0 && (
           <Section title="BLUORNG x Godzilla" href="/collections/bluorng-x-godzilla">
@@ -42,7 +55,7 @@ export default async function HomePage() {
               .filter((c) => c.handle !== "new-arrivals")
               .slice(0, 3)
               .map((c) => (
-                <CollectionTile key={c.handle} title={c.title} blurb={c.blurb} tone={c.tone} href={`/collections/${c.handle}`} />
+                <CollectionTile key={c.handle} title={c.title} blurb={c.blurb} tone={c.tone} src={c.imageMobile ?? c.image} href={`/collections/${c.handle}`} />
               ))}
           </div>
         </Section>
