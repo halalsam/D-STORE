@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ChipGroup, ChipGroupItem, SwatchStack } from "@/components/ui/chip"
 import { Select } from "@/components/ui/select"
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { colorFamilies, productTypes } from "@/lib/mock/catalog"
+import { colorFamilies, productTypes } from "@/lib/site"
 
 export type Filters = {
   sizes: string[]

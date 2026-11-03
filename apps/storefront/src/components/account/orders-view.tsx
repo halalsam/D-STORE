@@ -1,16 +1,13 @@
-"use client"
-
 import Link from "next/link"
 import { ChevronRight, Package } from "@/components/ui/icons"
 import { ProductMedia } from "@/components/store/product-media"
 import { formatDate, formatPrice } from "@/lib/format"
-import { useOrders } from "@/lib/stores/account"
+import type { Order } from "@/lib/types"
 import { PageTitle } from "./account-nav"
 import { EmptyCard } from "./account-overview"
 import { orderItemCount, StatusBadge } from "./order-parts"
 
-export function OrdersView() {
-  const orders = useOrders()
+export function OrdersView({ orders }: { orders: Order[] }) {
   return (
     <div>
       <PageTitle title="Orders" description={`${orders.length} ${orders.length === 1 ? "order" : "orders"}`} />
@@ -24,13 +21,13 @@ export function OrdersView() {
                 <div className="flex shrink-0 -space-x-4">
                   {o.lines.slice(0, 3).map((l) => (
                     <div key={l.handle + l.size} className="relative aspect-card w-14 overflow-hidden rounded-md ring-2 ring-surface md:w-16">
-                      <ProductMedia tone={l.tone} silhouette={l.silhouette} alt={l.title} />
+                      <ProductMedia tone={l.tone} src={l.thumbnail} silhouette={l.silhouette} alt={l.title} />
                     </div>
                   ))}
                 </div>
                 <div className="grid min-w-0 flex-1 gap-1 md:grid-cols-[1fr_auto_auto] md:items-center md:gap-8">
                   <div className="min-w-0">
-                    <p className="type-title">{o.id}</p>
+                    <p className="type-title">{o.displayId}</p>
                     <p className="truncate type-caption text-ink-muted">
                       {formatDate(o.createdAt)} · {orderItemCount(o)} {orderItemCount(o) === 1 ? "item" : "items"}
                     </p>

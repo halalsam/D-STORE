@@ -5,25 +5,23 @@ import { ArrowRight, Bookmark, MapPin, Package } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { ProductMedia } from "@/components/store/product-media"
 import { formatDate, formatPrice } from "@/lib/format"
-import { getProduct } from "@/lib/mock/catalog"
-import { useAddresses, useCustomer, useOrders } from "@/lib/stores/account"
 import { useSaved } from "@/lib/stores/saved"
+import type { Address, Customer, Order, Product } from "@/lib/types"
 import { AddressLines } from "./address-card"
 import { PageTitle } from "./account-nav"
 import { OrderTracker, StatusBadge } from "./order-parts"
 
-export function AccountOverview() {
-  const customer = useCustomer()
-  const orders = useOrders()
-  const addresses = useAddresses()
+type Props = { customer: Customer; orders: Order[]; addresses: Address[]; products: Product[] }
+
+export function AccountOverview({ customer, orders, addresses, products }: Props) {
   const saved = useSaved()
   const latest = orders[0]
   const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0]
-  const savedProducts = saved.map(getProduct).filter((p) => p !== undefined).slice(0, 3)
+  const savedProducts = products.filter((p) => saved.includes(p.handle)).slice(0, 3)
 
   return (
     <div className="animate-rise-in">
-      <PageTitle title={`Hi, ${customer.firstName}`} description="Track orders, manage addresses and update your details." />
+      <PageTitle title={customer.firstName ? `Hi, ${customer.firstName}` : "Your account"} description="Track orders, manage addresses and update your details." />
 
       <div className="grid gap-grid xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         {latest ? (
@@ -31,7 +29,7 @@ export function AccountOverview() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="type-overline text-ink-muted">Latest order</p>
-                <p className="mt-1 type-heading-sm">{latest.id}</p>
+                <p className="mt-1 type-heading-sm">{latest.displayId}</p>
                 <p className="type-caption text-ink-muted">Placed {formatDate(latest.createdAt)} · {formatPrice(latest.total, latest.currency)}</p>
               </div>
               <StatusBadge status={latest.status} />
@@ -41,7 +39,7 @@ export function AccountOverview() {
               <div className="flex -space-x-3">
                 {latest.lines.slice(0, 4).map((l) => (
                   <div key={l.handle + l.size} className="relative aspect-card w-12 overflow-hidden rounded-md ring-2 ring-surface">
-                    <ProductMedia tone={l.tone} silhouette={l.silhouette} alt={l.title} />
+                    <ProductMedia tone={l.tone} src={l.thumbnail} silhouette={l.silhouette} alt={l.title} />
                   </div>
                 ))}
               </div>
@@ -73,7 +71,7 @@ export function AccountOverview() {
             <div className="grid grid-cols-3 gap-grid sm:max-w-xl">
               {savedProducts.map((p) => (
                 <Link key={p.id} href={`/products/${p.handle}`} className="group pressable-soft relative aspect-card overflow-hidden rounded-card">
-                  <ProductMedia tone={p.tones[0]} silhouette={p.silhouette} alt={p.title} className="media-zoom" />
+                  <ProductMedia tone={p.tones[0]} src={p.images[0]} silhouette={p.silhouette} alt={p.title} className="media-zoom" />
                 </Link>
               ))}
             </div>

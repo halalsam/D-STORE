@@ -22,12 +22,14 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Subscribers / jobs | `apps/backend/src/subscribers/`, `apps/backend/src/jobs/` |
 | Admin customizations | `apps/backend/src/admin/` |
 | Medusa config (DB, Redis, CORS) | `apps/backend/medusa-config.ts` |
-| Storefront Medusa client | `apps/storefront/src/lib/medusa.ts` |
-| Storefront API calls | `apps/storefront/src/lib/data/` (server-side, via the SDK client) |
+| Storefront Medusa client (server only, no stored tokens) | `apps/storefront/src/lib/medusa.ts` |
+| Storefront API calls | `apps/storefront/src/lib/data/`: `catalog.ts` (cached reads, `"use cache"`), `cart.ts` + `customer.ts` (server actions), `adapters.ts` (Medusa -> view models), `cookies.ts` (JWT + cart id cookies) |
+| View model types / static nav config | `apps/storefront/src/lib/types.ts`, `apps/storefront/src/lib/site.ts` |
 | Storefront routes | `apps/storefront/src/app/` |
 | UI primitives / store / account / checkout components | `apps/storefront/src/components/{ui,store,account,checkout}/` |
-| Mock data (replace with Medusa API) | `apps/storefront/src/lib/mock/` |
-| Client stores: bag, saved, mock account (localStorage) | `apps/storefront/src/lib/stores/` |
+| Client stores: bag mirror of the Medusa cart, saved items (localStorage) | `apps/storefront/src/lib/stores/` |
+| D-STORE catalog seed (India/INR, products, shipping, WELCOME10) | `apps/backend/src/scripts/seed-dstore.ts` + `data/dstore-catalog.json` |
+| Custom store route: order payment method | `apps/backend/src/api/store/orders/[id]/payment-method/route.ts` |
 | Design system (tokens, rules, layout spec) | `apps/storefront/DESIGN.md`, `apps/storefront/src/styles/` |
 
 ## Commands (from repo root)
@@ -40,6 +42,7 @@ pnpm storefront:dev    # http://localhost:8000
 pnpm lint
 pnpm build
 pnpm backend:migrate   # medusa db:migrate (+ migration-scripts seed)
+pnpm backend:seed:dstore  # D-STORE catalog, India region, shipping, promo (idempotent)
 ```
 
 Backend tests: `cd apps/backend && pnpm run test:unit` (also `test:integration:http`, `test:integration:modules`; these need a live Postgres).
@@ -55,6 +58,13 @@ find node_modules -maxdepth 6 -path "*/@medusajs/*/AGENTS.md" 2>/dev/null
 ```
 
 In the backend, import from `@medusajs/framework/*` subpaths, not `@medusajs/utils` etc.
+
+## Storefront data rules
+
+- Catalog reads go through `lib/data/catalog.ts` and use `"use cache"` + `cacheTag`. Never read cookies inside them.
+- Anything per-user (cart, customer, orders) reads cookies and must render inside `<Suspense>` (Cache Components).
+- Dynamic routes read `params` inside a `<Suspense>` child, or runtime regeneration fails.
+- The storefront build needs the backend running (catalog pages and `generateStaticParams` fetch from Medusa).
 
 ## Next.js
 

@@ -2,9 +2,12 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useTransition, type ReactNode } from "react"
 import { Bookmark, LayoutGrid, LogOut, MapPin, Package, UserRound } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
-import { useCustomer } from "@/lib/stores/account"
+import { signOut } from "@/lib/data/customer"
+import { syncBag } from "@/lib/stores/bag"
+import type { Customer } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const items = [
@@ -15,12 +18,22 @@ const items = [
   { href: "/account/saved", label: "Saved", icon: Bookmark },
 ]
 
-export function AccountNav() {
-  const pathname = usePathname()
+export function useSignOut() {
   const router = useRouter()
-  const customer = useCustomer()
-  const initials = `${customer.firstName[0] ?? ""}${customer.lastName[0] ?? ""}`
+  const [pending, start] = useTransition()
+  const run = () =>
+    start(async () => {
+      await signOut()
+      await syncBag(true)
+      router.push("/sign-in")
+    })
+  return { pending, run }
+}
 
+export function AccountNav({ customer }: { customer: Customer }) {
+  const pathname = usePathname()
+  const out = useSignOut()
+  const initials = `${customer.firstName[0] ?? ""}${customer.lastName[0] ?? ""}`.toUpperCase() || customer.email[0]?.toUpperCase()
   const isActive = (href: string, exact?: boolean) => (exact ? pathname === href : pathname.startsWith(href))
 
   return (
@@ -31,7 +44,7 @@ export function AccountNav() {
             {initials}
           </span>
           <div className="min-w-0">
-            <p className="truncate type-title">{customer.firstName} {customer.lastName}</p>
+            <p className="truncate type-title">{customer.firstName || "Your account"} {customer.lastName}</p>
             <p className="truncate type-caption text-ink-muted">{customer.email}</p>
           </div>
         </div>
@@ -58,7 +71,7 @@ export function AccountNav() {
         </nav>
 
         <div className="mt-2 hidden border-t border-line pt-2 lg:block">
-          <Button variant="ghost" size="md" className="w-full justify-start rounded-md px-3 text-ink-muted" onClick={() => router.push("/sign-in")}>
+          <Button variant="ghost" size="md" loading={out.pending} className="w-full justify-start rounded-md px-3 text-ink-muted" onClick={out.run}>
             <LogOut strokeWidth={1.6} /> Sign out
           </Button>
         </div>
@@ -67,7 +80,7 @@ export function AccountNav() {
   )
 }
 
-export function PageTitle({ title, description, action }: { title: string; description?: string; action?: React.ReactNode }) {
+export function PageTitle({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-4 px-1 pt-1">
       <div>

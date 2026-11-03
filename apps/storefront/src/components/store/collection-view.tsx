@@ -4,14 +4,14 @@ import { LayoutGrid, SlidersHorizontal, Grip } from "@/components/ui/icons"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Segmented } from "@/components/ui/segmented"
-import { isSoldOut, type Product } from "@/lib/mock/catalog"
+import { isSoldOut, type Product } from "@/lib/types"
 import { emptyFilters, FilterDrawer, type Filters } from "./filter-drawer"
 import { ProductGrid } from "./product-grid"
 
 function applyFilters(products: Product[], f: Filters) {
   const list = products.filter((p) => {
     if (f.types.length && !f.types.includes(p.type)) return false
-    if (f.colors.length && !f.colors.includes(p.color)) return false
+    if (f.colors.length && (!p.color || !f.colors.includes(p.color))) return false
     if (f.sizes.length && !p.sizes.some((s) => s.available && f.sizes.includes(s.label))) return false
     if (f.availability.length) {
       const state = isSoldOut(p) ? "sold-out" : "in-stock"

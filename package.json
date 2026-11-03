@@ -18,7 +18,8 @@
     "backend:migrate": "pnpm --filter @d-store/backend exec medusa db:migrate",
     "backend:user": "pnpm --filter @d-store/backend exec medusa user",
     "backend:seed": "pnpm --filter @d-store/backend run seed",
-    "storefront:dev": "turbo dev --filter=@d-store/storefront"
+    "storefront:dev": "turbo dev --filter=@d-store/storefront",
+    "backend:seed:dstore": "pnpm --filter @d-store/backend run seed:dstore"
   },
   "pnpm": {
     "overrides": {

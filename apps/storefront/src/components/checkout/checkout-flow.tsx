@@ -2,77 +2,80 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ChevronDown, CreditCard, Lock, ShoppingBag, Smartphone, Truck, Wallet } from "@/components/ui/icons"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { AddressLines } from "@/components/account/address-card"
 import { AddressForm } from "@/components/account/address-form"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Expand } from "@/components/ui/expand"
+import { ChevronDown, CreditCard, Lock, ShoppingBag, Smartphone, Truck, Wallet } from "@/components/ui/icons"
 import { RadioCards } from "@/components/ui/radio-cards"
 import { TextField } from "@/components/ui/text-field"
+import { toast } from "@/components/ui/toast"
+import { placeOrder, setCheckoutContact, setPaymentMethod, setShippingMethod, type ShippingChoice } from "@/lib/data/cart"
+import { saveAddress, type Session } from "@/lib/data/customer"
 import { formatPrice } from "@/lib/format"
-import type { Address, Order } from "@/lib/mock/account"
-import { placeOrder, saveAddress, useAddresses, useCustomer } from "@/lib/stores/account"
-import { useBag } from "@/lib/stores/bag"
-import { useHydrated } from "@/lib/stores/create-store"
+import { paymentMethods } from "@/lib/site"
+import { setBag as setClientBag } from "@/lib/stores/bag"
+import { emptyBag, type Address, type Bag } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { deliveryOptions, paymentOptions, promoCodes } from "./checkout-data"
-import { OrderSummary, toOrderLine } from "./order-summary"
+import { OrderSummary } from "./order-summary"
 import { StepCard } from "./step-card"
 
 type Step = 1 | 2 | 3 | 4
+type AddressFields = Omit<Address, "id" | "isDefault" | "label">
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const UPI = /^[\w.-]{2,}@[a-zA-Z]{2,}$/
+const paymentIcon: Record<string, React.ReactNode> = {
+  upi: <Smartphone strokeWidth={1.6} />,
+  card: <CreditCard strokeWidth={1.6} />,
+  cod: <Wallet strokeWidth={1.6} />,
+}
 
-const paymentIcon = { upi: <Smartphone strokeWidth={1.6} />, card: <CreditCard strokeWidth={1.6} />, cod: <Wallet strokeWidth={1.6} /> }
+function fields(a: Address): AddressFields {
+  return {
+    firstName: a.firstName, lastName: a.lastName, phone: a.phone, line1: a.line1, line2: a.line2,
+    city: a.city, state: a.state, postalCode: a.postalCode, country: a.country,
+  }
+}
 
-export function CheckoutFlow() {
-  const hydrated = useHydrated()
+export function CheckoutFlow({ initialBag, session }: { initialBag: Bag; session: Session }) {
   const router = useRouter()
-  const { lines, subtotal, clear } = useBag()
-  const customer = useCustomer()
-  const addresses = useAddresses()
-
+  const addresses = session?.addresses ?? []
+  const [bag, setBagState] = useState(initialBag)
   const [step, setStep] = useState<Step>(1)
   const [reached, setReached] = useState<Step>(1)
-  const [email, setEmail] = useState(customer.email)
+  const [email, setEmail] = useState(session?.customer.email ?? initialBag.email ?? "")
   const [emailError, setEmailError] = useState<string>()
-  const [addressChoice, setAddressChoice] = useState<string>(() => addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? "new")
-  const [address, setAddress] = useState<Address | null>(null)
+  const [addressChoice, setAddressChoice] = useState<string>(addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? "new")
+  const [address, setAddress] = useState<AddressFields | null>(initialBag.shippingAddress ?? null)
   const [saveNew, setSaveNew] = useState(true)
-  const [delivery, setDelivery] = useState<string>("standard")
+  const [options, setOptions] = useState<ShippingChoice[]>([])
+  const [delivery, setDelivery] = useState<string>(initialBag.shippingMethodId ?? "")
   const [payment, setPayment] = useState<string>("upi")
   const [upiId, setUpiId] = useState("")
   const [upiError, setUpiError] = useState<string>()
-  const [promo, setPromo] = useState<string | null>(null)
+  const [pending, start] = useTransition()
   const [placing, setPlacing] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
 
-  const deliveryOption = deliveryOptions.find((d) => d.id === delivery)!
-  const paymentOption = paymentOptions.find((p) => p.id === payment)!
-  const discount = promo ? Math.round((subtotal * promoCodes[promo].percent) / 100) : 0
-  const shipping = reached >= 2 ? deliveryOption.price : null
-  const total = subtotal - discount + (shipping ?? 0)
+  const updateBag = (b: Bag) => {
+    setBagState(b)
+    setClientBag(b)
+  }
+
+  const deliveryOption = options.find((o) => o.id === delivery)
+  const paymentOption = paymentMethods.find((p) => p.id === payment)!
 
   const go = (s: Step) => {
     setStep(s)
     setReached((r) => (s > r ? s : r))
     requestAnimationFrame(() => document.getElementById(`step-${s}`)?.scrollIntoView({ behavior: "smooth", block: "start" }))
   }
-  const stateOf = (s: Step) => (step === s ? "active" : reached > s || (reached === s && step > s) ? "done" : "upcoming")
+  const stateOf = (s: Step) => (step === s ? "active" : reached > s ? "done" : "upcoming")
 
-  if (!hydrated) {
-    return (
-      <div className="grid gap-grid lg:grid-cols-[minmax(0,1fr)_26rem]">
-        <div className="grid gap-grid">{[0, 1, 2].map((i) => <div key={i} className="h-24 rounded-panel skeleton" />)}</div>
-        <div className="h-96 rounded-panel skeleton" />
-      </div>
-    )
-  }
-
-  if (lines.length === 0 && !placing) {
+  if (bag.lines.length === 0 && !placing) {
     return (
       <div className="panel mx-auto grid max-w-lg animate-rise-in place-items-center py-16 text-center">
         <span className="grid size-16 place-items-center rounded-pill bg-surface-muted text-ink-muted"><ShoppingBag className="size-6" strokeWidth={1.4} /></span>
@@ -83,67 +86,65 @@ export function CheckoutFlow() {
     )
   }
 
+  const submitContact = (a: AddressFields) =>
+    start(async () => {
+      const res = await setCheckoutContact({ email, address: a })
+      if (!res.ok) return void toast(res.error, "error")
+      updateBag(res.data.bag)
+      setAddress(a)
+      setOptions(res.data.shipping)
+      if (!res.data.shipping.some((o) => o.id === delivery)) setDelivery(res.data.shipping[0]?.id ?? "")
+      go(2)
+    })
+
   const continueFromInfo = () => {
-    if (!EMAIL.test(email)) {
-      setEmailError("Enter a valid email")
-      return
-    }
+    if (!EMAIL.test(email)) return setEmailError("Enter a valid email")
     setEmailError(undefined)
     if (addressChoice === "new") {
       ;(document.getElementById("checkout-address") as HTMLFormElement | null)?.requestSubmit()
       return
     }
-    setAddress(addresses.find((a) => a.id === addressChoice) ?? null)
-    go(2)
+    const saved = addresses.find((a) => a.id === addressChoice)
+    if (saved) submitContact(fields(saved))
   }
 
+  const continueFromDelivery = () =>
+    start(async () => {
+      if (!delivery) return void toast("Choose a delivery method", "error")
+      const res = await setShippingMethod(delivery)
+      if (!res.ok) return void toast(res.error, "error")
+      updateBag(res.data)
+      go(3)
+    })
+
   const continueFromPayment = () => {
-    if (payment === "upi" && !UPI.test(upiId)) {
-      setUpiError("Enter a UPI ID like name@bank")
-      return
-    }
+    if (payment === "upi" && !UPI.test(upiId)) return setUpiError("Enter a UPI ID like name@bank")
     setUpiError(undefined)
-    go(4)
+    start(async () => {
+      const res = await setPaymentMethod(payment, payment === "upi" ? upiId : undefined)
+      if (!res.ok) return void toast(res.error, "error")
+      updateBag(res.data)
+      go(4)
+    })
   }
 
   const submitOrder = () => {
-    if (!address) return go(1)
     setPlacing(true)
-    // TODO: Medusa: cart.update (email, addresses) -> addShippingMethod ->
-    // initiatePaymentSession -> cart.complete. Simulated here.
-    setTimeout(() => {
-      const id = `DS-${Date.now().toString().slice(-5)}`
-      const order: Order = {
-        id,
-        createdAt: new Date().toISOString(),
-        status: "placed",
-        email,
-        lines: lines.map(toOrderLine),
-        shippingAddress: {
-          firstName: address.firstName, lastName: address.lastName, phone: address.phone, line1: address.line1,
-          line2: address.line2, city: address.city, state: address.state, postalCode: address.postalCode, country: address.country,
-        },
-        delivery: { id: deliveryOption.id, label: deliveryOption.label, price: deliveryOption.price },
-        payment: { id: paymentOption.id, label: payment === "upi" ? `UPI (${upiId})` : paymentOption.label },
-        subtotal,
-        discount,
-        shipping: deliveryOption.price,
-        total: subtotal - discount + deliveryOption.price,
-        currency: "inr",
+    start(async () => {
+      const res = await placeOrder()
+      if (!res.ok) {
+        setPlacing(false)
+        return void toast(res.error, "error")
       }
-      placeOrder(order)
-      router.push(`/checkout/confirmed?order=${id}`)
-      clear()
-    }, 1100)
+      setClientBag(emptyBag)
+      router.push(`/checkout/confirmed?order=${res.data.orderId}`)
+    })
   }
 
-  const summary = (
-    <OrderSummary lines={lines} subtotal={subtotal} discount={discount} shipping={shipping} total={total} promo={promo} onPromo={setPromo} />
-  )
+  const summary = <OrderSummary bag={bag} onBag={updateBag} />
 
   return (
     <div className="grid grid-cols-1 gap-grid lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)] lg:gap-6">
-      {/* Mobile summary toggle */}
       <div className="panel p-0 lg:hidden">
         <button onClick={() => setSummaryOpen((o) => !o)} aria-expanded={summaryOpen} className="flex w-full items-center justify-between gap-3 p-5">
           <span className="flex items-center gap-2 type-body-sm text-accent-ink">
@@ -151,7 +152,7 @@ export function CheckoutFlow() {
             {summaryOpen ? "Hide" : "Show"} order summary
             <ChevronDown className={cn("size-4 transition-transform duration-(--duration-spring) ease-spring", summaryOpen && "rotate-180")} />
           </span>
-          <span className="type-heading-sm type-price">{formatPrice(total)}</span>
+          <span className="type-heading-sm type-price">{formatPrice(bag.total, bag.currency)}</span>
         </button>
         <Expand open={summaryOpen}><div className="px-5 pb-5">{summary}</div></Expand>
       </div>
@@ -173,6 +174,12 @@ export function CheckoutFlow() {
             }
           >
             <div className="grid gap-6">
+              {!session && (
+                <p className="rounded-lg bg-canvas px-4 py-3 type-body-sm text-ink-muted">
+                  Have an account?{" "}
+                  <Link href="/sign-in?next=/checkout" className="text-accent-ink underline underline-offset-2">Sign in</Link> for saved addresses.
+                </p>
+              )}
               <TextField
                 label="Email"
                 type="email"
@@ -180,6 +187,7 @@ export function CheckoutFlow() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 error={emailError}
+                disabled={!!session}
                 hint="Order confirmation and tracking go here."
               />
               <div className="grid gap-3">
@@ -196,21 +204,26 @@ export function CheckoutFlow() {
                     })),
                     {
                       value: "new",
-                      title: "Use a new address",
+                      title: addresses.length ? "Use a new address" : "Shipping address",
                       details: (
-                        <div className="border-t border-line pt-4">
+                        <div className={addresses.length ? "border-t border-line pt-4" : undefined}>
                           <AddressForm
                             id="checkout-address"
-                            initial={{ firstName: customer.firstName, lastName: customer.lastName, phone: customer.phone }}
-                            onSubmit={(a) => {
-                              const withLabel = { ...a, label: a.label ?? "New address" }
-                              if (saveNew) saveAddress(withLabel)
-                              setAddress(withLabel)
-                              if (saveNew) setAddressChoice(withLabel.id)
-                              go(2)
+                            initial={
+                              initialBag.shippingAddress ??
+                              (session ? { firstName: session.customer.firstName, lastName: session.customer.lastName, phone: session.customer.phone } : undefined)
+                            }
+                            onSubmit={async (a) => {
+                              if (session && saveNew) {
+                                const res = await saveAddress({ ...a, label: a.label ?? "Address" }, true)
+                                if (res.ok) setAddressChoice(res.data.id)
+                              }
+                              submitContact(fields(a))
                             }}
                           >
-                            <Checkbox label="Save this address to my account" checked={saveNew} onCheckedChange={(v) => setSaveNew(v === true)} />
+                            {session && (
+                              <Checkbox label="Save this address to my account" checked={saveNew} onCheckedChange={(v) => setSaveNew(v === true)} />
+                            )}
                           </AddressForm>
                         </div>
                       ),
@@ -218,7 +231,9 @@ export function CheckoutFlow() {
                   ]}
                 />
               </div>
-              <Button size="xl" onClick={continueFromInfo} className="sm:justify-self-start sm:px-12">Continue to delivery</Button>
+              <Button size="xl" onClick={continueFromInfo} loading={pending && step === 1} className="sm:justify-self-start sm:px-12">
+                Continue to delivery
+              </Button>
             </div>
           </StepCard>
         </div>
@@ -229,21 +244,34 @@ export function CheckoutFlow() {
             title="Delivery"
             state={stateOf(2)}
             onEdit={() => go(2)}
-            summary={<p className="flex items-center gap-2 type-body-sm text-ink-muted"><Truck className="size-4" strokeWidth={1.6} /> {deliveryOption.label}, {deliveryOption.description.toLowerCase()} · {deliveryOption.price ? formatPrice(deliveryOption.price) : "Free"}</p>}
+            summary={
+              deliveryOption && (
+                <p className="flex items-center gap-2 type-body-sm text-ink-muted">
+                  <Truck className="size-4" strokeWidth={1.6} /> {deliveryOption.label}
+                  {deliveryOption.description && `, ${deliveryOption.description.toLowerCase()}`} · {deliveryOption.price ? formatPrice(deliveryOption.price, bag.currency) : "Free"}
+                </p>
+              )
+            }
           >
             <div className="grid gap-6">
-              <RadioCards
-                label="Delivery method"
-                value={delivery}
-                onValueChange={setDelivery}
-                options={deliveryOptions.map((d) => ({
-                  value: d.id,
-                  title: d.label,
-                  description: d.description,
-                  aside: d.price ? formatPrice(d.price) : "Free",
-                }))}
-              />
-              <Button size="xl" onClick={() => go(3)} className="sm:justify-self-start sm:px-12">Continue to payment</Button>
+              {options.length ? (
+                <RadioCards
+                  label="Delivery method"
+                  value={delivery}
+                  onValueChange={setDelivery}
+                  options={options.map((o) => ({
+                    value: o.id,
+                    title: o.label,
+                    description: o.description,
+                    aside: o.price ? formatPrice(o.price, bag.currency) : "Free",
+                  }))}
+                />
+              ) : (
+                <p className="type-body-sm text-ink-muted">No delivery options are available for this address.</p>
+              )}
+              <Button size="xl" onClick={continueFromDelivery} loading={pending && step === 2} disabled={!options.length} className="sm:justify-self-start sm:px-12">
+                Continue to payment
+              </Button>
             </div>
           </StepCard>
         </div>
@@ -254,14 +282,18 @@ export function CheckoutFlow() {
             title="Payment"
             state={stateOf(3)}
             onEdit={() => go(3)}
-            summary={<p className="flex items-center gap-2 type-body-sm text-ink-muted [&_svg]:size-4">{paymentIcon[paymentOption.id]} {payment === "upi" ? `UPI, ${upiId}` : paymentOption.label}</p>}
+            summary={
+              <p className="flex items-center gap-2 type-body-sm text-ink-muted [&_svg]:size-4">
+                {paymentIcon[paymentOption.id]} {payment === "upi" ? `UPI, ${upiId}` : paymentOption.label}
+              </p>
+            }
           >
             <div className="grid gap-6">
               <RadioCards
                 label="Payment method"
                 value={payment}
                 onValueChange={setPayment}
-                options={paymentOptions.map((p) => ({
+                options={paymentMethods.map((p) => ({
                   value: p.id,
                   title: p.label,
                   description: p.description,
@@ -278,8 +310,10 @@ export function CheckoutFlow() {
                     ) : undefined,
                 }))}
               />
-              <Checkbox label="Billing address same as shipping" defaultChecked />
-              <Button size="xl" onClick={continueFromPayment} className="sm:justify-self-start sm:px-12">Review order</Button>
+              <Checkbox label="Billing address same as shipping" defaultChecked disabled />
+              <Button size="xl" onClick={continueFromPayment} loading={pending && step === 3} className="sm:justify-self-start sm:px-12">
+                Review order
+              </Button>
             </div>
           </StepCard>
         </div>
@@ -294,7 +328,7 @@ export function CheckoutFlow() {
               </p>
               <div className="flex items-baseline justify-between rounded-lg bg-canvas px-4 py-3">
                 <span className="type-body-sm text-ink-muted">Total to pay</span>
-                <span className="type-heading-md type-price">{formatPrice(total)}</span>
+                <span className="type-heading-md type-price">{formatPrice(bag.total, bag.currency)}</span>
               </div>
               <Button size="xl" block loading={placing} onClick={submitOrder}>
                 <Lock strokeWidth={1.8} /> Place order
@@ -304,7 +338,6 @@ export function CheckoutFlow() {
         </div>
       </div>
 
-      {/* Desktop summary */}
       <aside className="hidden lg:block">
         <div className="panel sticky top-[calc(var(--header-h)+0.75rem)]">
           <h2 className="mb-5 type-title">Order summary</h2>

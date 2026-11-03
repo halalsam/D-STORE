@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next"
+import { Toaster } from "@/components/ui/toast"
 import "./globals.css"
 
 /*
@@ -35,7 +36,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         <link rel="stylesheet" href={FONTSHARE_CSS} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }

@@ -1,27 +1,55 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { Suspense } from "react"
 import { ProductGrid } from "@/components/store/product-grid"
 import { ProductPurchase, ProductTabs } from "@/components/store/product-info"
 import { ProductShowcase } from "@/components/store/product-showcase"
 import { SectionHeader } from "@/components/ui/section"
-import { getProduct, getProductsByCollection, isSoldOut, products } from "@/lib/mock/catalog"
+import { getProduct, listProducts } from "@/lib/data/catalog"
+import { isSoldOut } from "@/lib/types"
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const products = await listProducts()
   return products.map((p) => ({ handle: p.handle }))
 }
 
 export async function generateMetadata({ params }: PageProps<"/products/[handle]">): Promise<Metadata> {
   const { handle } = await params
-  return { title: getProduct(handle)?.title ?? "Product" }
+  const product = await getProduct(handle)
+  return { title: product?.title ?? "Product", description: product?.description }
 }
 
-export default async function ProductPage({ params }: PageProps<"/products/[handle]">) {
+function ProductSkeleton() {
+  return (
+    <main className="sheet pt-[calc(var(--radius-sheet)*0.5)]">
+      <div className="page-x pdp-grid">
+        <div className="aspect-card w-full rounded-card skeleton" />
+        <div className="hidden aspect-card rounded-card skeleton lg:block" />
+        <div className="grid content-start gap-grid">
+          <div className="h-72 rounded-xl skeleton" />
+          <div className="h-40 rounded-xl skeleton" />
+        </div>
+      </div>
+    </main>
+  )
+}
+
+export default function ProductPage({ params }: PageProps<"/products/[handle]">) {
+  return (
+    <Suspense fallback={<ProductSkeleton />}>
+      <ProductContent params={params} />
+    </Suspense>
+  )
+}
+
+async function ProductContent({ params }: { params: PageProps<"/products/[handle]">["params"] }) {
   const { handle } = await params
-  const product = getProduct(handle)
+  const product = await getProduct(handle)
   if (!product) notFound()
-  const related = getProductsByCollection(product.collection).filter((p) => p.id !== product.id).slice(0, 4)
-  // TODO: replace with curated "complete the look" links from Medusa (product metadata or a module link).
-  const pairs = products.filter((p) => p.collection !== product.collection && !isSoldOut(p)).slice(0, 3)
+  const all = await listProducts()
+  const related = all.filter((p) => p.collection === product.collection && p.id !== product.id).slice(0, 4)
+  // TODO: curated "complete the look" (product metadata or a module link).
+  const pairs = all.filter((p) => p.collection !== product.collection && !isSoldOut(p)).slice(0, 3)
 
   return (
     <main className="sheet pt-[calc(var(--radius-sheet)*0.5)]">

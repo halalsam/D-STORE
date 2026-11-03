@@ -6,9 +6,9 @@ import { useState, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { isSoldOut, type Product } from "@/lib/mock/catalog"
+import { isSoldOut, type Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { ProductMedia } from "./product-media"
+import { ProductMedia, productViews } from "./product-media"
 
 const viewLabels = ["Front", "Back", "Detail", "On body", "Flat"]
 const label = (i: number) => viewLabels[i] ?? `View ${i + 1}`
@@ -30,7 +30,7 @@ type Props = {
  */
 export function ProductShowcase({ product, details, pairs = [] }: Props) {
   const [active, setActive] = useState(0)
-  const images = product.tones
+  const images = productViews(product)
   const soldOut = isSoldOut(product)
   const tag = soldOut ? "Sold out" : product.badge
 
@@ -42,7 +42,7 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
       {/* Pinned main image */}
       <div className="pdp-pinned hidden aspect-card w-full overflow-hidden rounded-card bg-surface-muted lg:block">
         <div key={active} className="absolute inset-0 animate-fade-in">
-          <ProductMedia tone={images[active]} silhouette={product.silhouette} alt={`${product.title}, ${label(active)}`} priority />
+          <ProductMedia tone={images[active].tone} src={images[active].src} silhouette={product.silhouette} alt={`${product.title}, ${label(active)}`} priority />
         </div>
         {tag && <span className="absolute top-4 left-4 rounded-xs material-dark px-2.5 py-1 type-caption text-ink-on-media">{tag}</span>}
         <ZoomButton product={product} index={active} className="absolute top-3 right-3" />
@@ -53,7 +53,7 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
 
       {/* Vertical image list (lg+) */}
       <ul aria-label="Product images" className="hidden gap-grid lg:grid">
-        {images.map((tone, i) => (
+        {images.map(({ tone, src }, i) => (
           <li key={i}>
             <button
               onClick={() => setActive(i)}
@@ -61,7 +61,7 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
               aria-label={`Show ${label(i)}`}
               className="group pressable-soft relative block aspect-card w-full overflow-hidden rounded-card bg-surface-muted"
             >
-              <ProductMedia tone={tone} silhouette={product.silhouette} alt={`${product.title}, ${label(i)}`} className="media-zoom" priority={i === 0} />
+              <ProductMedia tone={tone} src={src} silhouette={product.silhouette} alt={`${product.title}, ${label(i)}`} className="media-zoom" priority={i === 0} />
               <span className="absolute bottom-3 left-3 rounded-xs material-dark px-2 py-0.5 type-caption text-ink-on-media">{label(i)}</span>
               <span
                 aria-hidden
@@ -85,7 +85,7 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
               {pairs.slice(0, 3).map((p) => (
                 <Link key={p.id} href={`/products/${p.handle}`} className="group pressable-soft min-w-0">
                   <div className="relative aspect-card overflow-hidden rounded-md bg-surface-muted">
-                    <ProductMedia tone={p.tones[0]} silhouette={p.silhouette} alt={p.title} className="media-zoom" />
+                    <ProductMedia tone={p.tones[0]} src={p.images[0]} silhouette={p.silhouette} alt={p.title} className="media-zoom" />
                   </div>
                   <p className="mt-1.5 truncate type-caption font-medium">{p.title}</p>
                   <Price amount={p.price} currency={p.currency} className="type-caption text-ink-muted" />
@@ -109,7 +109,7 @@ function ZoomButton({ product, index, className }: { product: Product; index: nu
       </SheetTrigger>
       <SheetContent side="adaptive" title={product.title} bodyClassName="p-3">
         <div className="relative mx-auto aspect-card max-h-[calc(100dvh-10rem)] overflow-hidden rounded-lg">
-          <ProductMedia tone={product.tones[index]} silhouette={product.silhouette} alt={`${product.title}, enlarged`} />
+          <ProductMedia tone={productViews(product)[index].tone} src={productViews(product)[index].src} silhouette={product.silhouette} alt={`${product.title}, enlarged`} />
         </div>
       </SheetContent>
     </Sheet>
@@ -124,16 +124,16 @@ function MobileCarousel({ product, tag }: { product: Product; tag?: string }) {
         onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))}
         className="no-scrollbar -mx-gutter flex snap-x snap-mandatory gap-grid overflow-x-auto px-gutter"
       >
-        {product.tones.map((tone, i) => (
+        {productViews(product).map(({ tone, src }, i) => (
           <div key={i} className="relative aspect-card w-full shrink-0 snap-center overflow-hidden rounded-card">
-            <ProductMedia tone={tone} silhouette={product.silhouette} alt={`${product.title}, ${label(i)}`} priority={i === 0} />
+            <ProductMedia tone={tone} src={src} silhouette={product.silhouette} alt={`${product.title}, ${label(i)}`} priority={i === 0} />
             {i === 0 && tag && <span className="absolute top-3 left-3 rounded-xs material-dark px-2.5 py-1 type-caption text-ink-on-media">{tag}</span>}
             {i === 0 && <ZoomButton product={product} index={0} className="absolute top-3 right-3" />}
           </div>
         ))}
       </div>
       <div aria-hidden className="mt-3 flex justify-center gap-1.5">
-        {product.tones.map((_, i) => (
+        {productViews(product).map((_, i) => (
           <span key={i} className={cn("h-1.5 rounded-pill bg-ink transition-all duration-(--duration-spring) ease-spring", i === index ? "w-4" : "w-1.5 opacity-25")} />
         ))}
       </div>

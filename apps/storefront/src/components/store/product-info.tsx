@@ -8,7 +8,7 @@ import { Price } from "@/components/ui/price"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { SizeSelector } from "@/components/ui/size-selector"
 import { Tabs } from "@/components/ui/tabs"
-import { getCollection, isSoldOut, type Product } from "@/lib/mock/catalog"
+import { isSoldOut, type Product } from "@/lib/types"
 import { useBag } from "@/lib/stores/bag"
 import { SaveToggle } from "./product-card"
 
@@ -65,18 +65,18 @@ const perks = [
 export function ProductPurchase({ product }: { product: Product }) {
   const router = useRouter()
   const { add } = useBag()
+  const [pending, setPending] = useState<"add" | "buy" | null>(null)
   const firstAvailable = product.sizes.find((s) => s.available)?.label
   const [size, setSize] = useState(firstAvailable)
   const [notify, setNotify] = useState(false)
   const soldOut = isSoldOut(product)
   const apparel = product.sizes.length > 1
-  const collection = getCollection(product.collection)
 
   return (
     <section className="shrink-0 rounded-xl bg-surface p-4 ring-1 ring-line ring-inset md:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="type-overline text-ink-muted">{collection?.title ?? "D-STORE"} · {product.type}</p>
+          <p className="type-overline text-ink-muted">{product.collectionTitle ?? "D-STORE"} · {product.type}</p>
           <h1 className="mt-1.5 type-heading-md">{product.title}</h1>
           <div className="mt-1 flex items-baseline gap-2">
             <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} className="type-body-lg" />
@@ -108,16 +108,30 @@ export function ProductPurchase({ product }: { product: Product }) {
           </>
         ) : (
           <>
-            <Button variant="secondary" size="xl" disabled={!size} onClick={() => size && add(product, size, { open: true })}>
+            <Button
+              variant="secondary"
+              size="xl"
+              disabled={!size || pending !== null}
+              loading={pending === "add"}
+              onClick={async () => {
+                if (!size) return
+                setPending("add")
+                await add(product, size, { open: true })
+                setPending(null)
+              }}
+            >
               Add to bag
             </Button>
             <Button
               size="xl"
-              disabled={!size}
-              onClick={() => {
+              disabled={!size || pending !== null}
+              loading={pending === "buy"}
+              onClick={async () => {
                 if (!size) return
-                add(product, size)
-                router.push("/checkout")
+                setPending("buy")
+                const ok = await add(product, size, { silent: true })
+                if (ok) router.push("/checkout")
+                else setPending(null)
               }}
             >
               Buy now

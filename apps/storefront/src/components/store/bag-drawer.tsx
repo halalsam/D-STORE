@@ -9,7 +9,7 @@ import { useBag } from "@/lib/stores/bag"
 import { ProductMedia } from "./product-media"
 
 export function BagDrawer() {
-  const { lines, count, subtotal, open, setOpen, setQuantity } = useBag()
+  const { lines, count, subtotal, open, setOpen, setQuantity, busy } = useBag()
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -59,24 +59,24 @@ export function BagDrawer() {
                 style={{ animationDelay: `${i * 40}ms` }}
               >
                 <div className="relative aspect-card w-20 shrink-0 overflow-hidden rounded-md">
-                  <ProductMedia tone={l.product.tones[0]} silhouette={l.product.silhouette} alt={l.product.title} />
+                  <ProductMedia tone={l.tone} src={l.thumbnail} silhouette={l.silhouette} alt={l.title} />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-between py-1 pr-1">
                   <div>
-                    <p className="truncate type-body-sm font-medium">{l.product.title}</p>
+                    <p className="truncate type-body-sm font-medium">{l.title}</p>
                     <p className="type-caption text-ink-muted">Size {l.size}</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center rounded-pill bg-surface-muted">
-                      <Button variant="ghost" size="icon-sm" aria-label="Decrease quantity" onClick={() => setQuantity(l.key, l.quantity - 1)}>
+                      <Button variant="ghost" size="icon-sm" aria-label="Decrease quantity" disabled={busy} onClick={() => setQuantity(l.key, l.quantity - 1)}>
                         <Minus strokeWidth={1.6} />
                       </Button>
                       <span className="w-6 text-center type-body-sm tabular-nums">{l.quantity}</span>
-                      <Button variant="ghost" size="icon-sm" aria-label="Increase quantity" onClick={() => setQuantity(l.key, l.quantity + 1)}>
+                      <Button variant="ghost" size="icon-sm" aria-label="Increase quantity" disabled={busy} onClick={() => setQuantity(l.key, l.quantity + 1)}>
                         <Plus strokeWidth={1.6} />
                       </Button>
                     </div>
-                    <span className="type-body-sm type-price">{formatPrice(l.product.price * l.quantity)}</span>
+                    <span className="type-body-sm type-price">{formatPrice(l.unitPrice * l.quantity)}</span>
                   </div>
                 </div>
               </li>

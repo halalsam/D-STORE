@@ -1,0 +1,1023 @@
+{
+  "collections": [
+    {
+      "handle": "new-arrivals",
+      "title": "New Arrivals",
+      "blurb": "The latest drop, fresh off the press.",
+      "tone": [
+        "#1F2B39",
+        "#567C8D"
+      ]
+    },
+    {
+      "handle": "coastline",
+      "title": "Coastline Collection",
+      "blurb": "Linen, satin and sun-faded prints for long days by the water.",
+      "tone": [
+        "#C9412F",
+        "#E3A7C8"
+      ]
+    },
+    {
+      "handle": "essentials",
+      "title": "Essentials",
+      "blurb": "Everyday heavyweight basics in the core palette.",
+      "tone": [
+        "#A9846A",
+        "#ECE4DE"
+      ]
+    },
+    {
+      "handle": "accessories",
+      "title": "Bags and Accessories",
+      "blurb": "Leather, jacquard and hardware built to be carried daily.",
+      "tone": [
+        "#141B24",
+        "#445568"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "handle": "tidal-static-tee",
+      "title": "Tidal Static Tee",
+      "price": 5500,
+      "collection": "new-arrivals",
+      "category": "t-shirts",
+      "type": "T-shirt",
+      "color": "Blues",
+      "silhouette": "tee",
+      "badge": "New",
+      "tones": [
+        [
+          "#1F2B39",
+          "#3E6FA8"
+        ],
+        [
+          "#273647",
+          "#567C8D"
+        ],
+        [
+          "#1F2B39",
+          "#7E9BB2"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "ember-script-tee",
+      "title": "Ember Script Tee",
+      "price": 5500,
+      "collection": "new-arrivals",
+      "category": "t-shirts",
+      "type": "T-shirt",
+      "color": "Reds",
+      "silhouette": "tee",
+      "tones": [
+        [
+          "#1E1E1E",
+          "#8E1F1F"
+        ],
+        [
+          "#2A1A18",
+          "#C9412F"
+        ],
+        [
+          "#1E1E1E",
+          "#4A3326"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "handle": "moth-signal-tee",
+      "title": "Moth Signal Tee",
+      "price": 5000,
+      "collection": "new-arrivals",
+      "category": "t-shirts",
+      "type": "T-shirt",
+      "color": "Reds",
+      "silhouette": "tee",
+      "tones": [
+        [
+          "#7A1F2B",
+          "#C9412F"
+        ],
+        [
+          "#5A1620",
+          "#E8713C"
+        ],
+        [
+          "#7A1F2B",
+          "#1E1E1E"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "storm-cell-hoodie",
+      "title": "Storm Cell Hoodie",
+      "price": 14000,
+      "collection": "new-arrivals",
+      "category": "hoodies",
+      "type": "Hoodie",
+      "color": "Blues",
+      "silhouette": "hoodie",
+      "badge": "New",
+      "tones": [
+        [
+          "#141B24",
+          "#2F4BB0"
+        ],
+        [
+          "#1F2B39",
+          "#4F6FD1"
+        ],
+        [
+          "#141B24",
+          "#567C8D"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 0
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "shoal-linen-shirt-rose",
+      "title": "Shoal Linen Shirt, Rose",
+      "price": 7200,
+      "collection": "coastline",
+      "category": "shirts",
+      "type": "Shirt",
+      "color": "Purples",
+      "silhouette": "shirt",
+      "tones": [
+        [
+          "#8A5A7A",
+          "#E3A7C8"
+        ],
+        [
+          "#6B3F5E",
+          "#C66AD6"
+        ],
+        [
+          "#E3A7C8",
+          "#F5EFEB"
+        ]
+      ],
+      "description": "Breathable linen blend with an all-over print, camp collar and mother of pearl buttons. Relaxed through the body, cut slightly long.",
+      "washcare": [
+        "Hand wash or gentle cycle, cold",
+        "Hang dry in shade",
+        "Warm iron",
+        "Do not bleach"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "handle": "shoal-linen-shirt-sea",
+      "title": "Shoal Linen Shirt, Sea",
+      "price": 7200,
+      "collection": "coastline",
+      "category": "shirts",
+      "type": "Shirt",
+      "color": "Greens",
+      "silhouette": "shirt",
+      "tones": [
+        [
+          "#567C8D",
+          "#C8D9E6"
+        ],
+        [
+          "#38505E",
+          "#9FD8B0"
+        ],
+        [
+          "#90A9B5",
+          "#F2F6F9"
+        ]
+      ],
+      "description": "Breathable linen blend with an all-over print, camp collar and mother of pearl buttons. Relaxed through the body, cut slightly long.",
+      "washcare": [
+        "Hand wash or gentle cycle, cold",
+        "Hang dry in shade",
+        "Warm iron",
+        "Do not bleach"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "harbour-satin-shirt",
+      "title": "Harbour Satin Shirt",
+      "price": 7495,
+      "collection": "coastline",
+      "category": "shirts",
+      "type": "Shirt",
+      "color": "Blues",
+      "silhouette": "shirt",
+      "tones": [
+        [
+          "#2F4BB0",
+          "#7EA6E0"
+        ],
+        [
+          "#1E2F7A",
+          "#F2B04B"
+        ],
+        [
+          "#4F6FD1",
+          "#C8D9E6"
+        ]
+      ],
+      "compareAt": 8995,
+      "description": "Breathable linen blend with an all-over print, camp collar and mother of pearl buttons. Relaxed through the body, cut slightly long.",
+      "washcare": [
+        "Hand wash or gentle cycle, cold",
+        "Hang dry in shade",
+        "Warm iron",
+        "Do not bleach"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 0
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 0
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "marina-sunset-shirt",
+      "title": "Marina Sunset Shirt",
+      "price": 7495,
+      "collection": "coastline",
+      "category": "shirts",
+      "type": "Shirt",
+      "color": "Reds",
+      "silhouette": "shirt",
+      "tones": [
+        [
+          "#C9412F",
+          "#F2B04B"
+        ],
+        [
+          "#8E1F1F",
+          "#E8713C"
+        ],
+        [
+          "#2F4156",
+          "#E8713C"
+        ]
+      ],
+      "description": "Breathable linen blend with an all-over print, camp collar and mother of pearl buttons. Relaxed through the body, cut slightly long.",
+      "washcare": [
+        "Hand wash or gentle cycle, cold",
+        "Hang dry in shade",
+        "Warm iron",
+        "Do not bleach"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "regatta-stripe-shirt",
+      "title": "Regatta Stripe Shirt",
+      "price": 6800,
+      "collection": "coastline",
+      "category": "shirts",
+      "type": "Shirt",
+      "color": "Neutrals",
+      "silhouette": "shirt",
+      "tones": [
+        [
+          "#B8B5B0",
+          "#F4F1EC"
+        ],
+        [
+          "#6E6C69",
+          "#DED4CC"
+        ],
+        [
+          "#F4F1EC",
+          "#C8D9E6"
+        ]
+      ],
+      "description": "Breathable linen blend with an all-over print, camp collar and mother of pearl buttons. Relaxed through the body, cut slightly long.",
+      "washcare": [
+        "Hand wash or gentle cycle, cold",
+        "Hang dry in shade",
+        "Warm iron",
+        "Do not bleach"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 0
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "handle": "deckhand-tee-sand",
+      "title": "Deckhand Tee, Sand",
+      "price": 3900,
+      "collection": "essentials",
+      "category": "t-shirts",
+      "type": "T-shirt",
+      "color": "Browns",
+      "silhouette": "tee",
+      "tones": [
+        [
+          "#A9846A",
+          "#D9C2AE"
+        ],
+        [
+          "#7A563F",
+          "#ECE4DE"
+        ],
+        [
+          "#D9C2AE",
+          "#F5EFEB"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "deckhand-tee-navy",
+      "title": "Deckhand Tee, Navy",
+      "price": 3900,
+      "collection": "essentials",
+      "category": "t-shirts",
+      "type": "T-shirt",
+      "color": "Blues",
+      "silhouette": "tee",
+      "tones": [
+        [
+          "#1F2B39",
+          "#2F4156"
+        ],
+        [
+          "#273647",
+          "#445568"
+        ],
+        [
+          "#2F4156",
+          "#5A697B"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "deckhand-tee-bone",
+      "title": "Deckhand Tee, Bone",
+      "price": 3900,
+      "collection": "essentials",
+      "category": "t-shirts",
+      "type": "T-shirt",
+      "color": "Neutrals",
+      "silhouette": "tee",
+      "tones": [
+        [
+          "#DED4CC",
+          "#FBF9F7"
+        ],
+        [
+          "#C7BAB0",
+          "#F5EFEB"
+        ],
+        [
+          "#ECE4DE",
+          "#FFFFFF"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 24
+        },
+        {
+          "label": "XS",
+          "stock": 24
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 0
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "crest-card-case",
+      "title": "Crest Card Case",
+      "price": 7000,
+      "collection": "accessories",
+      "category": "bags",
+      "type": "Bag",
+      "color": "Neutrals",
+      "silhouette": "bag",
+      "tones": [
+        [
+          "#141B24",
+          "#2F4156"
+        ],
+        [
+          "#1F2B39",
+          "#567C8D"
+        ],
+        [
+          "#273647",
+          "#445568"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "One size",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "crest-duffle-leather",
+      "title": "Crest Duffle, Leather",
+      "price": 25000,
+      "collection": "accessories",
+      "category": "bags",
+      "type": "Bag",
+      "color": "Neutrals",
+      "silhouette": "bag",
+      "tones": [
+        [
+          "#ECE4DE",
+          "#FFFFFF"
+        ],
+        [
+          "#DED4CC",
+          "#FBF9F7"
+        ],
+        [
+          "#C7BAB0",
+          "#F5EFEB"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "One size",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "crest-carryall-leather",
+      "title": "Crest Carryall, Leather",
+      "price": 35000,
+      "collection": "accessories",
+      "category": "bags",
+      "type": "Bag",
+      "color": "Browns",
+      "silhouette": "bag",
+      "tones": [
+        [
+          "#4A3326",
+          "#A9846A"
+        ],
+        [
+          "#33302F",
+          "#7A563F"
+        ],
+        [
+          "#4A3326",
+          "#D9C2AE"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "One size",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "handle": "crest-carryall-jacquard",
+      "title": "Crest Carryall, Jacquard",
+      "price": 30000,
+      "collection": "accessories",
+      "category": "bags",
+      "type": "Bag",
+      "color": "Neutrals",
+      "silhouette": "bag",
+      "tones": [
+        [
+          "#33302F",
+          "#6E6C69"
+        ],
+        [
+          "#1E1E1E",
+          "#B8B5B0"
+        ],
+        [
+          "#33302F",
+          "#857A73"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "One size",
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "handle": "club-six-panel-cap",
+      "title": "Club Six Panel Cap",
+      "price": 2900,
+      "collection": "accessories",
+      "category": "caps",
+      "type": "Cap",
+      "color": "Greens",
+      "silhouette": "cap",
+      "tones": [
+        [
+          "#1F5E3B",
+          "#4FB878"
+        ],
+        [
+          "#2E8A55",
+          "#9FD8B0"
+        ],
+        [
+          "#1F5E3B",
+          "#F5EFEB"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "One size",
+          "stock": 24
+        }
+      ]
+    },
+    {
+      "handle": "orchid-boxy-tee",
+      "title": "Orchid Boxy Tee",
+      "price": 4500,
+      "collection": "coastline",
+      "category": "t-shirts",
+      "type": "T-shirt",
+      "color": "Purples",
+      "silhouette": "tee",
+      "tones": [
+        [
+          "#6B2FA0",
+          "#E3A7E8"
+        ],
+        [
+          "#9A47C4",
+          "#F5EFEB"
+        ],
+        [
+          "#6B2FA0",
+          "#1F2B39"
+        ]
+      ],
+      "description": "Heavyweight 240 GSM cotton jersey, garment washed for a broken-in hand. Boxy, dropped shoulder fit with a ribbed collar and a high-density back print.",
+      "washcare": [
+        "Machine wash cold, inside out",
+        "Do not tumble dry",
+        "Iron on reverse, avoid the print",
+        "Do not dry clean"
+      ],
+      "sizes": [
+        {
+          "label": "XXS",
+          "stock": 0
+        },
+        {
+          "label": "XS",
+          "stock": 0
+        },
+        {
+          "label": "S",
+          "stock": 24
+        },
+        {
+          "label": "M",
+          "stock": 24
+        },
+        {
+          "label": "L",
+          "stock": 24
+        },
+        {
+          "label": "XL",
+          "stock": 24
+        },
+        {
+          "label": "XXL",
+          "stock": 24
+        }
+      ]
+    }
+  ]
+}

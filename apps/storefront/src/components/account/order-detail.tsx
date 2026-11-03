@@ -1,26 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, Copy, PackageSearch } from "@/components/ui/icons"
 import { useState } from "react"
+import { ArrowLeft, Copy } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { formatDate } from "@/lib/format"
-import { useOrders } from "@/lib/stores/account"
-import { useHydrated } from "@/lib/stores/create-store"
+import type { Order } from "@/lib/types"
 import { AddressLines } from "./address-card"
-import { EmptyCard } from "./account-overview"
 import { LineItem, OrderTracker, StatusBadge, Totals } from "./order-parts"
 
-export function OrderDetail({ id }: { id: string }) {
-  const orders = useOrders()
-  const hydrated = useHydrated()
+export function OrderDetail({ order }: { order: Order }) {
   const [copied, setCopied] = useState(false)
-  const order = orders.find((o) => o.id === id)
-
-  if (!order) {
-    if (!hydrated) return <div className="panel h-96 skeleton" />
-    return <EmptyCard icon={<PackageSearch />} title="Order not found" body={`We could not find order ${id} on this account.`} href="/account/orders" cta="Back to orders" />
-  }
 
   return (
     <div className="animate-rise-in">
@@ -29,7 +19,7 @@ export function OrderDetail({ id }: { id: string }) {
       </Button>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3 px-1">
         <div>
-          <h1 className="type-heading-lg">{order.id}</h1>
+          <h1 className="type-heading-lg">{order.displayId}</h1>
           <p className="mt-1 type-body-sm text-ink-muted">Placed {formatDate(order.createdAt)}</p>
         </div>
         <StatusBadge status={order.status} />
@@ -61,7 +51,7 @@ export function OrderDetail({ id }: { id: string }) {
           <section className="panel">
             <h2 className="mb-4 type-title">Items</h2>
             <div className="grid gap-3">
-              {order.lines.map((l) => <LineItem key={l.handle + l.size} line={l} currency={order.currency} />)}
+              {order.lines.map((l) => <LineItem key={l.id ?? l.handle + l.size} line={l} currency={order.currency} />)}
             </div>
             <div className="mt-6 border-t border-line pt-4">
               <Totals subtotal={order.subtotal} discount={order.discount} shipping={order.shipping} total={order.total} currency={order.currency} />

@@ -1,27 +1,43 @@
 import { CollectionTile, Hero } from "@/components/store/hero"
 import { ProductGrid } from "@/components/store/product-grid"
 import { Section } from "@/components/ui/section"
-import { collections, getProductsByCollection } from "@/lib/mock/catalog"
+import { listCollections, listProducts } from "@/lib/data/catalog"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [collections, latest, bags, coastline] = await Promise.all([
+    listCollections(),
+    listProducts({ collectionHandle: "new-arrivals" }),
+    listProducts({ collectionHandle: "accessories" }),
+    listProducts({ collectionHandle: "coastline" }),
+  ])
+
   return (
     <>
       <Hero kicker="Winter Edit 2025" title="Built for the cold" cta={{ label: "Shop now", href: "/collections/new-arrivals" }} />
       <main className="sheet sheet-overlap pb-[calc(var(--spacing-section)*0.5)]">
-        <Section title="Latest drop" href="/collections/new-arrivals">
-          <ProductGrid products={getProductsByCollection("new-arrivals").slice(0, 4)} priorityCount={4} />
-        </Section>
-        <Section title="Bags" href="/collections/accessories" inset>
-          <ProductGrid products={getProductsByCollection("accessories").slice(0, 4)} reveal={false} />
-        </Section>
-        <Section title="Coastline Collection" href="/collections/coastline">
-          <ProductGrid products={getProductsByCollection("coastline").slice(0, 4)} reveal={false} />
-        </Section>
+        {latest.length > 0 && (
+          <Section title="Latest drop" href="/collections/new-arrivals">
+            <ProductGrid products={latest.slice(0, 4)} priorityCount={4} />
+          </Section>
+        )}
+        {bags.length > 0 && (
+          <Section title="Bags" href="/collections/accessories" inset>
+            <ProductGrid products={bags.slice(0, 4)} reveal={false} />
+          </Section>
+        )}
+        {coastline.length > 0 && (
+          <Section title="Coastline Collection" href="/collections/coastline">
+            <ProductGrid products={coastline.slice(0, 4)} reveal={false} />
+          </Section>
+        )}
         <Section title="Shop by collection">
           <div className="grid gap-grid md:grid-cols-3">
-            {collections.slice(1).map((c) => (
-              <CollectionTile key={c.handle} title={c.title} blurb={c.blurb} tone={c.tone} href={`/collections/${c.handle}`} />
-            ))}
+            {collections
+              .filter((c) => c.handle !== "new-arrivals")
+              .slice(0, 3)
+              .map((c) => (
+                <CollectionTile key={c.handle} title={c.title} blurb={c.blurb} tone={c.tone} href={`/collections/${c.handle}`} />
+              ))}
           </div>
         </Section>
       </main>

@@ -1,4 +1,4 @@
-import type { Product } from "@/lib/mock/catalog"
+import type { Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { ProductCard } from "./product-card"
 

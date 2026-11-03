@@ -63,11 +63,11 @@ export function Select({
           position="popper"
           sideOffset={6}
           className={cn(
-            "z-(--z-toast) min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin) overflow-hidden rounded-xl bg-surface p-1.5 shadow-lg ring-1 ring-line",
+            "z-(--z-toast) max-h-[min(22rem,var(--radix-select-content-available-height))] min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin) overflow-hidden rounded-xl bg-surface p-1.5 shadow-lg ring-1 ring-line",
             "data-[state=open]:animate-scale-in data-[state=closed]:animate-scale-out"
           )}
         >
-          <SelectPrimitive.Viewport>
+          <SelectPrimitive.Viewport className="max-h-[inherit] overflow-y-auto overscroll-contain">
             {options.map((o) => (
               <SelectPrimitive.Item
                 key={o.value}

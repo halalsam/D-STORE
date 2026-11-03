@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { Badge } from "@/components/ui/badge"
-import type { Address } from "@/lib/mock/account"
+import type { Address } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type Props = {

@@ -1,53 +1,46 @@
 "use client"
 
-import { Tag, X } from "@/components/ui/icons"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { LineItem, Totals } from "@/components/account/order-parts"
 import { Button } from "@/components/ui/button"
+import { Tag, X } from "@/components/ui/icons"
 import { TextField } from "@/components/ui/text-field"
-import type { BagLine } from "@/lib/stores/bag"
+import { applyPromoCode, removePromoCode } from "@/lib/data/cart"
+import type { Bag } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { promoCodes } from "./checkout-data"
 
-export function toOrderLine(l: BagLine) {
-  return {
-    handle: l.product.handle,
-    title: l.product.title,
-    size: l.size,
-    quantity: l.quantity,
-    unitPrice: l.product.price,
-    tone: l.product.tones[0],
-    silhouette: l.product.silhouette,
-  }
-}
+type Props = { bag: Bag; onBag: (bag: Bag) => void; className?: string }
 
-type Props = {
-  lines: BagLine[]
-  subtotal: number
-  discount: number
-  shipping: number | null
-  total: number
-  promo: string | null
-  onPromo: (code: string | null) => void
-  className?: string
-}
-
-export function OrderSummary({ lines, subtotal, discount, shipping, total, promo, onPromo, className }: Props) {
+export function OrderSummary({ bag, onBag, className }: Props) {
   const [error, setError] = useState<string>()
   const [attempt, setAttempt] = useState(0)
+  const [pending, start] = useTransition()
+  const promo = bag.promoCodes[0]
 
   return (
     <div className={cn("grid gap-5", className)}>
       <ul className="grid max-h-[22rem] gap-3 overflow-y-auto overscroll-contain pr-1">
-        {lines.map((l) => (
-          <li key={l.key}><LineItem line={toOrderLine(l)} compact /></li>
+        {bag.lines.map((l) => (
+          <li key={l.key}><LineItem line={l} currency={bag.currency} compact /></li>
         ))}
       </ul>
 
       {promo ? (
         <div className="flex animate-rise-in items-center justify-between rounded-lg bg-success-soft px-3 py-2.5">
           <span className="flex items-center gap-2 type-body-sm text-success"><Tag className="size-4" strokeWidth={1.8} /> {promo} applied</span>
-          <Button variant="ghost" size="icon-sm" aria-label="Remove code" onClick={() => onPromo(null)} className="text-success">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Remove code"
+            loading={pending}
+            className="text-success"
+            onClick={() =>
+              start(async () => {
+                const res = await removePromoCode(promo)
+                if (res.ok) onBag(res.data)
+              })
+            }
+          >
             <X strokeWidth={1.8} />
           </Button>
         </div>
@@ -59,13 +52,16 @@ export function OrderSummary({ lines, subtotal, discount, shipping, total, promo
             e.preventDefault()
             const code = String(new FormData(e.currentTarget).get("code") ?? "").trim().toUpperCase()
             if (!code) return
-            if (promoCodes[code]) {
-              setError(undefined)
-              onPromo(code)
-            } else {
-              setError("That code is not valid")
-              setAttempt((n) => n + 1)
-            }
+            start(async () => {
+              const res = await applyPromoCode(code)
+              if (res.ok) {
+                setError(undefined)
+                onBag(res.data)
+              } else {
+                setError(res.error)
+                setAttempt((n) => n + 1)
+              }
+            })
           }}
         >
           <TextField
@@ -76,12 +72,19 @@ export function OrderSummary({ lines, subtotal, discount, shipping, total, promo
             autoCapitalize="characters"
             error={error}
             hint={!error ? "Try WELCOME10" : undefined}
-            trailing={<Button type="submit" variant="soft" size="sm">Apply</Button>}
+            trailing={<Button type="submit" variant="soft" size="sm" loading={pending}>Apply</Button>}
           />
         </form>
       )}
 
-      <Totals subtotal={subtotal} discount={discount} shipping={shipping} total={total} discountLabel={promo ?? undefined} />
+      <Totals
+        subtotal={bag.subtotal}
+        discount={bag.discount}
+        shipping={bag.shipping}
+        total={bag.total}
+        currency={bag.currency}
+        discountLabel={promo}
+      />
     </div>
   )
 }

@@ -6,11 +6,11 @@ import { ArrowLeft, ArrowRight, Bookmark, Plus } from "@/components/ui/icons"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
-import { isSoldOut, type Product } from "@/lib/mock/catalog"
+import { isSoldOut, type Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useBag } from "@/lib/stores/bag"
 import { toggleSaved, useSaved } from "@/lib/stores/saved"
-import { ProductMedia } from "./product-media"
+import { ProductMedia, productViews } from "./product-media"
 
 type Props = {
   product: Product
@@ -29,7 +29,7 @@ export function ProductCard({ product, density = "default", priority, className 
         href={href}
         className={cn("group pressable-soft relative block aspect-card overflow-hidden rounded-md", soldOut && "opacity-45", className)}
       >
-        <ProductMedia tone={product.tones[0]} silhouette={product.silhouette} alt={product.title} className="media-zoom" />
+        <ProductMedia tone={product.tones[0]} src={product.images[0]} silhouette={product.silhouette} alt={product.title} className="media-zoom" />
       </Link>
     )
   }
@@ -62,7 +62,8 @@ export function ProductCard({ product, density = "default", priority, className 
 function MediaCarousel({ product, href, priority }: { product: Product; href: string; priority?: boolean }) {
   const scroller = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(0)
-  const count = product.tones.length
+  const views = productViews(product)
+  const count = views.length
 
   const go = (dir: 1 | -1) => {
     const el = scroller.current
@@ -77,7 +78,7 @@ function MediaCarousel({ product, href, priority }: { product: Product; href: st
         onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))}
         className="no-scrollbar flex h-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
       >
-        {product.tones.map((tone, i) => (
+        {views.map(({ tone, src }, i) => (
           <Link
             key={i}
             href={href}
@@ -87,6 +88,7 @@ function MediaCarousel({ product, href, priority }: { product: Product; href: st
           >
             <ProductMedia
               tone={tone}
+              src={src}
               silhouette={product.silhouette}
               alt={`${product.title}, image ${i + 1}`}
               priority={priority && i === 0}
@@ -107,7 +109,7 @@ function MediaCarousel({ product, href, priority }: { product: Product; href: st
             </Button>
           </div>
           <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5">
-            {product.tones.map((_, i) => (
+            {views.map((_, i) => (
               <span
                 key={i}
                 className={cn(
@@ -158,11 +160,23 @@ export function SaveToggle({
 function QuickAdd({ product }: { product: Product }) {
   const { add } = useBag()
   const [open, setOpen] = useState(false)
+  const [pending, setPending] = useState<string | null>(null)
   const single = product.sizes.length === 1
 
   if (single) {
     return (
-      <Button variant="ghost" size="icon-sm" aria-label={`Add ${product.title} to bag`} onClick={() => add(product, product.sizes[0].label)} className="-mr-1.5">
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={`Add ${product.title} to bag`}
+        loading={pending !== null}
+        onClick={async () => {
+          setPending(product.sizes[0].label)
+          await add(product, product.sizes[0].label)
+          setPending(null)
+        }}
+        className="-mr-1.5"
+      >
         <Plus strokeWidth={1.4} className="size-5!" />
       </Button>
     )
@@ -188,14 +202,21 @@ function QuickAdd({ product }: { product: Product }) {
             {product.sizes.map((s) => (
               <button
                 key={s.label}
-                disabled={!s.available}
-                onClick={() => {
-                  add(product, s.label)
-                  setOpen(false)
+                disabled={!s.available || pending !== null}
+                onClick={async () => {
+                  setPending(s.label)
+                  const ok = await add(product, s.label)
+                  setPending(null)
+                  if (ok) setOpen(false)
                 }}
-                className="pressable h-9 rounded-pill bg-surface-muted type-caption hover:bg-surface-inverse hover:text-ink-inverse disabled:bg-transparent disabled:text-ink-subtle disabled:line-through"
+                className="pressable relative h-9 rounded-pill bg-surface-muted type-caption hover:bg-surface-inverse hover:text-ink-inverse disabled:bg-transparent disabled:text-ink-subtle disabled:line-through"
               >
-                {s.label}
+                <span className={pending === s.label ? "invisible" : undefined}>{s.label}</span>
+                {pending === s.label && (
+                  <span className="absolute inset-0 grid place-items-center">
+                    <span className="size-3.5 animate-spin rounded-pill border-2 border-current border-r-transparent" />
+                  </span>
+                )}
               </button>
             ))}
           </div>

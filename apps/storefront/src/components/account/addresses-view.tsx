@@ -1,19 +1,43 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import { useState, useTransition } from "react"
 import { Plus } from "@/components/ui/icons"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
-import type { Address } from "@/lib/mock/account"
-import { removeAddress, saveAddress, useAddresses } from "@/lib/stores/account"
+import { toast } from "@/components/ui/toast"
+import { deleteAddress, saveAddress } from "@/lib/data/customer"
+import type { Address } from "@/lib/types"
 import { AddressCard } from "./address-card"
 import { AddressForm } from "./address-form"
 import { PageTitle } from "./account-nav"
 
-export function AddressesView() {
-  const addresses = useAddresses()
+export function AddressesView({ addresses }: { addresses: Address[] }) {
+  const router = useRouter()
   const [editing, setEditing] = useState<Address | "new" | null>(null)
+  const [pending, start] = useTransition()
+  const [busyId, setBusyId] = useState<string | null>(null)
   const current = editing === "new" ? undefined : editing ?? undefined
+
+  const save = (a: Address) =>
+    start(async () => {
+      const res = await saveAddress(a, editing === "new")
+      if (!res.ok) return void toast(res.error, "error")
+      setEditing(null)
+      toast("Address saved")
+      router.refresh()
+    })
+
+  const run = (id: string, fn: () => Promise<{ ok: boolean; error?: string }>, done: string) => {
+    setBusyId(id)
+    start(async () => {
+      const res = await fn()
+      setBusyId(null)
+      if (!res.ok) return void toast(res.error ?? "Something went wrong", "error")
+      toast(done)
+      router.refresh()
+    })
+  }
 
   return (
     <div>
@@ -32,16 +56,20 @@ export function AddressesView() {
             key={a.id}
             address={a}
             className="animate-rise-in"
+            style={{ animationDelay: `${i * 45}ms` }}
             actions={
               <>
                 <Button variant="soft" size="sm" onClick={() => setEditing(a)}>Edit</Button>
                 {!a.isDefault && (
-                  <Button variant="ghost" size="sm" onClick={() => saveAddress({ ...a, isDefault: true })}>Make default</Button>
+                  <Button variant="ghost" size="sm" disabled={busyId === a.id} onClick={() => run(a.id, () => saveAddress({ ...a, isDefault: true }, false), "Default address updated")}>
+                    Make default
+                  </Button>
                 )}
-                <Button variant="ghost" size="sm" className="ml-auto text-danger" onClick={() => removeAddress(a.id)}>Remove</Button>
+                <Button variant="ghost" size="sm" loading={busyId === a.id} className="ml-auto text-danger" onClick={() => run(a.id, () => deleteAddress(a.id), "Address removed")}>
+                  Remove
+                </Button>
               </>
             }
-            style={{ animationDelay: `${i * 45}ms` }}
           />
         ))}
         <button
@@ -63,20 +91,11 @@ export function AddressesView() {
           footer={
             <>
               <Button variant="secondary" size="xl" onClick={() => setEditing(null)}>Cancel</Button>
-              <Button size="xl" type="submit" form="address-sheet-form">Save</Button>
+              <Button size="xl" type="submit" form="address-sheet-form" loading={pending && busyId === null}>Save</Button>
             </>
           }
         >
-          <AddressForm
-            key={current?.id ?? "new"}
-            id="address-sheet-form"
-            initial={current}
-            allowDefault
-            onSubmit={(a) => {
-              saveAddress(a)
-              setEditing(null)
-            }}
-          />
+          <AddressForm key={current?.id ?? "new"} id="address-sheet-form" initial={current} allowDefault onSubmit={save} />
         </SheetContent>
       </Sheet>
     </div>

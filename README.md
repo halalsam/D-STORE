@@ -17,6 +17,7 @@ pnpm install
 pnpm infra:up                                   # start Postgres + Redis in Docker
 cp apps/backend/.env.template apps/backend/.env
 pnpm backend:migrate                            # run migrations + initial data seed
+pnpm backend:seed:dstore                        # D-STORE catalog: India region (INR), products, shipping, WELCOME10
 pnpm backend:user -e admin@dstore.local -p supersecret
 ```
 
@@ -38,7 +39,14 @@ pnpm build             # build everything
 pnpm infra:down        # stop Postgres + Redis (data persists in Docker volumes)
 ```
 
-Optional demo products: `pnpm backend:seed`.
+Optional Medusa demo products: `pnpm backend:seed`.
+
+## How the storefront talks to Medusa
+
+- Catalog pages are prerendered from the Store API and refresh about every minute (`"use cache"`).
+- Bag = Medusa cart (cart id in an httpOnly cookie). Sign in = Medusa email/password auth (JWT in an httpOnly cookie).
+- Checkout: address -> shipping options -> payment session (system provider for now) -> `cart.complete`.
+- The storefront build needs the backend running.
 
 ## Redis
 

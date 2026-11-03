@@ -4,7 +4,8 @@ import { useState, type FormEvent, type ReactNode } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select } from "@/components/ui/select"
 import { TextField } from "@/components/ui/text-field"
-import { indianStates, type Address } from "@/lib/mock/account"
+import { indianStates } from "@/lib/site"
+import type { Address } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type Errors = Partial<Record<keyof Address, string>>

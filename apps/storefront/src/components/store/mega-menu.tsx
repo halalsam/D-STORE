@@ -3,7 +3,7 @@ import { Search } from "@/components/ui/icons"
 import type { RefObject } from "react"
 import { chipVariants, SwatchStack } from "@/components/ui/chip"
 import { TextField } from "@/components/ui/text-field"
-import { colorFamilies, menu } from "@/lib/mock/catalog"
+import { colorFamilies, menu } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 function slug(s: string) {

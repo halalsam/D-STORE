@@ -1,5 +1,5 @@
 import Image from "next/image"
-import type { Silhouette, Tone } from "@/lib/mock/catalog"
+import type { Product, Silhouette, Tone } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const shapes: Record<Silhouette, string> = {
@@ -8,6 +8,12 @@ const shapes: Record<Silhouette, string> = {
   hoodie: "M28 22 C34 14 40 10 50 10 C60 10 66 14 72 22 L84 40 L75 46 L70 40 L70 90 L30 90 L30 40 L25 46 L16 40 Z M40 18 C42 28 58 28 60 18",
   bag: "M24 40 L76 40 L72 86 L28 86 Z M36 40 C36 22 64 22 64 40",
   cap: "M22 60 C22 38 36 28 50 28 C64 28 76 38 76 56 L90 62 C80 66 60 66 22 62 Z",
+}
+
+/** Image views for a product: real images when uploaded, else tonal placeholders. */
+export function productViews(p: Product): { tone: Tone; src?: string }[] {
+  if (p.images.length) return p.images.map((src, i) => ({ src, tone: p.tones[i % p.tones.length] }))
+  return p.tones.map((tone) => ({ tone }))
 }
 
 type Props = {

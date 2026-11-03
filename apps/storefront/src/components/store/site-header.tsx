@@ -140,3 +140,18 @@ export function SiteHeader() {
     </Popover.Root>
   )
 }
+
+/** Static stand-in shown only while URL data streams in on runtime-param routes. */
+export function SiteHeaderFallback() {
+  return (
+    <header className="header-grid sticky top-0 z-(--z-header) bg-surface text-ink">
+      <div />
+      <Link href="/" className="font-display text-[1.375rem] leading-none font-bold tracking-[-0.04em] sm:text-[1.75rem] lg:text-[2.125rem]">
+        D-STORE
+      </Link>
+      <div className="flex justify-end">
+        <span className="ml-1 h-8 w-14 rounded-pill bg-surface-muted md:ml-2" />
+      </div>
+    </header>
+  )
+}

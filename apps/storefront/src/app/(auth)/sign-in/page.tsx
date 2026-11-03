@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { Suspense } from "react"
 import { SignInForm } from "@/components/store/sign-in-form"
 
 export const metadata: Metadata = { title: "Sign in" }
@@ -11,7 +12,9 @@ export default function SignInPage() {
         D-STORE
       </Link>
       <main className="flex w-full max-w-sm flex-1 flex-col justify-center py-16">
-        <SignInForm />
+        <Suspense fallback={<div className="h-64 rounded-xl skeleton" />}>
+          <SignInForm />
+        </Suspense>
       </main>
       <Link href="/privacy" className="mb-8 type-body-sm text-accent-ink hover:underline">Privacy policy</Link>
     </div>
