@@ -9,21 +9,26 @@ import { Price } from "@/components/ui/price"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { SizeSelector } from "@/components/ui/size-selector"
 import { Tabs } from "@/components/ui/tabs"
-import { isSoldOut, type Product } from "@/lib/types"
+import { isSoldOut, type Product, type SizeChart } from "@/lib/types"
 import { useBag } from "@/lib/stores/bag"
 import { SaveToggle } from "./product-card"
 
-const chart = [
-  ["XXS", "38", "26", "21"],
-  ["XS", "40", "27", "21.5"],
-  ["S", "42", "28", "22"],
-  ["M", "44", "29", "22.5"],
-  ["L", "46", "30", "23"],
-  ["XL", "48", "31", "23.5"],
-  ["XXL", "50", "32", "24"],
-]
+/** Fallback when a product carries no chart of its own. */
+const genericChart: SizeChart = {
+  columns: ["Chest", "Length", "Shoulder"],
+  rows: [
+    ["XXS", "38", "26", "21"],
+    ["XS", "40", "27", "21.5"],
+    ["S", "42", "28", "22"],
+    ["M", "44", "29", "22.5"],
+    ["L", "46", "30", "23"],
+    ["XL", "48", "31", "23.5"],
+    ["XXL", "50", "32", "24"],
+  ],
+}
 
-function SizeGuide() {
+function SizeGuide({ chart }: { chart?: SizeChart }) {
+  const { columns, rows } = chart ?? genericChart
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -34,13 +39,13 @@ function SizeGuide() {
           <table className="w-full text-left type-body-sm tabular-nums">
             <thead className="bg-surface-muted type-overline text-ink-muted">
               <tr>
-                {["Size", "Chest", "Length", "Shoulder"].map((h) => (
+                {["Size", ...columns].map((h) => (
                   <th key={h} className="px-4 py-3 font-medium">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {chart.map((row) => (
+              {rows.map((row) => (
                 <tr key={row[0]} className="border-t border-line">
                   {row.map((c, i) => (
                     <td key={i} className={i === 0 ? "px-4 py-3 font-medium" : "px-4 py-3 text-ink-muted"}>{c}</td>
@@ -50,7 +55,7 @@ function SizeGuide() {
             </tbody>
           </table>
         </div>
-        <p className="mt-4 type-caption text-ink-muted">Boxy fit. Size down for a closer silhouette.</p>
+        {!chart && <p className="mt-4 type-caption text-ink-muted">Boxy fit. Size down for a closer silhouette.</p>}
       </SheetContent>
     </Sheet>
   )
@@ -124,7 +129,7 @@ export function ProductPurchase({ product }: { product: Product }) {
             <p className="type-body-sm">
               Size <span className="text-ink-muted">{size ? `· ${size}` : ""}</span>
             </p>
-            <SizeGuide />
+            {product.sizeChart !== null && <SizeGuide chart={product.sizeChart} />}
           </div>
           <SizeSelector sizes={product.sizes} value={size} onValueChange={setSize} columns={4} />
         </div>

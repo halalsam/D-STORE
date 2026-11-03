@@ -5,6 +5,7 @@ import { CollectionView } from "@/components/store/collection-view"
 import { CollectionBanner } from "@/components/store/hero"
 import { SeoBlock } from "@/components/store/seo-block"
 import { getCollection, listCollections, listProducts } from "@/lib/data/catalog"
+import { getNavigation } from "@/lib/data/navigation"
 
 export async function generateStaticParams() {
   const collections = await listCollections()
@@ -45,7 +46,7 @@ async function Collection({ params }: { params: PageProps<"/collections/[handle]
   const { handle } = await params
   const collection = await getCollection(handle)
   if (!collection) notFound()
-  const products = await listProducts({ collectionHandle: handle })
+  const [products, nav] = await Promise.all([listProducts({ collectionHandle: handle }), getNavigation()])
 
   return (
     <main className="sheet">
@@ -53,7 +54,12 @@ async function Collection({ params }: { params: PageProps<"/collections/[handle]
       <CollectionView title={collection.title} products={products} />
       <SeoBlock
         title={`${collection.title}${collection.blurb ? `: ${collection.blurb.replace(/\.$/, "")}` : ""}`}
-        body={`${collection.blurb} Every piece is cut in-house from heavyweight fabrics and finished by hand, with prints developed in small runs so nothing is made twice. Free delivery nationwide, easy fourteen day returns, and new drops every few weeks. Browse by size, colour or type with the advanced filters, or switch to the dense grid to see the whole collection at once.`}
+        linkSets={[
+          { value: "collections", label: "Collections", links: nav.collections.filter((l) => l.href !== `/collections/${handle}`) },
+          { value: "category", label: "Shop by category", links: nav.groups.flatMap((g) => g.links) },
+          { value: "color", label: "Shop by color", links: nav.colors },
+        ]}
+        body={`${collection.blurb} Free delivery nationwide and easy fourteen day returns on every order. Browse by size, colour or type with the filters, or switch to the dense grid to see the whole collection at once.`}
       />
     </main>
   )

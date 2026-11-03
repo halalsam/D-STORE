@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { CountBubble } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { useBag } from "@/lib/stores/bag"
+import type { Navigation } from "@/lib/data/navigation"
 import { MegaMenu } from "./mega-menu"
 
 function subscribeScroll(cb: () => void) {
@@ -21,7 +22,7 @@ const getServerScrolled = () => false
 /** Routes whose first block is full-bleed media under a transparent header. */
 const OVERLAY_ROUTES = new Set(["/"])
 
-export function SiteHeader() {
+export function SiteHeader({ nav }: { nav: Navigation }) {
   const pathname = usePathname()
   const scrolled = useSyncExternalStore(subscribeScroll, getScrolled, getServerScrolled)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -137,7 +138,7 @@ export function SiteHeader() {
           )}
         >
           <div className="min-h-0 overflow-y-auto overscroll-contain rounded-panel bg-canvas">
-            <MegaMenu searchRef={searchRef} />
+            <MegaMenu nav={nav} searchRef={searchRef} />
           </div>
         </Popover.Content>
       </Popover.Portal>

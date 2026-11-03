@@ -13,22 +13,7 @@ export const colorFamilies: { name: ColorFamily; swatches: string[] }[] = [
   { name: "Reds", swatches: ["#F2B04B", "#E8713C", "#C9412F", "#8E1F1F"] },
 ]
 
-export const productTypes = ["T-shirt", "Shirt", "Hoodie", "Bag", "Cap"] as const
-
-export const menu = {
-  collections: [
-    { label: "BLUORNG x Godzilla", href: "/collections/bluorng-x-godzilla" },
-    { label: "New Arrivals", href: "/collections/new-arrivals" },
-    { label: "Coastline Collection", href: "/collections/coastline" },
-    { label: "Essentials", href: "/collections/essentials" },
-    { label: "Bags and Accessories", href: "/collections/accessories" },
-  ],
-  groups: [
-    { title: "Top", links: ["T-Shirts", "Polos", "Shirts", "Sweatshirts", "Hoodies", "Jackets"] },
-    { title: "Bottom", links: ["Cargos", "Jeans", "Trousers", "Shorts"] },
-    { title: "Accessories", links: ["Bags", "Caps", "Card cases"] },
-  ],
-}
+export const productTypes = ["T-shirt", "Polo", "Shirt", "Hoodie", "Sweater", "Jacket", "Joggers", "Shorts", "Bag", "Card case", "Cap"] as const
 
 export const indianStates = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa", "Gujarat",

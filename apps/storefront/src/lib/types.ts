@@ -28,7 +28,14 @@ export type Product = {
   badge?: string
   description: string
   washcare: string[]
+  /**
+   * Garment measurements in inches. Undefined: no product-specific chart, show
+   * the generic one. Null: the product has no size guide (bags, caps).
+   */
+  sizeChart?: SizeChart | null
 }
+
+export type SizeChart = { columns: string[]; rows: string[][] }
 
 export type Collection = {
   id: string

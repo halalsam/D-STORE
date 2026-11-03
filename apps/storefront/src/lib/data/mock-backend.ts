@@ -12,13 +12,15 @@ import type {
   Order,
   Product,
   Silhouette,
+  SizeChart,
   Tone,
 } from "@/lib/types"
 
 /**
  * DEMO MODE BACKEND
  * Used when MEDUSA_BACKEND_URL is not set (e.g. a Vercel preview without a
- * backend). Catalog comes from a bundled copy of the D-STORE seed data;
+ * backend). Catalog comes from the bundled lib/mock/catalog.json (real
+ * BLUORNG collections, photos hotlinked from cdn.shopify.com);
  * cart, customer, addresses and orders live in httpOnly cookies, so the
  * whole flow works per browser. Nothing is persisted server side and no
  * real orders are placed.
@@ -66,6 +68,7 @@ const PRODUCTS: Product[] = catalog.products.map((p) => ({
   badge: "badge" in p && typeof p.badge === "string" ? p.badge : undefined,
   description: p.description,
   washcare: p.washcare,
+  sizeChart: "sizeChart" in p && p.sizeChart ? (p.sizeChart as SizeChart) : null,
 }))
 
 const COLLECTIONS: Collection[] = catalog.collections.map((c) => ({

@@ -1,14 +1,16 @@
 import Link from "next/link"
 import { DEMO_MODE } from "@/lib/data/mode"
+import { getNavigation } from "@/lib/data/navigation"
 import { NewsletterForm } from "./newsletter-form"
 
-const columns = [
-  { title: "Shop", links: [["New in", "/collections/new-arrivals"], ["Coastline", "/collections/coastline"], ["Essentials", "/collections/essentials"], ["Bags", "/collections/accessories"]] },
+const staticColumns = [
   { title: "Help", links: [["Shipping", "/help/shipping"], ["Returns", "/help/returns"], ["Size guide", "/help/size-guide"], ["Contact", "/help/contact"]] },
   { title: "Company", links: [["About", "/about"], ["Stores", "/stores"], ["Careers", "/careers"], ["Privacy", "/privacy"]] },
 ] as const
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const nav = await getNavigation()
+  const columns = [{ title: "Shop", links: nav.collections.slice(0, 5).map((l) => [l.label, l.href] as const) }, ...staticColumns]
   return (
     <footer className="bg-canvas pb-[max(1rem,env(safe-area-inset-bottom))]">
       <div className="page-x">
@@ -41,7 +43,7 @@ export function SiteFooter() {
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 type-caption text-ink-muted">
           <p className="flex items-center gap-2">
             D-STORE. All rights reserved.
-            {DEMO_MODE && <span className="rounded-xs bg-accent-soft px-2 py-0.5 text-accent-soft-ink">Demo store: sample data, no real orders</span>}
+            {DEMO_MODE && <span className="rounded-xs bg-accent-soft px-2 py-0.5 text-accent-soft-ink">Demo store: BLUORNG catalog for demonstration, no real orders</span>}
           </p>
           <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-ink">Privacy policy</Link>

@@ -48,10 +48,15 @@ type Props = {
   onApply: (filters: Filters) => void
   /** Live result count for the draft filters, shown on the Apply button. */
   countFor: (filters: Filters) => number
+  /** Options present in the products being filtered; all options when omitted. */
+  available?: { sizes: string[]; types: string[]; colors: string[] }
 }
 
 /** Bottom sheet on phones, right drawer from md. Sort lives in the toolbar. */
-export function FilterDrawer({ open, onOpenChange, value, onApply, countFor }: Props) {
+export function FilterDrawer({ open, onOpenChange, value, onApply, countFor, available }: Props) {
+  const sizes = available ? [...SIZES.filter((s) => available.sizes.includes(s)), ...available.sizes.filter((s) => !SIZES.includes(s))] : SIZES
+  const types = available ? productTypes.filter((t) => available.types.includes(t)) : productTypes
+  const colors = available ? colorFamilies.filter((c) => available.colors.includes(c.name)) : colorFamilies
   const [draft, setDraft] = useState(value)
   const set = <K extends keyof Filters>(key: K, v: Filters[K]) => setDraft((d) => ({ ...d, [key]: v }))
   const results = countFor(draft)
@@ -88,7 +93,7 @@ export function FilterDrawer({ open, onOpenChange, value, onApply, countFor }: P
       >
         <Group title="Size" count={draft.sizes.length}>
           <ChipGroup type="multiple" value={draft.sizes} onValueChange={(v) => set("sizes", v)} aria-label="Size" className="grid grid-cols-4 gap-2 sm:flex">
-            {SIZES.map((s) => (
+            {sizes.map((s) => (
               <ChipGroupItem key={s} value={s} className="justify-center sm:min-w-16">{s}</ChipGroupItem>
             ))}
           </ChipGroup>
@@ -101,14 +106,14 @@ export function FilterDrawer({ open, onOpenChange, value, onApply, countFor }: P
         </Group>
         <Group title="Type" count={draft.types.length}>
           <ChipGroup type="multiple" value={draft.types} onValueChange={(v) => set("types", v)} aria-label="Type">
-            {productTypes.map((t) => (
+            {types.map((t) => (
               <ChipGroupItem key={t} value={t}>{t}</ChipGroupItem>
             ))}
           </ChipGroup>
         </Group>
         <Group title="Color" count={draft.colors.length}>
           <ChipGroup type="multiple" value={draft.colors} onValueChange={(v) => set("colors", v)} aria-label="Color">
-            {colorFamilies.map((c) => (
+            {colors.map((c) => (
               <ChipGroupItem key={c.name} value={c.name}>
                 {c.name}
                 <SwatchStack colors={c.swatches} />

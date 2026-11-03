@@ -24,7 +24,8 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Medusa config (DB, Redis, CORS) | `apps/backend/medusa-config.ts` |
 | Storefront Medusa client (server only, no stored tokens) | `apps/storefront/src/lib/medusa.ts` |
 | Storefront API calls | `apps/storefront/src/lib/data/`: `catalog.ts` (cached reads, `"use cache"`), `cart.ts` + `customer.ts` (server actions), `adapters.ts` (Medusa -> view models), `cookies.ts` (JWT + cart id cookies) |
-| View model types / static nav config | `apps/storefront/src/lib/types.ts`, `apps/storefront/src/lib/site.ts` |
+| View model types / static config | `apps/storefront/src/lib/types.ts`, `apps/storefront/src/lib/site.ts` |
+| Menu, footer and SEO links (derived from catalog) | `apps/storefront/src/lib/data/navigation.ts` |
 | Storefront routes | `apps/storefront/src/app/` |
 | UI primitives / store / account / checkout components | `apps/storefront/src/components/{ui,store,account,checkout}/` |
 | Client stores: bag mirror of the Medusa cart, saved items (localStorage) | `apps/storefront/src/lib/stores/` |
@@ -64,7 +65,7 @@ In the backend, import from `@medusajs/framework/*` subpaths, not `@medusajs/uti
 - Catalog reads go through `lib/data/catalog.ts` and use `"use cache"` + `cacheTag`. Never read cookies inside them.
 - Anything per-user (cart, customer, orders) reads cookies and must render inside `<Suspense>` (Cache Components).
 - Dynamic routes read `params` inside a `<Suspense>` child, or runtime regeneration fails.
-- The storefront build needs the backend running when `MEDUSA_BACKEND_URL` is set. Unset = demo mode (`lib/data/mode.ts`, `lib/data/mock-backend.ts`, bundled `lib/mock/catalog.json`); every exported data function checks `DEMO_MODE` first, so keep new data functions in both paths.
+- The storefront build needs the backend running when `MEDUSA_BACKEND_URL` is set. Unset = demo mode (`lib/data/mode.ts`, `lib/data/mock-backend.ts`, bundled `lib/mock/catalog.json`, real BLUORNG products with Shopify-hosted photos); every exported data function checks `DEMO_MODE` first, so keep new data functions in both paths.
 
 ## Next.js
 
