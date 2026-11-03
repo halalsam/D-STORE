@@ -64,7 +64,7 @@ In the backend, import from `@medusajs/framework/*` subpaths, not `@medusajs/uti
 - Catalog reads go through `lib/data/catalog.ts` and use `"use cache"` + `cacheTag`. Never read cookies inside them.
 - Anything per-user (cart, customer, orders) reads cookies and must render inside `<Suspense>` (Cache Components).
 - Dynamic routes read `params` inside a `<Suspense>` child, or runtime regeneration fails.
-- The storefront build needs the backend running (catalog pages and `generateStaticParams` fetch from Medusa).
+- The storefront build needs the backend running when `MEDUSA_BACKEND_URL` is set. Unset = demo mode (`lib/data/mode.ts`, `lib/data/mock-backend.ts`, bundled `lib/mock/catalog.json`); every exported data function checks `DEMO_MODE` first, so keep new data functions in both paths.
 
 ## Next.js
 

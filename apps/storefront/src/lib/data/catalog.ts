@@ -4,6 +4,8 @@ import { sdk } from "@/lib/medusa"
 import { DEFAULT_COUNTRY } from "@/lib/site"
 import type { Collection, Product } from "@/lib/types"
 import { toCollection, toProduct } from "./adapters"
+import { demoCatalog } from "./mock-backend"
+import { DEMO_MODE } from "./mode"
 
 /**
  * Public catalog reads. Cached with "use cache" (no cookies inside) and
@@ -39,6 +41,7 @@ export async function listCollections(): Promise<Collection[]> {
   "use cache"
   cacheLife("hours")
   cacheTag("collections")
+  if (DEMO_MODE) return demoCatalog.collections()
   const { collections } = await sdk.store.collection.list({ limit: 50, fields: "id,handle,title,metadata" })
   return collections.map(toCollection)
 }
@@ -52,6 +55,7 @@ export async function listProducts(opts: { collectionHandle?: string } = {}): Pr
   "use cache"
   cacheLife("minutes")
   cacheTag("products")
+  if (DEMO_MODE) return demoCatalog.products(opts.collectionHandle)
   const region = await getRegion()
   let collectionId: string | undefined
   if (opts.collectionHandle) {
@@ -72,6 +76,7 @@ export async function getProduct(handle: string): Promise<Product | null> {
   "use cache"
   cacheLife("minutes")
   cacheTag("products", `product:${handle}`)
+  if (DEMO_MODE) return demoCatalog.product(handle)
   const region = await getRegion()
   const { products } = await sdk.store.product.list({ handle, region_id: region.id, fields: PRODUCT_FIELDS, limit: 1 })
   return products[0] ? toProduct(products[0]) : null

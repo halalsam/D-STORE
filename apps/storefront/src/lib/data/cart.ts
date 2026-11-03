@@ -7,6 +7,8 @@ import { emptyBag } from "@/lib/types"
 import { toBag, toMedusaAddress } from "./adapters"
 import { getRegion } from "./catalog"
 import { getAuthHeaders, getCartId, removeCartId, setCartId } from "./cookies"
+import { demoCart } from "./mock-backend"
+import { DEMO_MODE } from "./mode"
 
 const CART_FIELDS =
   "*items,+items.metadata,*promotions,*shipping_methods,*shipping_address,*payment_collection,*payment_collection.payment_sessions,+completed_at"
@@ -22,6 +24,7 @@ async function fetchCart(id: string) {
 
 /** Read the current cart without touching cookies (safe in Server Components). */
 export async function readCart(): Promise<HttpTypes.StoreCart | null> {
+  if (DEMO_MODE) return null
   const id = await getCartId()
   if (!id) return null
   try {
@@ -32,7 +35,14 @@ export async function readCart(): Promise<HttpTypes.StoreCart | null> {
   }
 }
 
+/** Current bag for Server Components (no cookie writes). */
+export async function readBag(): Promise<Bag> {
+  if (DEMO_MODE) return demoCart.read()
+  return toBag(await readCart())
+}
+
 export async function getBag(): Promise<Bag> {
+  if (DEMO_MODE) return demoCart.read()
   const id = await getCartId()
   if (!id) return emptyBag
   try {
@@ -62,6 +72,7 @@ export async function addToBag(
   quantity: number,
   display: { tone: Tone; silhouette: Silhouette }
 ): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return demoCart.add(variantId, quantity)
   try {
     const cartId = await ensureCartId()
     const { cart } = await sdk.store.cart.createLineItem(
@@ -77,6 +88,7 @@ export async function addToBag(
 }
 
 export async function updateBagLine(lineId: string, quantity: number): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return demoCart.update(lineId, quantity)
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {
@@ -93,6 +105,7 @@ export async function updateBagLine(lineId: string, quantity: number): Promise<A
 }
 
 export async function applyPromoCode(code: string): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return demoCart.applyPromo(code)
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {
@@ -106,6 +119,7 @@ export async function applyPromoCode(code: string): Promise<ActionResult<Bag>> {
 }
 
 export async function removePromoCode(code: string): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return demoCart.removePromo()
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {
@@ -122,6 +136,7 @@ export async function setCheckoutContact(input: {
   email: string
   address: Omit<Address, "id" | "isDefault" | "label">
 }): Promise<ActionResult<{ bag: Bag; shipping: ShippingChoice[] }>> {
+  if (DEMO_MODE) return demoCart.setContact(input.email, input.address)
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {
@@ -147,6 +162,7 @@ export async function setCheckoutContact(input: {
 }
 
 export async function setShippingMethod(optionId: string): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return demoCart.setShipping(optionId)
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {
@@ -163,6 +179,7 @@ export async function setShippingMethod(optionId: string): Promise<ActionResult<
  * real gateway (Razorpay, Stripe) is installed in the backend.
  */
 export async function setPaymentMethod(method: string, upiId?: string): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return demoCart.setPayment(method, upiId)
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {
@@ -185,6 +202,7 @@ export async function setPaymentMethod(method: string, upiId?: string): Promise<
 }
 
 export async function placeOrder(): Promise<ActionResult<{ orderId: string }>> {
+  if (DEMO_MODE) return demoCart.complete()
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {

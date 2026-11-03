@@ -5,6 +5,8 @@ import { sdk } from "@/lib/medusa"
 import type { ActionResult, Address, Customer, Order } from "@/lib/types"
 import { toCustomer, toCustomerAddress, toMedusaAddress, toOrder, type PaymentChoice } from "./adapters"
 import { getAuthHeaders, getCartId, removeAuthToken, setAuthToken } from "./cookies"
+import { demoCustomer } from "./mock-backend"
+import { DEMO_MODE } from "./mode"
 
 const ORDER_FIELDS =
   "*items,+items.metadata,*shipping_address,*shipping_methods,*fulfillments,*fulfillments.labels,+item_subtotal,+discount_total,+shipping_total,+total"
@@ -17,6 +19,7 @@ export type Session = { customer: Customer; addresses: Address[] } | null
 
 /** Current customer from the auth cookie, or null. Not cached (per user). */
 export async function getSession(): Promise<Session> {
+  if (DEMO_MODE) return demoCustomer.session()
   const headers = await getAuthHeaders()
   if (!("authorization" in headers)) return null
   try {
@@ -40,6 +43,7 @@ async function attachCart() {
 }
 
 export async function signIn(email: string, password: string): Promise<ActionResult> {
+  if (DEMO_MODE) return demoCustomer.signIn(email, password)
   try {
     const token = await sdk.auth.login("customer", "emailpass", { email, password })
     if (typeof token !== "string") return { ok: false, error: "Additional verification is required" }
@@ -58,6 +62,7 @@ export async function signUp(input: {
   lastName: string
   marketing: boolean
 }): Promise<ActionResult> {
+  if (DEMO_MODE) return demoCustomer.signIn(input.email, input.password, input)
   try {
     const registration = await sdk.auth.register("customer", "emailpass", { email: input.email, password: input.password })
     await sdk.store.customer.create(
@@ -73,11 +78,17 @@ export async function signUp(input: {
 }
 
 export async function signOut() {
+  if (DEMO_MODE) {
+    await demoCustomer.signOut()
+    revalidatePath("/", "layout")
+    return
+  }
   await removeAuthToken()
   revalidatePath("/", "layout")
 }
 
 export async function updateProfile(input: Partial<Pick<Customer, "firstName" | "lastName" | "phone" | "marketing" | "orderUpdatesSms">>): Promise<ActionResult> {
+  if (DEMO_MODE) return demoCustomer.update(input)
   try {
     const headers = await getAuthHeaders()
     const { customer } = await sdk.store.customer.retrieve({ fields: "metadata" }, headers)
@@ -103,6 +114,11 @@ export async function updateProfile(input: Partial<Pick<Customer, "firstName" | 
 }
 
 export async function saveAddress(address: Address, isNew: boolean): Promise<ActionResult<{ id: string }>> {
+  if (DEMO_MODE) {
+    const res = await demoCustomer.saveAddress(address, isNew)
+    revalidatePath("/account", "layout")
+    return res
+  }
   try {
     const headers = await getAuthHeaders()
     const body = {
@@ -125,6 +141,11 @@ export async function saveAddress(address: Address, isNew: boolean): Promise<Act
 }
 
 export async function deleteAddress(id: string): Promise<ActionResult> {
+  if (DEMO_MODE) {
+    const res = await demoCustomer.deleteAddress(id)
+    revalidatePath("/account", "layout")
+    return res
+  }
   try {
     await sdk.store.customer.deleteAddress(id, await getAuthHeaders())
     revalidatePath("/account", "layout")
@@ -135,6 +156,7 @@ export async function deleteAddress(id: string): Promise<ActionResult> {
 }
 
 export async function listOrders(): Promise<Order[]> {
+  if (DEMO_MODE) return (await demoCustomer.session()) ? demoCustomer.orders() : []
   const headers = await getAuthHeaders()
   if (!("authorization" in headers)) return []
   try {
@@ -146,6 +168,7 @@ export async function listOrders(): Promise<Order[]> {
 }
 
 export async function getOrder(id: string): Promise<Order | null> {
+  if (DEMO_MODE) return demoCustomer.order(id)
   try {
     const headers = await getAuthHeaders()
     const [{ order }, payment] = await Promise.all([
@@ -161,6 +184,7 @@ export async function getOrder(id: string): Promise<Order | null> {
 
 /** Starts Medusa's reset flow (emits auth.password_reset; needs a notification provider to send the email). */
 export async function requestPasswordReset(email: string): Promise<ActionResult> {
+  if (DEMO_MODE) return { ok: true, data: undefined }
   try {
     await sdk.auth.resetPassword("customer", "emailpass", { identifier: email })
     return { ok: true, data: undefined }

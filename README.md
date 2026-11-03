@@ -46,7 +46,8 @@ Optional Medusa demo products: `pnpm backend:seed`.
 - Catalog pages are prerendered from the Store API and refresh about every minute (`"use cache"`).
 - Bag = Medusa cart (cart id in an httpOnly cookie). Sign in = Medusa email/password auth (JWT in an httpOnly cookie).
 - Checkout: address -> shipping options -> payment session (system provider for now) -> `cart.complete`.
-- The storefront build needs the backend running.
+- The storefront build needs the backend running when `MEDUSA_BACKEND_URL` is set.
+- **Demo mode:** with `MEDUSA_BACKEND_URL` unset (e.g. a Vercel deploy without a backend), the storefront serves a bundled copy of the catalog and keeps cart, account and orders in cookies. A footer badge and a checkout note mark it as a demo.
 
 ## Redis
 

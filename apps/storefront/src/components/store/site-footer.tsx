@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { DEMO_MODE } from "@/lib/data/mode"
 import { NewsletterForm } from "./newsletter-form"
 
 const columns = [
@@ -38,7 +39,10 @@ export function SiteFooter() {
           D-STORE
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 type-caption text-ink-muted">
-          <p>D-STORE. All rights reserved.</p>
+          <p className="flex items-center gap-2">
+            D-STORE. All rights reserved.
+            {DEMO_MODE && <span className="rounded-xs bg-accent-soft px-2 py-0.5 text-accent-soft-ink">Demo store: sample data, no real orders</span>}
+          </p>
           <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-ink">Privacy policy</Link>
             <Link href="/terms" className="hover:text-ink">Terms of service</Link>

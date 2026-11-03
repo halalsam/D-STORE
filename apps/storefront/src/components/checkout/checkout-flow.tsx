@@ -40,7 +40,7 @@ function fields(a: Address): AddressFields {
   }
 }
 
-export function CheckoutFlow({ initialBag, session }: { initialBag: Bag; session: Session }) {
+export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag: Bag; session: Session; demo?: boolean }) {
   const router = useRouter()
   const addresses = session?.addresses ?? []
   const [bag, setBagState] = useState(initialBag)
@@ -321,6 +321,11 @@ export function CheckoutFlow({ initialBag, session }: { initialBag: Bag; session
         <div id="step-4" className="scroll-mt-(--header-h)">
           <StepCard index={4} title="Review and place order" state={step === 4 ? "active" : "upcoming"}>
             <div className="grid gap-5">
+              {demo && (
+                <p className="rounded-lg bg-accent-soft px-4 py-3 type-body-sm text-accent-soft-ink">
+                  Demo store: this places a sample order in your browser only. Nothing is charged or shipped.
+                </p>
+              )}
               <p className="type-body-sm text-ink-muted">
                 Check the details above. By placing your order you agree to our{" "}
                 <Link href="/terms" className="text-ink underline underline-offset-2">terms</Link> and{" "}

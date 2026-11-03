@@ -1,15 +1,15 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { CheckoutFlow } from "@/components/checkout/checkout-flow"
-import { toBag } from "@/lib/data/adapters"
-import { readCart } from "@/lib/data/cart"
+import { readBag } from "@/lib/data/cart"
+import { DEMO_MODE } from "@/lib/data/mode"
 import { currentSession } from "@/lib/data/session"
 
 export const metadata: Metadata = { title: "Checkout" }
 
 async function Checkout() {
-  const [cart, session] = await Promise.all([readCart(), currentSession()])
-  return <CheckoutFlow initialBag={toBag(cart)} session={session} />
+  const [bag, session] = await Promise.all([readBag(), currentSession()])
+  return <CheckoutFlow initialBag={bag} session={session} demo={DEMO_MODE} />
 }
 
 export default function CheckoutPage() {
