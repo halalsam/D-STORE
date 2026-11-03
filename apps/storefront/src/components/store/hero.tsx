@@ -47,7 +47,7 @@ type TileProps = { title: string; href: string; tone: readonly [string, string];
 /** Rounded editorial tile linking to a collection. */
 export function CollectionTile({ title, href, tone, blurb }: TileProps) {
   return (
-    <Link href={href} className="group pressable-soft relative block aspect-[4/5] overflow-hidden rounded-panel text-ink-on-media md:aspect-[3/4]">
+    <Link href={href} className="group pressable-soft relative block aspect-card overflow-hidden rounded-panel text-ink-on-media">
       <div
         className="absolute inset-0 media-zoom"
         style={{ background: `radial-gradient(90% 70% at 30% 10%, ${tone[1]}, transparent 70%), linear-gradient(165deg, ${tone[0]}, ${tone[1]})` }}

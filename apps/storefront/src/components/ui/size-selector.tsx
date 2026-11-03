@@ -9,7 +9,8 @@ type Props = {
   sizes: SizeOption[]
   value?: string
   onValueChange?: (value: string) => void
-  columns?: 4 | 5
+  /** Pills per row. 7 fits a full apparel run on one line. */
+  columns?: 4 | 5 | 7
   className?: string
   name?: string
 }
@@ -22,7 +23,7 @@ export function SizeSelector({ sizes, value, onValueChange, columns = 5, classNa
       value={value}
       onValueChange={onValueChange}
       aria-label="Size"
-      className={cn("grid gap-1.5", columns === 5 ? "grid-cols-5" : "grid-cols-4", className)}
+      className={cn("grid gap-1.5", columns === 7 ? "grid-cols-4 sm:grid-cols-7" : columns === 5 ? "grid-cols-5" : "grid-cols-4", className)}
     >
       {sizes.map((s) => (
         <RadioGroup.Item

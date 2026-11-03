@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Bookmark, LayoutGrid, LogOut, MapPin, Package, UserRound } from "lucide-react"
+import { Bookmark, LayoutGrid, LogOut, MapPin, Package, UserRound } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { useCustomer } from "@/lib/stores/account"
 import { cn } from "@/lib/utils"

@@ -1,4 +1,4 @@
-import { Check } from "lucide-react"
+import { Check } from "@/components/ui/icons"
 import { ProductMedia } from "@/components/store/product-media"
 import { formatPrice } from "@/lib/format"
 import type { Order, OrderLine, OrderStatus } from "@/lib/mock/account"
@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 export function LineItem({ line, currency = "inr", compact = false }: { line: OrderLine; currency?: string; compact?: boolean }) {
   return (
     <div className="flex items-center gap-3">
-      <div className={cn("relative aspect-[3/4] shrink-0 overflow-hidden rounded-md", compact ? "w-14" : "w-16")}>
+      <div className={cn("relative aspect-card shrink-0 overflow-hidden rounded-md", compact ? "w-14" : "w-16")}>
         <ProductMedia tone={line.tone} silhouette={line.silhouette} alt={line.title} />
         {line.quantity > 1 && (
           <span className="absolute top-1 right-1 grid h-5 min-w-5 place-items-center rounded-pill bg-surface-inverse px-1 text-[0.6875rem] text-ink-inverse tabular-nums">

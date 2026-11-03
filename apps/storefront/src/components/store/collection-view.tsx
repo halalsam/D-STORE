@@ -1,6 +1,6 @@
 "use client"
 
-import { LayoutGrid, SlidersHorizontal, Grip } from "lucide-react"
+import { LayoutGrid, SlidersHorizontal, Grip } from "@/components/ui/icons"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Segmented } from "@/components/ui/segmented"

@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Popover } from "radix-ui"
-import { Bookmark, MapPin, Menu, Search, ShoppingBag, User, X } from "lucide-react"
+import { Bookmark, MapPin, Menu, Search, ShoppingBag, User, X } from "@/components/ui/icons"
 import { useRef, useState, useSyncExternalStore } from "react"
 import { Button } from "@/components/ui/button"
 import { CountBubble } from "@/components/ui/badge"

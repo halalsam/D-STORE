@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ChevronRight, Package } from "lucide-react"
+import { ChevronRight, Package } from "@/components/ui/icons"
 import { ProductMedia } from "@/components/store/product-media"
 import { formatDate, formatPrice } from "@/lib/format"
 import { useOrders } from "@/lib/stores/account"
@@ -23,7 +23,7 @@ export function OrdersView() {
               <Link href={`/account/orders/${o.id}`} className="group pressable-soft flex items-center gap-4 rounded-panel bg-surface p-4 transition-shadow hover:shadow-md md:p-5">
                 <div className="flex shrink-0 -space-x-4">
                   {o.lines.slice(0, 3).map((l) => (
-                    <div key={l.handle + l.size} className="relative aspect-[3/4] w-14 overflow-hidden rounded-md ring-2 ring-surface md:w-16">
+                    <div key={l.handle + l.size} className="relative aspect-card w-14 overflow-hidden rounded-md ring-2 ring-surface md:w-16">
                       <ProductMedia tone={l.tone} silhouette={l.silhouette} alt={l.title} />
                     </div>
                   ))}

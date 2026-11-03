@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Check } from "lucide-react"
+import { ArrowRight, Check } from "@/components/ui/icons"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { TextField } from "@/components/ui/text-field"

@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { ProductGallery } from "@/components/store/product-gallery"
 import { ProductGrid } from "@/components/store/product-grid"
-import { ProductInfo } from "@/components/store/product-info"
-import { Section } from "@/components/ui/section"
-import { getProduct, getProductsByCollection, products } from "@/lib/mock/catalog"
+import { ProductPurchase, ProductTabs } from "@/components/store/product-info"
+import { ProductShowcase } from "@/components/store/product-showcase"
+import { SectionHeader } from "@/components/ui/section"
+import { getProduct, getProductsByCollection, isSoldOut, products } from "@/lib/mock/catalog"
 
 export function generateStaticParams() {
   return products.map((p) => ({ handle: p.handle }))
@@ -20,19 +20,29 @@ export default async function ProductPage({ params }: PageProps<"/products/[hand
   const product = getProduct(handle)
   if (!product) notFound()
   const related = getProductsByCollection(product.collection).filter((p) => p.id !== product.id).slice(0, 4)
+  // TODO: replace with curated "complete the look" links from Medusa (product metadata or a module link).
+  const pairs = products.filter((p) => p.collection !== product.collection && !isSoldOut(p)).slice(0, 3)
 
   return (
-    <main className="sheet">
-      <div className="page-x grid grid-cols-1 gap-grid pb-section lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(21rem,0.85fr)]">
-        <ProductGallery product={product} />
-        <aside className="lg:sticky lg:top-(--header-h) lg:flex lg:h-[calc(100dvh-var(--header-h))] lg:flex-col lg:justify-end lg:self-start lg:pb-gutter">
-          <ProductInfo product={product} />
-        </aside>
-      </div>
+    <main className="sheet pt-[calc(var(--radius-sheet)*0.5)]">
+      <ProductShowcase
+        product={product}
+        pairs={pairs}
+        details={
+          <>
+            <ProductPurchase product={product} />
+            <ProductTabs product={product} />
+          </>
+        }
+      />
+
       {related.length > 0 && (
-        <Section title="You may also like" href={`/collections/${product.collection}`} inset>
-          <ProductGrid products={related} reveal={false} />
-        </Section>
+        <section className="page-x pt-section pb-[calc(var(--spacing-section)*0.5)]">
+          <div className="panel">
+            <SectionHeader title="You may also like" href={`/collections/${product.collection}`} onPanel />
+            <ProductGrid products={related} reveal={false} />
+          </div>
+        </section>
       )}
     </main>
   )

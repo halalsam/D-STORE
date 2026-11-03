@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, RotateCcw, ShoppingBag } from "lucide-react"
+import { Plus, RotateCcw, ShoppingBag } from "@/components/ui/icons"
 
 const springPoints = {
   spring: "0, 0.019, 0.0682, 0.1377, 0.2195, 0.3073, 0.3964, 0.4832, 0.5651, 0.6406, 0.7086, 0.7688, 0.821, 0.8656, 0.903, 0.9338, 0.9586, 0.9782, 0.9933, 1.0046, 1.0127, 1.0181, 1.0214, 1.023, 1.0234, 1.0228, 1.0216, 1.0199, 1.0179, 1.0159, 1.0138, 1.0118, 1.0099, 1.0081, 1.0066, 1.0052, 1.004, 1.003, 1.0021, 1.0014, 1",
@@ -177,7 +177,7 @@ export function MotionLab() {
           <div key={reveal} className="mt-5 grid grid-cols-4 gap-grid">
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="animate-rise-in" style={{ animationDelay: `${i * 45}ms` }}>
-                <div className="aspect-[3/4] rounded-card bg-sky-200" />
+                <div className="aspect-card rounded-card bg-sky-200" />
                 <div className="mt-2 h-2 w-3/4 rounded-pill bg-surface-muted" />
                 <div className="mt-1.5 h-2 w-1/3 rounded-pill bg-surface-muted" />
               </div>

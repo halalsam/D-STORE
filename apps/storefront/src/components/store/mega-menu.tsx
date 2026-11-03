@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Search } from "lucide-react"
+import { Search } from "@/components/ui/icons"
 import type { RefObject } from "react"
 import { chipVariants, SwatchStack } from "@/components/ui/chip"
 import { TextField } from "@/components/ui/text-field"

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, Copy, PackageSearch } from "lucide-react"
+import { ArrowLeft, Copy, PackageSearch } from "@/components/ui/icons"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { formatDate } from "@/lib/format"

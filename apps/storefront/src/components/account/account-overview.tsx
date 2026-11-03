@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, Bookmark, MapPin, Package } from "lucide-react"
+import { ArrowRight, Bookmark, MapPin, Package } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { ProductMedia } from "@/components/store/product-media"
 import { formatDate, formatPrice } from "@/lib/format"
@@ -40,7 +40,7 @@ export function AccountOverview() {
             <div className="mt-7 flex items-center justify-between gap-4">
               <div className="flex -space-x-3">
                 {latest.lines.slice(0, 4).map((l) => (
-                  <div key={l.handle + l.size} className="relative aspect-[3/4] w-12 overflow-hidden rounded-md ring-2 ring-surface">
+                  <div key={l.handle + l.size} className="relative aspect-card w-12 overflow-hidden rounded-md ring-2 ring-surface">
                     <ProductMedia tone={l.tone} silhouette={l.silhouette} alt={l.title} />
                   </div>
                 ))}
@@ -72,7 +72,7 @@ export function AccountOverview() {
           {savedProducts.length ? (
             <div className="grid grid-cols-3 gap-grid sm:max-w-xl">
               {savedProducts.map((p) => (
-                <Link key={p.id} href={`/products/${p.handle}`} className="group pressable-soft relative aspect-[3/4] overflow-hidden rounded-card">
+                <Link key={p.id} href={`/products/${p.handle}`} className="group pressable-soft relative aspect-card overflow-hidden rounded-card">
                   <ProductMedia tone={p.tones[0]} silhouette={p.silhouette} alt={p.title} className="media-zoom" />
                 </Link>
               ))}

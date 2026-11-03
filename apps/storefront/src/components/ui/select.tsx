@@ -1,7 +1,7 @@
 "use client"
 
 import { Select as SelectPrimitive } from "radix-ui"
-import { Check, ChevronDown } from "lucide-react"
+import { Check, ChevronDown } from "@/components/ui/icons"
 import { cn } from "@/lib/utils"
 
 export type SelectOption = { value: string; label: string }

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ChevronDown, CreditCard, Lock, ShoppingBag, Smartphone, Truck, Wallet } from "lucide-react"
+import { ChevronDown, CreditCard, Lock, ShoppingBag, Smartphone, Truck, Wallet } from "@/components/ui/icons"
 import { useState } from "react"
 import { AddressLines } from "@/components/account/address-card"
 import { AddressForm } from "@/components/account/address-form"

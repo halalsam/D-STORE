@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowLeft, Lock } from "lucide-react"
+import { ArrowLeft, Lock } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 
 /** Distraction-free checkout chrome: no nav, no footer links. */

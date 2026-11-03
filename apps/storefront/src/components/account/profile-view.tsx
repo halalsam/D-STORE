@@ -1,6 +1,6 @@
 "use client"
 
-import { Check } from "lucide-react"
+import { Check } from "@/components/ui/icons"
 import { useRouter } from "next/navigation"
 import { useState, type FormEvent } from "react"
 import { Button } from "@/components/ui/button"

@@ -11,7 +11,7 @@ export function ColorPalette() {
             key={s.name}
             style={{ backgroundColor: s.hex, color: s.ink, animationDelay: `${i * 45}ms` }}
             className={
-              "relative flex aspect-[4/5] animate-rise-in flex-col justify-end overflow-hidden rounded-card p-5 " +
+              "relative flex aspect-card animate-rise-in flex-col justify-end overflow-hidden rounded-card p-5 " +
               (s.hex === "#FFFFFF" || s.hex === "#F5EFEB" ? "hairline" : "")
             }
           >

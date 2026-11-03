@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Minus, Plus, ShoppingBag } from "lucide-react"
+import { Minus, Plus, ShoppingBag } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent } from "@/components/ui/sheet"
 import { formatPrice } from "@/lib/format"
@@ -58,7 +58,7 @@ export function BagDrawer() {
                 className="flex animate-rise-in gap-3 rounded-lg bg-surface p-2"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
-                <div className="relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-md">
+                <div className="relative aspect-card w-20 shrink-0 overflow-hidden rounded-md">
                   <ProductMedia tone={l.product.tones[0]} silhouette={l.product.silhouette} alt={l.product.title} />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-between py-1 pr-1">

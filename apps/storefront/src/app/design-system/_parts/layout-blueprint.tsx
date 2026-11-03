@@ -1,4 +1,4 @@
-import { Bookmark, Plus, ZoomIn } from "lucide-react"
+import { Bookmark, Plus, ZoomIn } from "@/components/ui/icons"
 import { DsHeader } from "./ds-header"
 
 const tones = [
@@ -11,7 +11,7 @@ const tones = [
 function CardSketch({ tone, soldOut = false, name, price }: { tone: string; soldOut?: boolean; name: string; price: string }) {
   return (
     <article className={"group pressable-soft " + (soldOut ? "opacity-45" : "")}>
-      <div className="relative aspect-[3/4] overflow-hidden rounded-card">
+      <div className="relative aspect-card overflow-hidden rounded-card">
         <div className={`absolute inset-0 media-zoom ${tone}`} />
         {soldOut && <span className="absolute top-3 left-3 type-caption text-ink-on-media">Sold out</span>}
         <Bookmark className="absolute top-3 right-3 size-5 fill-current/70 text-ink-on-media" strokeWidth={0} />
@@ -90,7 +90,7 @@ export function LayoutBlueprint() {
             </div>
             <div className="product-grid-dense">
               {Array.from({ length: 12 }, (_, i) => (
-                <div key={i} className={`aspect-[3/4] rounded-md ${tones[i % 4]} pressable-soft`} />
+                <div key={i} className={`aspect-card rounded-md ${tones[i % 4]} pressable-soft`} />
               ))}
             </div>
           </div>
@@ -101,10 +101,10 @@ export function LayoutBlueprint() {
       {/* Product page anatomy */}
       <div className="overflow-hidden rounded-panel bg-canvas p-gutter ring-1 ring-line ring-inset">
         <div className="grid gap-grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(20rem,0.85fr)]">
-          <div className={`relative aspect-[3/4] rounded-card ${tones[0]}`}>
+          <div className={`relative aspect-card rounded-card ${tones[0]}`}>
             <span className="absolute top-3 left-3"><Note>gallery · 2 up · radius 18</Note></span>
           </div>
-          <div className={`relative hidden aspect-[3/4] rounded-card md:block ${tones[3]}`}>
+          <div className={`relative hidden aspect-card rounded-card md:block ${tones[3]}`}>
             <span className="absolute top-3 left-3 grid size-7 place-items-center rounded-pill bg-white text-ink">
               <ZoomIn className="size-3.5" />
             </span>

@@ -1,12 +1,14 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import { Bell, Check, RotateCcw, Truck, Wallet } from "@/components/ui/icons"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { SizeSelector } from "@/components/ui/size-selector"
 import { Tabs } from "@/components/ui/tabs"
-import { isSoldOut, type Product } from "@/lib/mock/catalog"
+import { getCollection, isSoldOut, type Product } from "@/lib/mock/catalog"
 import { useBag } from "@/lib/stores/bag"
 import { SaveToggle } from "./product-card"
 
@@ -24,7 +26,7 @@ function SizeGuide() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="soft" size="sm" className="h-7 rounded-xs px-2.5 type-caption">Size guide</Button>
+        <button className="pressable type-caption text-accent-ink underline underline-offset-4">Size guide</button>
       </SheetTrigger>
       <SheetContent side="adaptive" title="Size guide" subtitle="Measurements in inches" bodyClassName="p-4 md:p-6">
         <div className="overflow-hidden rounded-lg bg-surface">
@@ -53,75 +55,120 @@ function SizeGuide() {
   )
 }
 
-export function ProductInfo({ product }: { product: Product }) {
+const perks = [
+  { icon: Truck, label: "Free delivery" },
+  { icon: RotateCcw, label: "14 day returns" },
+  { icon: Wallet, label: "Cash on delivery" },
+]
+
+/** Title, price, sizes and the two CTAs. */
+export function ProductPurchase({ product }: { product: Product }) {
+  const router = useRouter()
   const { add } = useBag()
   const firstAvailable = product.sizes.find((s) => s.available)?.label
   const [size, setSize] = useState(firstAvailable)
+  const [notify, setNotify] = useState(false)
   const soldOut = isSoldOut(product)
   const apparel = product.sizes.length > 1
+  const collection = getCollection(product.collection)
 
   return (
-    <div className="grid gap-grid">
-      <div className="rounded-xl bg-surface p-3 ring-1 ring-line ring-inset">
-        <div className="flex items-start justify-between gap-3 px-1.5 pt-1">
-          <div className="min-w-0">
-            <div className="flex items-center gap-1">
-              <h1 className="type-heading-sm">{product.title}</h1>
-              <SaveToggle handle={product.handle} title={product.title} tone="ink" className="size-8" />
-            </div>
-            <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} className="type-body text-ink-muted" />
+    <section className="shrink-0 rounded-xl bg-surface p-4 ring-1 ring-line ring-inset md:p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="type-overline text-ink-muted">{collection?.title ?? "D-STORE"} · {product.type}</p>
+          <h1 className="mt-1.5 type-heading-md">{product.title}</h1>
+          <div className="mt-1 flex items-baseline gap-2">
+            <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} className="type-body-lg" />
+            <span className="type-caption text-ink-subtle">incl. GST</span>
           </div>
-          {apparel && <div className="mt-6 shrink-0"><SizeGuide /></div>}
         </div>
+        <SaveToggle handle={product.handle} title={product.title} tone="ink" className="-mt-1 -mr-1 shrink-0" />
+      </div>
 
-        {apparel && (
-          <SizeSelector sizes={product.sizes} value={size} onValueChange={setSize} className="mt-3" />
+      {apparel && !soldOut && (
+        <div className="mt-4">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="type-body-sm">
+              Size <span className="text-ink-muted">{size ? `· ${size}` : ""}</span>
+            </p>
+            <SizeGuide />
+          </div>
+          <SizeSelector sizes={product.sizes} value={size} onValueChange={setSize} columns={4} />
+        </div>
+      )}
+
+      <div className="mt-3 grid grid-cols-2 gap-1.5">
+        {soldOut ? (
+          <>
+            <Button size="xl" disabled>Sold out</Button>
+            <Button variant="secondary" size="xl" onClick={() => setNotify(true)} disabled={notify}>
+              {notify ? <><Check strokeWidth={2} /> We will email you</> : <><Bell strokeWidth={1.6} /> Notify me</>}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button variant="secondary" size="xl" disabled={!size} onClick={() => size && add(product, size, { open: true })}>
+              Add to bag
+            </Button>
+            <Button
+              size="xl"
+              disabled={!size}
+              onClick={() => {
+                if (!size) return
+                add(product, size)
+                router.push("/checkout")
+              }}
+            >
+              Buy now
+            </Button>
+          </>
         )}
-
-        <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-          <Button
-            variant="secondary"
-            size="xl"
-            disabled={soldOut || !size}
-            onClick={() => size && add(product, size, { open: true })}
-          >
-            {soldOut ? "Sold out" : "Add to bag"}
-          </Button>
-          <Button size="xl" disabled={soldOut || !size} onClick={() => size && add(product, size, { open: true })}>
-            Buy now
-          </Button>
-        </div>
       </div>
 
-      <div className="rounded-xl bg-surface px-3 pb-2 ring-1 ring-line ring-inset">
-        <Tabs
-          defaultValue="details"
-          contentClassName="px-6 py-4 type-body-sm text-ink-muted"
-          items={[
-            { value: "details", label: "Details", content: <p>{product.description}</p> },
-            {
-              value: "washcare",
-              label: "Washcare",
-              content: (
-                <ul className="grid gap-1">
-                  {product.washcare.map((w) => <li key={w}>{w}</li>)}
-                </ul>
-              ),
-            },
-            {
-              value: "shipping",
-              label: "Shipping",
-              content: (
-                <ul className="grid gap-1">
-                  <li>Packed within 24 hours.</li>
-                  <li>Free delivery nationwide.</li>
-                  <li>Dispatches next day.</li>
-                </ul>
-              ),
-            },
-          ]}
-        />
-      </div>
-    </div>
+      <ul className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line pt-3.5">
+        {perks.map(({ icon: Icon, label }) => (
+          <li key={label} className="flex items-center gap-1.5 type-caption text-ink-muted">
+            <Icon className="size-3.5" strokeWidth={1.8} /> {label}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+/** Details / Washcare / Shipping. */
+export function ProductTabs({ product }: { product: Product }) {
+  return (
+    <section className="flex min-h-0 flex-col rounded-xl bg-surface px-3 pb-1 ring-1 ring-line ring-inset lg:flex-1">
+      <Tabs
+        defaultValue="details"
+        className="flex min-h-0 flex-1 flex-col"
+        contentClassName="min-h-0 flex-1 overflow-y-auto px-3 py-3.5 type-body-sm text-ink-muted md:px-4"
+        items={[
+          { value: "details", label: "Details", content: <p>{product.description}</p> },
+          {
+            value: "washcare",
+            label: "Washcare",
+            content: (
+              <ul className="grid gap-1">
+                {product.washcare.map((w) => <li key={w}>{w}</li>)}
+              </ul>
+            ),
+          },
+          {
+            value: "shipping",
+            label: "Shipping",
+            content: (
+              <ul className="grid gap-1">
+                <li>Packed within 24 hours, dispatched next day.</li>
+                <li>Free delivery nationwide.</li>
+                <li>Easy 14 day returns.</li>
+              </ul>
+            ),
+          },
+        ]}
+      />
+    </section>
   )
 }

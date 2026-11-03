@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Bookmark, MapPin, Menu, Search, ShoppingBag, User } from "lucide-react"
+import { Bookmark, MapPin, Menu, Search, ShoppingBag, User } from "@/components/ui/icons"
 
 const icons = [
   { Icon: MapPin, label: "Stores", mobile: false },

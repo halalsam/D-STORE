@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { Check } from "lucide-react"
+import { Check } from "@/components/ui/icons"
 import { AddressLines } from "@/components/account/address-card"
 import { LineItem, OrderTracker, Totals } from "@/components/account/order-parts"
 import { Button } from "@/components/ui/button"

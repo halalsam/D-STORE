@@ -70,6 +70,10 @@ To self-host the fonts, download the woff2 files into `src/app/fonts/` and switc
 
 Elevation stays flat: `shadow-xs/sm/md/lg/glass`, navy tinted. `material` / `material-dark` give iOS frosted glass for bars and chips over photography.
 
+## Icons
+
+Hugeicons, free stroke-rounded set (`@hugeicons/core-free-icons`), wrapped in `src/components/ui/icons.tsx`. Import icons only from there. Default stroke 1.5, size with `size-*`, colour is `currentColor`. Filled states (saved bookmark) use `fill-current`.
+
 ## Motion
 
 Press fast, release on a spring, glide overlays on the iOS sheet curve.
@@ -108,8 +112,9 @@ html (surface, white)
 ```
 
 - **Gutter** `px-gutter` 16 to 28px. **Grid gap** `gap-grid` 8px. **Section spacing** `py-section`.
-- **Product card:** media `aspect-[3/4] rounded-card`, bookmark top right, carousel dots bottom center, "Sold out" top left with the whole card at ~45% opacity. Meta row `px-3 pt-2.5`: title `type-body-sm font-medium`, price `type-body-sm type-price text-ink-muted`, 32px "+" quick add on the right.
-- **Product page:** `lg:grid-cols-[1fr_1fr_minmax(20rem,0.85fr)]`, two-up gallery (`rounded-card`, zoom button top left), info column bottom-aligned and sticky. Info card `rounded-xl hairline p-3`: title `type-heading-sm` + bookmark, price, "Size guide" chip; size pills 5 columns, h 44, selected = `surface-inverse`, unavailable = `surface-muted` + strike; CTAs 2 columns, h 56, outlined "Add to bag" + filled "Buy now". Tabs card below with a sliding 2px underline.
+- **Card ratio:** every card and product image uses `aspect-card` (3:4, token `--aspect-card`). Do not use ad-hoc ratios.
+- **Product card:** media `aspect-card rounded-card`, bookmark top right, carousel dots bottom center, "Sold out" top left with the whole card at ~45% opacity. Meta row `px-3 pt-2.5`: title `type-body-sm font-medium`, price `type-body-sm type-price text-ink-muted`, 32px "+" quick add on the right.
+- **Product page:** `.pdp-grid` = three columns from `lg`: pinned main image (`aspect-card`, width capped so it always fits the viewport height) | vertical list of every view that scrolls with the page (click to swap the main image) | pinned details column (`.pdp-pinned`) that starts at the top and fills the height: purchase card (collection kicker, title, price, 4-per-row size pills, Add to bag + Buy now, perks row), tabs card that grows, "Complete the look" row. Sold out swaps the CTAs for Sold out + Notify me. Below `lg`: swipe carousel, then details.
 - **Mega menu:** drops below the header as a `rounded-panel` canvas sheet (`animate-menu-in`). Collections list left (`type-title`), category groups with white chip pills, "Shop by color" chips with overlapping swatch dots. Menu pill becomes an X.
 - **Filter drawer:** right side (`animate-drawer-in`), centered overline title + product count, chip groups separated by hairlines, "Sort by" select, sticky footer with outlined "Remove all" + filled "Apply".
 - **Sign in:** centered single column (max 24rem), wordmark top, email field with an inline arrow button, consent checkbox, caption legal line.

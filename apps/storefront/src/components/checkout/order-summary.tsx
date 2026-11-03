@@ -1,6 +1,6 @@
 "use client"
 
-import { Tag, X } from "lucide-react"
+import { Tag, X } from "@/components/ui/icons"
 import { useState } from "react"
 import { LineItem, Totals } from "@/components/account/order-parts"
 import { Button } from "@/components/ui/button"

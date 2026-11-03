@@ -1,6 +1,6 @@
 "use client"
 
-import { Bookmark } from "lucide-react"
+import { Bookmark } from "@/components/ui/icons"
 import { ProductGrid } from "@/components/store/product-grid"
 import { getProduct } from "@/lib/mock/catalog"
 import { useSaved } from "@/lib/stores/saved"

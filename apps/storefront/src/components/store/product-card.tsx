@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Popover, Toggle } from "radix-ui"
-import { ArrowLeft, ArrowRight, Bookmark, Plus } from "lucide-react"
+import { ArrowLeft, ArrowRight, Bookmark, Plus } from "@/components/ui/icons"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
@@ -27,7 +27,7 @@ export function ProductCard({ product, density = "default", priority, className 
     return (
       <Link
         href={href}
-        className={cn("group pressable-soft relative block aspect-[3/4] overflow-hidden rounded-md", soldOut && "opacity-45", className)}
+        className={cn("group pressable-soft relative block aspect-card overflow-hidden rounded-md", soldOut && "opacity-45", className)}
       >
         <ProductMedia tone={product.tones[0]} silhouette={product.silhouette} alt={product.title} className="media-zoom" />
       </Link>
@@ -36,7 +36,7 @@ export function ProductCard({ product, density = "default", priority, className 
 
   return (
     <article className={cn("group relative", className)}>
-      <div className={cn("relative aspect-[3/4] overflow-hidden rounded-card bg-surface-muted", soldOut && "opacity-45")}>
+      <div className={cn("relative aspect-card overflow-hidden rounded-card bg-surface-muted", soldOut && "opacity-45")}>
         <MediaCarousel product={product} href={href} priority={priority} />
         {soldOut ? (
           <span className="pointer-events-none absolute top-3 left-3 type-caption text-ink-on-media">Sold out</span>

@@ -286,3 +286,31 @@
     transparent 55%
   );
 }
+
+/* ------------------------------------------------------------------
+ * Product page: [pinned main image] [vertical image list] [pinned details]
+ * The main image column is capped so the 3:4 image always fits the
+ * viewport height; list and details share the rest.
+ * ---------------------------------------------------------------- */
+@utility pdp-grid {
+  --pdp-pinned-h: calc(100dvh - var(--header-h) - var(--spacing-gutter) * 1.25);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--spacing-grid);
+
+  @media (width >= 64rem) {
+    grid-template-columns:
+      min(40%, calc(var(--pdp-pinned-h) * 0.75))
+      minmax(0, 1fr)
+      minmax(21rem, 0.85fr);
+  }
+}
+
+@utility pdp-pinned {
+  @media (width >= 64rem) {
+    position: sticky;
+    top: calc(var(--header-h) + var(--spacing-gutter) * 0.25);
+    max-height: var(--pdp-pinned-h);
+  }
+}
