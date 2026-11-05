@@ -42,3 +42,6 @@ export const paymentMethods = [
   { id: "card", label: "Credit or debit card", description: "Visa, Mastercard, RuPay, Amex" },
   { id: "cod", label: "Cash on delivery", description: "Pay when your order arrives" },
 ] as const
+
+/** Shown on the empty search page. Keep to terms that return results. */
+export const popularSearches = ["Oversized tee", "Linen shirt", "Hoodie", "Tote", "Cap", "Coastline", "Heavyweight", "Navy"]

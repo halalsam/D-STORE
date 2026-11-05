@@ -26,6 +26,7 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Storefront API calls | `apps/storefront/src/lib/data/`: `catalog.ts` (cached reads, `"use cache"`), `cart.ts` + `customer.ts` (server actions), `adapters.ts` (Medusa -> view models), `cookies.ts` (JWT + cart id cookies) |
 | View model types / static nav config | `apps/storefront/src/lib/types.ts`, `apps/storefront/src/lib/site.ts` |
 | Storefront routes | `apps/storefront/src/app/` |
+| Product search (Medusa `/store/search` + demo matcher) | `apps/storefront/src/lib/data/search.ts`, `apps/storefront/src/app/(store)/search/` |
 | UI primitives / store / account / checkout components | `apps/storefront/src/components/{ui,store,account,checkout}/` |
 | Client stores: bag mirror of the Medusa cart, saved items (localStorage) | `apps/storefront/src/lib/stores/` |
 | D-STORE catalog seed (India/INR, products, shipping, WELCOME10) | `apps/backend/src/scripts/seed-dstore.ts` + `data/dstore-catalog.json` |
@@ -76,6 +77,7 @@ Next.js 16 differs from older versions. Read `apps/storefront/AGENTS.md` and the
 - No semicolons, double quotes, 2-space indent.
 - Files kebab-case, types PascalCase, functions camelCase, DB columns snake_case.
 - No emojis in code, comments or commit messages.
+- Minimal comments: only a non-obvious why, never what the code does.
 
 ## Off-limits
 

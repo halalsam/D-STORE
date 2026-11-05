@@ -47,11 +47,9 @@ export function SiteHeader() {
         >
           {/* Left */}
           <div className="flex items-center gap-1">
-            <Popover.Trigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Search" onClick={() => openMenu(true)} className="-ml-2 md:hidden">
-                <Search strokeWidth={1.6} />
-              </Button>
-            </Popover.Trigger>
+            <Button asChild variant="ghost" size="icon" className="-ml-2 md:hidden">
+              <Link href="/search" aria-label="Search"><Search strokeWidth={1.6} /></Link>
+            </Button>
             <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
               <Button asChild variant="ghost" size="md" className="-ml-3 type-body">
                 <Link href="/collections/new-arrivals">New in</Link>
@@ -78,11 +76,9 @@ export function SiteHeader() {
             <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
               <Link href="/stores" aria-label="Find a store"><MapPin strokeWidth={1.6} /></Link>
             </Button>
-            <Popover.Trigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Search" onClick={() => openMenu(true)} className="hidden md:inline-flex">
-                <Search strokeWidth={1.6} />
-              </Button>
-            </Popover.Trigger>
+            <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
+              <Link href="/search" aria-label="Search"><Search strokeWidth={1.6} /></Link>
+            </Button>
             <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
               <Link href="/account" aria-label="Account"><User strokeWidth={1.6} /></Link>
             </Button>

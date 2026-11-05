@@ -57,3 +57,7 @@ Thumbs.db
 **/.DS_Store
 # local screenshots
 docs/screenshots/
+
+# Third-party agent skills: restore with `npx skills experimental_install` (skills-lock.json)
+.claude/skills/design-taste-frontend/
+.agents/

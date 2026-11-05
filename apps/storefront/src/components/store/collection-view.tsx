@@ -12,7 +12,7 @@ import { ProductGrid } from "./product-grid"
 
 type Density = "default" | "dense"
 
-function applyFilters(products: Product[], f: Filters) {
+export function applyFilters(products: Product[], f: Filters) {
   const list = products.filter((p) => {
     if (f.types.length && !f.types.includes(p.type)) return false
     if (f.colors.length && (!p.color || !f.colors.includes(p.color))) return false

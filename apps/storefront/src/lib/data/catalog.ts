@@ -13,7 +13,7 @@ import { DEMO_MODE } from "./mode"
  * "minutes" keeps prices and stock fresh within about a minute.
  */
 
-const PRODUCT_FIELDS = [
+export const PRODUCT_FIELDS = [
   "*variants.calculated_price",
   "+variants.inventory_quantity",
   "+variants.manage_inventory",
