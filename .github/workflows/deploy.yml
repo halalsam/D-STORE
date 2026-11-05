@@ -12,11 +12,11 @@ name: Deploy
 # `<branch>-<sha>`, then `docker compose pull <svc> && docker compose up -d <svc>`
 # (see DEPLOYMENT.md).
 
+# Push deploys are off until the VPS and secrets are ready. To turn them on,
+# add back:
+#   push:
+#     branches: [main, dev]   # main -> LIVE server, dev -> DEV server
 on:
-  push:
-    # main -> LIVE server (production environment)
-    # dev  -> DEV server  (dev environment)
-    branches: [main, dev]
   workflow_dispatch:
     inputs:
       services:

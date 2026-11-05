@@ -91,7 +91,7 @@ docker compose exec medusa-server npx medusa user -e admin@dstore.in -p '<strong
 
 ## 4. Everyday deploys
 
-Push to `main` (live) or `dev` (dev box). The workflow builds only images whose paths changed
+Push deploys are currently off (`deploy.yml` only has `workflow_dispatch`); re-enable the `push` trigger once the server is ready. With it on, pushing to `main` (live) or `dev` (dev box) runs the workflow, which builds only images whose paths changed
 (`apps/backend/**`, `apps/storefront/**`, `backup/**`; lockfile changes rebuild both apps),
 pins `<branch>-<sha>` tags in the server's `.env`, pulls, and recreates the services.
 A `docker-compose.yml` change alone recreates the app services without rebuilding.
