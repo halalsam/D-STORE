@@ -46,7 +46,7 @@ export function ReviewForm({ productTitle, target }: { productTitle: string; tar
         const form = new FormData()
         form.append("files", new File([await downscale(file)], "review.jpg", { type: "image/jpeg" }))
         const res = await uploadReviewPhoto(form)
-        if (res.ok) setPhotos((p) => [...p, res.data.url])
+        if (res.ok) setPhotos((p) => (p.includes(res.data.url) ? p : [...p, res.data.url]))
         else setError(res.error)
       } catch {
         setError("That photo could not be read")

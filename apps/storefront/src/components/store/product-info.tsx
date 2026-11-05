@@ -182,14 +182,15 @@ export function ProductPurchase({ product, rating }: { product: Product; rating?
 }
 
 /** Details / Washcare / Shipping. */
-export function ProductTabs({ product }: { product: Product }) {
+export function ProductTabs({ product, reviews }: { product: Product; reviews?: { content: ReactNode } }) {
+  const reviewsTab = reviews ? [{ value: "reviews", label: "Reviews", content: reviews.content }] : []
   return (
     <section className="flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface px-3 pb-1 ring-1 ring-line ring-inset lg:min-h-36 lg:flex-1">
       <Tabs
         defaultValue="details"
         className="flex min-h-0 flex-1 flex-col"
         contentClassName="min-h-0 flex-1 overflow-y-auto px-3 py-3.5 type-body-sm text-ink-muted md:px-4"
-        items={product.giftCard ? [
+        items={[...(product.giftCard ? [
           { value: "details", label: "Details", content: <p>{product.description}</p> },
           {
             value: "how",
@@ -224,7 +225,7 @@ export function ProductTabs({ product }: { product: Product }) {
               </ul>
             ),
           },
-        ]}
+        ]), ...reviewsTab]}
       />
     </section>
   )

@@ -4,7 +4,7 @@ import { Suspense } from "react"
 import { GiftCardPurchase } from "@/components/store/gift-card-purchase"
 import { ProductGrid } from "@/components/store/product-grid"
 import { ProductPurchase, ProductTabs } from "@/components/store/product-info"
-import { ProductReviews, RatingSummaryLink } from "@/components/store/product-reviews"
+import { ProductReviews, RatingSummaryLink, ReviewsTab } from "@/components/store/product-reviews"
 import { ProductShowcase } from "@/components/store/product-showcase"
 import { SectionHeader } from "@/components/ui/section"
 import { getProduct, listProducts } from "@/lib/data/catalog"
@@ -66,7 +66,12 @@ async function ProductContent({ params }: { params: PageProps<"/products/[handle
             ) : (
               <ProductPurchase product={product} rating={<RatingSummaryLink stats={stats} />} />
             )}
-            <ProductTabs product={product} />
+            <ProductTabs
+              product={product}
+              reviews={{
+                content: <ReviewsTab productId={product.id} productTitle={product.title} handle={product.handle} stats={stats} reviews={reviews} />,
+              }}
+            />
           </>
         }
       />

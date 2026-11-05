@@ -35,7 +35,7 @@ function toReview(r: ReviewRow): Review {
     rating: r.rating,
     content: r.content ?? "",
     createdAt: r.created_at,
-    images: (r.images ?? []).map((i) => i.url),
+    images: [...new Set((r.images ?? []).map((i) => i.url))],
     response: r.response?.content || undefined,
   }
 }

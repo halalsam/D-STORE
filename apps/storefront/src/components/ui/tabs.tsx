@@ -43,7 +43,11 @@ export function Tabs({ items, defaultValue, className, contentClassName, variant
           <TabsPrimitive.Trigger
             key={item.value}
             value={item.value}
-            className="h-12 truncate rounded-md px-2 type-body text-ink-muted transition-colors duration-(--duration-fast) hover:text-ink focus-visible:-outline-offset-2 data-[state=active]:text-ink"
+            className={cn(
+              "h-12 truncate rounded-md text-ink-muted transition-colors duration-(--duration-fast) hover:text-ink focus-visible:-outline-offset-2 data-[state=active]:text-ink",
+              // Four or more equal-width tabs in the narrow buy column: smaller text so labels don't truncate.
+              items.length > 3 ? "px-1 type-body-sm" : "px-2 type-body"
+            )}
           >
             {item.label}
           </TabsPrimitive.Trigger>

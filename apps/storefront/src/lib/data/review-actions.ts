@@ -27,7 +27,7 @@ export async function getReviewEligibility(productId: string): Promise<ReviewEli
         kind: "can-review",
         orderId: existing.order_id,
         lineId: existing.order_line_item_id,
-        existing: { rating: existing.rating, content: existing.content ?? "", status: existing.status, images: (existing.images ?? []).map((i) => i.url) },
+        existing: { rating: existing.rating, content: existing.content ?? "", status: existing.status, images: [...new Set((existing.images ?? []).map((i) => i.url))] },
       }
     }
     for (const order of orders) {
