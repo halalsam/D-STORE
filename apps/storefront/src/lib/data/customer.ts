@@ -42,13 +42,25 @@ async function attachCart() {
   }
 }
 
-export async function signIn(email: string, password: string): Promise<ActionResult> {
+/**
+ * Moves orders placed as a guest with this account's email into the account
+ * (custom route apps/backend/src/api/store/customers/me/guest-orders). Without a
+ * verified email the backend only links `orderId`, the order just placed.
+ */
+export async function linkGuestOrders(orderId?: string, headers?: { authorization: string }) {
+  if (DEMO_MODE) return
+  await sdk.client
+    .fetch("/store/customers/me/guest-orders", { method: "POST", body: orderId ? { order_id: orderId } : {}, headers: headers ?? (await getAuthHeaders()) })
+    .catch(() => undefined)
+}
+
+export async function signIn(email: string, password: string, orderId?: string): Promise<ActionResult> {
   if (DEMO_MODE) return demoCustomer.signIn(email, password)
   try {
     const token = await sdk.auth.login("customer", "emailpass", { email, password })
     if (typeof token !== "string") return { ok: false, error: "Additional verification is required" }
     await setAuthToken(token)
-    await attachCart()
+    await Promise.all([attachCart(), linkGuestOrders(orderId, { authorization: `Bearer ${token}` })])
     return { ok: true, data: undefined }
   } catch {
     return { ok: false, error: "Email or password is incorrect" }
@@ -61,6 +73,7 @@ export async function signUp(input: {
   firstName: string
   lastName: string
   marketing: boolean
+  orderId?: string
 }): Promise<ActionResult> {
   if (DEMO_MODE) return demoCustomer.signIn(input.email, input.password, input)
   try {
@@ -70,7 +83,7 @@ export async function signUp(input: {
       {},
       { authorization: `Bearer ${registration}` }
     )
-    return await signIn(input.email, input.password)
+    return await signIn(input.email, input.password, input.orderId)
   } catch (e) {
     const msg = message(e, "Could not create your account")
     return { ok: false, error: /exist/i.test(msg) ? "An account with this email already exists. Sign in instead." : msg }
@@ -192,5 +205,26 @@ export async function requestPasswordReset(email: string): Promise<ActionResult>
     return { ok: true, data: undefined }
   } catch (e) {
     return { ok: false, error: message(e, "Could not start the reset") }
+  }
+}
+
+/** Sends the link that proves the account owns its email (unlocks guest orders). */
+export async function resendEmailVerification(): Promise<ActionResult> {
+  if (DEMO_MODE) return { ok: true, data: undefined }
+  try {
+    await sdk.client.fetch("/store/customers/me/email-verification", { method: "POST", headers: await getAuthHeaders() })
+    return { ok: true, data: undefined }
+  } catch (e) {
+    return { ok: false, error: message(e, "Could not send the email") }
+  }
+}
+
+export async function verifyEmail(token: string): Promise<ActionResult<{ linked: number }>> {
+  if (DEMO_MODE) return { ok: true, data: { linked: 0 } }
+  try {
+    const res = await sdk.client.fetch<{ linked: number }>("/store/email-verification", { method: "POST", body: { token } })
+    return { ok: true, data: { linked: res.linked } }
+  } catch (e) {
+    return { ok: false, error: message(e, "This link is invalid or has expired") }
   }
 }

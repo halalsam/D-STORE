@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { ReactNode } from "react"
 import { ChevronRight, Package } from "@/components/ui/icons"
 import { ProductMedia } from "@/components/store/product-media"
 import { formatDate, formatPrice } from "@/lib/format"
@@ -7,10 +8,11 @@ import { PageTitle } from "./account-nav"
 import { EmptyCard } from "./account-overview"
 import { orderItemCount, StatusBadge } from "./order-parts"
 
-export function OrdersView({ orders }: { orders: Order[] }) {
+export function OrdersView({ orders, notice }: { orders: Order[]; notice?: ReactNode }) {
   return (
     <div>
       <PageTitle title="Orders" description={`${orders.length} ${orders.length === 1 ? "order" : "orders"}`} />
+      {notice}
       {orders.length === 0 ? (
         <EmptyCard icon={<Package />} title="No orders yet" body="When you place an order it will show up here." href="/collections/new-arrivals" cta="Shop new in" />
       ) : (

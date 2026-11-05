@@ -1,5 +1,6 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import { Modules } from "@medusajs/framework/utils"
+import { isEmailVerified, sendVerificationEmail } from "../lib/guest-orders"
 import { sendEmail, STOREFRONT_URL, syncResendContact } from "../lib/notify"
 
 export default async function customerCreated({ event, container }: SubscriberArgs<{ id: string }>) {
@@ -22,7 +23,21 @@ export default async function customerCreated({ event, container }: SubscriberAr
       lastName: customer.last_name,
       subscribed: customer.metadata?.marketing === true,
     }),
+    maybeSendVerification(container, customer),
   ])
+}
+
+/** Google accounts are verified by Google (see /store/customers/me/guest-orders); email + password ones need the link. */
+async function maybeSendVerification(container: SubscriberArgs["container"], customer: Parameters<typeof sendVerificationEmail>[1]) {
+  if (isEmailVerified(customer)) {
+    return
+  }
+  const identities = await container
+    .resolve(Modules.AUTH)
+    .listProviderIdentities({ provider: "emailpass", entity_id: customer.email })
+  if (identities.length) {
+    await sendVerificationEmail(container, customer, { reason: "signup", idempotencyKey: `verify-email:${customer.id}:signup` })
+  }
 }
 
 export const config: SubscriberConfig = { event: "customer.created" }

@@ -7,6 +7,7 @@ export type TemplateData = {
   "customer-welcome": { first_name?: string; shop_url: string }
   "password-reset": { reset_url: string }
   "newsletter-welcome": { shop_url: string; code?: string }
+  "verify-email": { first_name?: string; verify_url: string; reason: "signup" | "guest-order" }
 }
 
 export type TemplateName = keyof TemplateData
@@ -94,6 +95,17 @@ ${p(`<strong style="color:${NAVY}">Shipping to</strong><br>${esc(d.address).repl
     html: layout("New drops, first.", `${h1("You are on the list")}${p(`New drops reach you before anyone else.${d.code ? ` Use <strong style="color:${NAVY}">${esc(d.code)}</strong> for 10% off your first order.` : ""}`)}${button(d.shop_url, "Shop new arrivals")}`),
     text: `You are on the D-STORE list.${d.code ? ` Use ${d.code} for 10% off.` : ""}\n${d.shop_url}`,
   }),
+  "verify-email": (d) => {
+    const body =
+      d.reason === "guest-order"
+        ? "We got an order placed with this email. Confirm it is yours and we will add it, along with any other orders you placed as a guest, to your D-STORE account."
+        : "Confirm this is your email so we can add orders you placed as a guest to your account. The link works for 3 days."
+    return {
+      subject: d.reason === "guest-order" ? "Add your order to your D-STORE account" : "Confirm your email",
+      html: layout("Confirm your email.", `${greeting(d.first_name)}${h1("Confirm your email")}${p(body)}${button(d.verify_url, "Confirm email")}${p("If you did not create a D-STORE account, ignore this email.")}`),
+      text: `${body}\n${d.verify_url}`,
+    }
+  },
 }
 
 export function render(name: string, data: Record<string, unknown>): Rendered | undefined {

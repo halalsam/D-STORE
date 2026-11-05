@@ -7,6 +7,7 @@ import type { Order } from "@/lib/types"
 
 export function Confirmation({ order, signedIn }: { order: Order; signedIn: boolean }) {
   const name = order.shippingAddress.firstName
+  const register = new URLSearchParams({ register: "1", email: order.email, order: order.id, next: `/account/orders/${order.id}` })
   return (
     <div className="mx-auto grid max-w-2xl gap-tile">
       <section className="panel animate-rise-in text-center">
@@ -44,7 +45,7 @@ export function Confirmation({ order, signedIn }: { order: Order; signedIn: bool
         {signedIn ? (
           <Button asChild variant="secondary" size="xl"><Link href={`/account/orders/${order.id}`}>View order</Link></Button>
         ) : (
-          <Button asChild variant="secondary" size="xl"><Link href="/sign-in">Create an account</Link></Button>
+          <Button asChild variant="secondary" size="xl"><Link href={`/sign-in?${register}`}>Create an account</Link></Button>
         )}
         <Button asChild size="xl"><Link href="/">Continue shopping</Link></Button>
       </div>

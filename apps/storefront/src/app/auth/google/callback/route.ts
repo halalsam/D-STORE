@@ -2,6 +2,7 @@ import { cookies } from "next/headers"
 import { NextResponse, type NextRequest } from "next/server"
 import { sdk } from "@/lib/medusa"
 import { getCartId, OAUTH_NEXT_COOKIE, setAuthToken } from "@/lib/data/cookies"
+import { linkGuestOrders } from "@/lib/data/customer"
 
 type TokenPayload = { actor_id?: string; user_metadata?: { email?: string; given_name?: string; family_name?: string } }
 
@@ -40,7 +41,11 @@ export async function GET(req: NextRequest) {
 
     await setAuthToken(token)
     const cartId = await getCartId()
-    if (cartId) await sdk.store.cart.transferCart(cartId, {}, { authorization: `Bearer ${token}` }).catch(() => undefined)
+    const authorization = `Bearer ${token}`
+    await Promise.all([
+      cartId ? sdk.store.cart.transferCart(cartId, {}, { authorization }).catch(() => undefined) : undefined,
+      linkGuestOrders(undefined, { authorization }),
+    ])
     return NextResponse.redirect(new URL(next, req.url))
   } catch {
     return fail()

@@ -278,7 +278,7 @@ export const demoCustomer = {
     const customer = await read<DemoCustomer | null>(COOKIE.customer, null)
     if (!customer) return null
     const addresses = await read<Address[]>(COOKIE.addresses, [])
-    return { customer, addresses: [...addresses].sort((a, b) => Number(!!b.isDefault) - Number(!!a.isDefault)) }
+    return { customer: { ...customer, emailVerified: true }, addresses: [...addresses].sort((a, b) => Number(!!b.isDefault) - Number(!!a.isDefault)) }
   },
   signIn: async (email: string, password: string, names?: { firstName: string; lastName: string; marketing: boolean }): Promise<ActionResult> => {
     if (password.length < 8) return { ok: false, error: "Use at least 8 characters" }
@@ -292,6 +292,7 @@ export const demoCustomer = {
       phone: same?.phone ?? "",
       marketing: names?.marketing ?? same?.marketing ?? true,
       orderUpdatesSms: same?.orderUpdatesSms ?? false,
+      emailVerified: true,
     } satisfies DemoCustomer)
     return { ok: true, data: undefined }
   },

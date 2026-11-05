@@ -72,6 +72,8 @@ export type Customer = {
   phone: string
   marketing: boolean
   orderUpdatesSms: boolean
+  /** Guest orders with this email are only moved into the account once the email is verified. */
+  emailVerified: boolean
 }
 
 export type OrderStatus = "placed" | "packed" | "shipped" | "delivered" | "cancelled"

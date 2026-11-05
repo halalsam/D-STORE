@@ -154,6 +154,7 @@ export function toCustomer(c: HttpTypes.StoreCustomer): Customer {
     phone: c.phone ?? "",
     marketing: c.metadata?.marketing !== false,
     orderUpdatesSms: c.metadata?.order_updates_sms === true,
+    emailVerified: typeof c.metadata?.email_verified_at === "string",
   }
 }
 

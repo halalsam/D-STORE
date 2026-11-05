@@ -39,6 +39,7 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Client stores: bag mirror of the Medusa cart, saved items (localStorage) | `apps/storefront/src/lib/stores/` |
 | D-STORE catalog seed (India/INR, products, shipping, WELCOME10) | `apps/backend/src/scripts/seed-dstore.ts` + `data/dstore-catalog.json` |
 | Custom store route: order payment method | `apps/backend/src/api/store/orders/[id]/payment-method/route.ts` |
+| Guest orders into accounts (email verification, order transfer) | `apps/backend/src/lib/guest-orders.ts`, `src/workflows/link-order-to-customer.ts`, `src/subscribers/link-guest-order.ts`, `src/api/store/email-verification/`, `src/api/store/customers/me/{guest-orders,email-verification}/`; storefront `lib/data/customer.ts` (`linkGuestOrders`), `app/(auth)/verify-email/` |
 | Design system (tokens, rules, layout spec) | `apps/storefront/DESIGN.md`, `apps/storefront/src/styles/` |
 
 ## Commands (from repo root)

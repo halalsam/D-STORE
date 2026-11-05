@@ -31,9 +31,13 @@ export function SignInForm() {
   const router = useRouter()
   const params = useSearchParams()
   const next = params.get("next") || "/account"
-  const [mode, setMode] = useState<"signin" | "register">("signin")
-  const [email, setEmail] = useState("")
-  const [stage, setStage] = useState<"email" | "password">("email")
+  // Coming from the order confirmation: the account must use the checkout email so the order lands in it.
+  const orderId = params.get("order") || undefined
+  const orderEmail = orderId ? params.get("email") ?? "" : ""
+  const emailLocked = EMAIL.test(orderEmail)
+  const [mode, setMode] = useState<"signin" | "register">(params.get("register") === "1" ? "register" : "signin")
+  const [email, setEmail] = useState(emailLocked ? orderEmail : "")
+  const [stage, setStage] = useState<"email" | "password">(emailLocked ? "password" : "email")
   const [error, setError] = useState<string>()
   const [googleError, setGoogleError] = useState(params.get("error") === "google" ? "Google sign-in did not finish. Try again." : undefined)
   const [googlePending, startGoogle] = useTransition()
@@ -60,15 +64,19 @@ export function SignInForm() {
     start(async () => {
       const res =
         mode === "signin"
-          ? await signIn(email, password)
+          ? await signIn(email, password, orderId)
           : await signUp({
               email,
               password,
               firstName: String(f.get("firstName") ?? "").trim(),
               lastName: String(f.get("lastName") ?? "").trim(),
               marketing: f.get("marketing") === "on",
+              orderId,
             })
-      if (!res.ok) return fail(res.error)
+      if (!res.ok) {
+        if (mode === "register" && /already exists/i.test(res.error)) setMode("signin")
+        return fail(res.error)
+      }
       await syncBag(true)
       router.push(next)
       router.refresh()
@@ -79,7 +87,13 @@ export function SignInForm() {
     <form onSubmit={submit} noValidate>
       <h1 className="type-heading-md">{mode === "signin" ? "Sign in" : "Create account"}</h1>
       <p className="mt-1 type-body-sm text-ink-muted">
-        {mode === "signin" ? "Sign in or create an account" : "Track orders, save addresses and check out faster."}
+        {orderId
+          ? mode === "signin"
+            ? "Sign in to add this order to your account."
+            : "Save this order to an account to track it, and check out faster next time."
+          : mode === "signin"
+            ? "Sign in or create an account"
+            : "Track orders, save addresses and check out faster."}
       </p>
 
       <div key={shake} className={shake ? "animate-shake" : undefined}>
@@ -92,6 +106,8 @@ export function SignInForm() {
           placeholder="Email"
           className="mt-6"
           value={email}
+          readOnly={emailLocked}
+          hint={emailLocked ? "The email from your order, so the order is saved to your account" : undefined}
           onChange={(e) => {
             setEmail(e.target.value)
             if (stage === "password") setStage("email")
