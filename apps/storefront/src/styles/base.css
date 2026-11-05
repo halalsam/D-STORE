@@ -100,10 +100,13 @@
       color 600000s 0s;
   }
 
-  input:autofill,
-  textarea:autofill,
-  select:autofill {
-    box-shadow: 0 0 0 100vmax var(--autofill-bg, var(--color-surface)) inset;
-    -webkit-text-fill-color: var(--color-ink);
+  /* Firefox only: Chromium also matches :autofill, and the shadow would hide the wrapper's ring. */
+  @supports (-moz-appearance: none) {
+    input:autofill,
+    textarea:autofill,
+    select:autofill {
+      box-shadow: 0 0 0 100vmax var(--autofill-bg, var(--color-surface)) inset;
+      -webkit-text-fill-color: var(--color-ink);
+    }
   }
 }

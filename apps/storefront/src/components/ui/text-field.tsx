@@ -49,7 +49,7 @@ export function TextField({
           id={inputId}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className="h-full w-full min-w-0 flex-1 bg-transparent type-body text-ink outline-none"
+          className="h-[calc(100%-4px)] w-full min-w-0 flex-1 bg-transparent type-body text-ink outline-none"
           {...props}
         />
         {trailing}
