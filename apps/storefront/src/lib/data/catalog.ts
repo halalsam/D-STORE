@@ -31,6 +31,7 @@ export async function getRegion(): Promise<RegionInfo> {
   "use cache"
   cacheLife("hours")
   cacheTag("regions")
+  if (DEMO_MODE) return { id: "demo", currencyCode: "inr" }
   const { regions } = await sdk.store.region.list({ fields: "id,currency_code,*countries", limit: 50 })
   const region = regions.find((r) => r.countries?.some((c) => c.iso_2 === DEFAULT_COUNTRY)) ?? regions[0]
   if (!region) throw new Error(`No Medusa region found for country "${DEFAULT_COUNTRY}"`)

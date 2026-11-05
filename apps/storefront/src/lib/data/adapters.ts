@@ -87,20 +87,7 @@ export function toCollection(c: HttpTypes.StoreCollection): Collection {
   }
 }
 
-type LineLike = {
-  id: string
-  variant_id?: string | null
-  product_handle?: string | null
-  product_title?: string | null
-  title?: string
-  variant_title?: string | null
-  quantity: number
-  unit_price: number
-  thumbnail?: string | null
-  metadata?: Meta
-}
-
-function toLine(i: LineLike): OrderLine {
+function toLine(i: HttpTypes.StoreCartLineItem | HttpTypes.StoreOrderLineItem): OrderLine {
   const meta = i.metadata
   const tone = Array.isArray(meta?.tone) ? (meta.tone as unknown as Tone) : FALLBACK_TONE
   return {
@@ -116,21 +103,11 @@ function toLine(i: LineLike): OrderLine {
   }
 }
 
-type AddressLike = {
-  first_name?: string | null
-  last_name?: string | null
-  phone?: string | null
-  address_1?: string | null
-  address_2?: string | null
-  city?: string | null
-  province?: string | null
-  postal_code?: string | null
-  country_code?: string | null
-}
+type MedusaAddress = Partial<HttpTypes.StoreCartAddress | HttpTypes.StoreOrderAddress | HttpTypes.StoreCustomerAddress>
 
 const COUNTRY_NAMES: Record<string, string> = { in: "India" }
 
-export function toAddressFields(a: AddressLike): Omit<Address, "id" | "isDefault" | "label"> {
+export function toAddressFields(a: MedusaAddress): Omit<Address, "id" | "isDefault" | "label"> {
   return {
     firstName: a.first_name ?? "",
     lastName: a.last_name ?? "",
@@ -223,15 +200,19 @@ function orderStatus(o: HttpTypes.StoreOrder): OrderStatus {
 
 const PAYMENT_LABELS: Record<string, string> = { upi: "UPI", card: "Card", cod: "Cash on delivery" }
 
-export type PaymentChoice = { payment_method: string | null; upi_id: string | null }
+/** Response of the custom GET /store/orders/:id/payment-method route (apps/backend). */
+export type StoreOrderPaymentMethodResponse = { payment_method: string | null; upi_id: string | null }
 
-export function toOrder(o: HttpTypes.StoreOrder, payment?: PaymentChoice): Order {
+/** Store order fulfillments carry labels when requested via "*fulfillments.labels"; HttpTypes omits them. */
+type FulfillmentWithLabels = HttpTypes.StoreOrderFulfillment & { labels?: { tracking_number?: string | null }[] }
+
+export function toOrder(o: HttpTypes.StoreOrder, payment?: StoreOrderPaymentMethodResponse): Order {
   const method = o.shipping_methods?.[0]
   const paymentMethod = payment?.payment_method ?? str(o.metadata, "payment_method")
   const upi = payment?.upi_id ?? str(o.metadata, "upi_id")
   const tracking = o.fulfillments
-    ?.flatMap((f) => (f as { labels?: { tracking_number?: string }[] }).labels ?? [])
-    .find((l) => l.tracking_number)?.tracking_number
+    ?.flatMap((f) => (f as FulfillmentWithLabels).labels ?? [])
+    .find((l) => l.tracking_number)?.tracking_number ?? undefined
   return {
     id: o.id,
     displayId: o.display_id ? `DS-${String(o.display_id).padStart(5, "0")}` : `DS-${o.id.slice(-6).toUpperCase()}`,
