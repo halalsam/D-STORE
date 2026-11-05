@@ -11,6 +11,7 @@ import {
   FilterHorizontalIcon,
   GridIcon,
   GridViewIcon,
+  InformationCircleIcon,
   Location01Icon,
   Logout01Icon,
   MailValidation01Icon,
@@ -61,6 +62,7 @@ export const ChevronRight = make(ArrowRight01Icon, "ChevronRight")
 export const Copy = make(Copy01Icon, "Copy")
 export const CreditCard = make(CreditCardIcon, "CreditCard")
 export const Grip = make(GridIcon, "Grip")
+export const Info = make(InformationCircleIcon, "Info")
 export const LayoutGrid = make(GridViewIcon, "LayoutGrid")
 export const Lock = make(SquareLock02Icon, "Lock")
 export const LogOut = make(Logout01Icon, "LogOut")

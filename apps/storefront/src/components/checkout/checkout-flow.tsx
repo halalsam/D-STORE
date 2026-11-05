@@ -2,13 +2,12 @@
 
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState, useTransition } from "react"
-import { AddressLines } from "@/components/account/address-card"
+import { useEffect, useState, useTransition, type ReactNode } from "react"
 import { AddressForm } from "@/components/account/address-form"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Expand } from "@/components/ui/expand"
-import { ChevronDown, CreditCard, Lock, ShoppingBag, Smartphone, Truck, Wallet } from "@/components/ui/icons"
+import { ChevronDown, CreditCard, Info, Lock, ShoppingBag, Smartphone, Truck, Wallet } from "@/components/ui/icons"
 import { RadioCards } from "@/components/ui/radio-cards"
 import { TextField } from "@/components/ui/text-field"
 import { toast } from "@/components/ui/toast"
@@ -19,15 +18,25 @@ import { paymentMethods } from "@/lib/site"
 import { setBag as setClientBag } from "@/lib/stores/bag"
 import { emptyBag, type Address, type Bag } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { ActionBar } from "./action-bar"
 import { OrderSummary } from "./order-summary"
 import { openRazorpay } from "./razorpay"
-import { StepCard } from "./step-card"
+import { StepRecap, type RecapRow } from "./step-recap"
+import { Stepper } from "./stepper"
 
-type Step = 1 | 2 | 3 | 4
+type Step = "details" | "delivery" | "payment" | "review"
 type AddressFields = Omit<Address, "id" | "isDefault" | "label">
 
+const STEPS: { id: Step; label: string }[] = [
+  { id: "details", label: "Details" },
+  { id: "delivery", label: "Delivery" },
+  { id: "payment", label: "Payment" },
+  { id: "review", label: "Review" },
+]
+const order = (s: Step) => STEPS.findIndex((x) => x.id === s)
+
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const paymentIcon: Record<string, React.ReactNode> = {
+const paymentIcon: Record<string, ReactNode> = {
   upi: <Smartphone strokeWidth={1.6} />,
   card: <CreditCard strokeWidth={1.6} />,
   phonepe: <Smartphone strokeWidth={1.6} />,
@@ -41,12 +50,26 @@ function fields(a: Address): AddressFields {
   }
 }
 
+function oneLine(a: AddressFields) {
+  return [`${a.firstName} ${a.lastName}`.trim(), a.line1, a.line2, `${a.city} ${a.postalCode}`].filter(Boolean).join(", ")
+}
+
+function StepHeading({ title, description }: { title: string; description?: string }) {
+  return (
+    <div className="mb-6">
+      <h1 className="type-heading-md md:type-heading-lg">{title}</h1>
+      {description && <p className="mt-1.5 max-w-[60ch] type-body-sm text-ink-muted">{description}</p>}
+    </div>
+  )
+}
+
 export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag: Bag; session: Session; demo?: boolean }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const addresses = session?.addresses ?? []
   const [bag, setBagState] = useState(initialBag)
-  const [step, setStep] = useState<Step>(1)
-  const [reached, setReached] = useState<Step>(1)
+  const [step, setStep] = useState<Step>("details")
+  const [direction, setDirection] = useState<"next" | "back">("next")
   const [email, setEmail] = useState(session?.customer.email ?? initialBag.email ?? "")
   const [emailError, setEmailError] = useState<string>()
   const [addressChoice, setAddressChoice] = useState<string>(addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? "new")
@@ -56,10 +79,10 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
   const [delivery, setDelivery] = useState<string>(initialBag.shippingMethodId ?? "")
   const [payment, setPayment] = useState<string>("upi")
   const [paymentStart, setPaymentStart] = useState<PaymentStart>({ kind: "none" })
-  const searchParams = useSearchParams()
   const [pending, start] = useTransition()
   const [placing, setPlacing] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
+
   useEffect(() => {
     if (searchParams.get("payment") === "failed") toast("Payment was not completed. Choose a method and try again.", "error")
   }, [searchParams])
@@ -69,19 +92,15 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
     setClientBag(b)
   }
 
-  const deliveryOption = options.find((o) => o.id === delivery)
-  const paymentOption = paymentMethods.find((p) => p.id === payment)!
-
-  const go = (s: Step) => {
-    setStep(s)
-    setReached((r) => (s > r ? s : r))
-    requestAnimationFrame(() => document.getElementById(`step-${s}`)?.scrollIntoView({ behavior: "smooth", block: "start" }))
+  const go = (next: Step) => {
+    setDirection(order(next) >= order(step) ? "next" : "back")
+    setStep(next)
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
-  const stateOf = (s: Step) => (step === s ? "active" : reached > s ? "done" : "upcoming")
 
   if (bag.lines.length === 0 && !placing) {
     return (
-      <div className="panel mx-auto grid max-w-lg animate-rise-in place-items-center py-16 text-center">
+      <div className="panel mx-auto mt-6 grid max-w-lg animate-rise-in place-items-center py-16 text-center">
         <span className="grid size-16 place-items-center rounded-pill bg-surface-muted text-ink-muted"><ShoppingBag className="size-6" strokeWidth={1.4} /></span>
         <h1 className="mt-5 type-heading-md">Your bag is empty</h1>
         <p className="mt-1 type-body-sm text-ink-muted">Add a few pieces, then come back to check out.</p>
@@ -89,6 +108,10 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       </div>
     )
   }
+
+  const total = formatPrice(bag.total, bag.currency)
+  const deliveryOption = options.find((o) => o.id === delivery)
+  const paymentOption = paymentMethods.find((p) => p.id === payment)!
 
   const submitContact = (a: AddressFields) =>
     start(async () => {
@@ -98,10 +121,10 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       setAddress(a)
       setOptions(res.data.shipping)
       if (!res.data.shipping.some((o) => o.id === delivery)) setDelivery(res.data.shipping[0]?.id ?? "")
-      go(2)
+      go("delivery")
     })
 
-  const continueFromInfo = () => {
+  const continueFromDetails = () => {
     if (!EMAIL.test(email)) return setEmailError("Enter a valid email")
     setEmailError(undefined)
     if (addressChoice === "new") {
@@ -118,7 +141,7 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       const res = await setShippingMethod(delivery)
       if (!res.ok) return void toast(res.error, "error")
       updateBag(res.data)
-      go(3)
+      go("payment")
     })
 
   const continueFromPayment = () =>
@@ -127,7 +150,7 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       if (!res.ok) return void toast(res.error, "error")
       updateBag(res.data.bag)
       setPaymentStart(res.data.payment)
-      go(4)
+      go("review")
     })
 
   const complete = () =>
@@ -160,205 +183,213 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
     }
   }
 
+  const recap: RecapRow[] = [
+    { label: "Contact", value: email, onEdit: () => go("details") },
+    ...(address ? [{ label: "Ship to", value: oneLine(address), onEdit: () => go("details") }] : []),
+    ...(order(step) > order("delivery") && deliveryOption
+      ? [{
+          label: "Delivery",
+          value: `${deliveryOption.label} · ${deliveryOption.price ? formatPrice(deliveryOption.price, bag.currency) : "Free"}`,
+          onEdit: () => go("delivery"),
+        }]
+      : []),
+    ...(step === "review" ? [{ label: "Payment", value: paymentOption.label, onEdit: () => go("payment") }] : []),
+  ]
+
+  const nextNote =
+    paymentStart.kind === "razorpay"
+      ? "A secure Razorpay window opens to finish your payment."
+      : paymentStart.kind === "redirect"
+        ? "You will finish paying on PhonePe, then come straight back here."
+        : payment === "cod"
+          ? `Keep ${total} ready when your order arrives.`
+          : null
 
   const summary = <OrderSummary bag={bag} onBag={updateBag} />
 
   return (
-    <div className="grid grid-cols-1 gap-tile lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)] lg:gap-6">
-      <div className="panel p-0 lg:hidden">
-        <button onClick={() => setSummaryOpen((o) => !o)} aria-expanded={summaryOpen} className="flex w-full items-center justify-between gap-3 p-5">
-          <span className="flex items-center gap-2 type-body-sm text-accent-ink">
-            <ShoppingBag className="size-4" strokeWidth={1.6} />
-            {summaryOpen ? "Hide" : "Show"} order summary
-            <ChevronDown className={cn("size-4 transition-transform duration-(--duration-spring) ease-spring", summaryOpen && "rotate-180")} />
-          </span>
-          <span className="type-heading-sm type-price">{formatPrice(bag.total, bag.currency)}</span>
-        </button>
-        <Expand open={summaryOpen}><div className="px-5 pb-5">{summary}</div></Expand>
+    <>
+      <div className="sticky top-(--header-h) z-(--z-sheet) -mx-gutter bg-canvas px-gutter pt-1 pb-3 md:pt-3">
+        <div className="mx-auto max-w-6xl">
+          <Stepper steps={STEPS} current={step} onJump={pending || placing ? undefined : go} />
+        </div>
       </div>
 
-      <div className="grid content-start gap-tile">
-        <div id="step-1" className="scroll-mt-(--header-h)">
-          <StepCard
-            index={1}
-            title="Contact and address"
-            state={stateOf(1)}
-            onEdit={() => go(1)}
-            summary={
-              address && (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <p className="type-body-sm text-ink-muted">{email}</p>
-                  <AddressLines address={address} />
-                </div>
-              )
-            }
-          >
-            <div className="grid gap-6">
-              {!session && (
-                <p className="rounded-lg bg-canvas px-4 py-3 type-body-sm text-ink-muted">
-                  Have an account?{" "}
-                  <Link href="/sign-in?next=/checkout" className="text-accent-ink underline underline-offset-2">Sign in</Link> for saved addresses.
-                </p>
-              )}
-              <TextField
-                label="Email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                error={emailError}
-                disabled={!!session}
-                hint="Order confirmation and tracking go here."
-              />
-              <div className="grid gap-3">
-                <p className="type-body-sm text-ink">Ship to</p>
-                <RadioCards
-                  label="Shipping address"
-                  value={addressChoice}
-                  onValueChange={setAddressChoice}
-                  options={[
-                    ...addresses.map((a) => ({
-                      value: a.id,
-                      title: a.label ?? `${a.firstName} ${a.lastName}`,
-                      description: `${a.line1}, ${a.city} ${a.postalCode}`,
-                    })),
-                    {
-                      value: "new",
-                      title: addresses.length ? "Use a new address" : "Shipping address",
-                      details: (
-                        <div className={addresses.length ? "border-t border-line pt-4" : undefined}>
-                          <AddressForm
-                            id="checkout-address"
-                            initial={
-                              initialBag.shippingAddress ??
-                              (session ? { firstName: session.customer.firstName, lastName: session.customer.lastName, phone: session.customer.phone } : undefined)
-                            }
-                            onSubmit={async (a) => {
-                              if (session && saveNew) {
-                                const res = await saveAddress({ ...a, label: a.label ?? "Address" }, true)
-                                if (res.ok) setAddressChoice(res.data.id)
-                              }
-                              submitContact(fields(a))
-                            }}
-                          >
-                            {session && (
-                              <Checkbox label="Save this address to my account" checked={saveNew} onCheckedChange={(v) => setSaveNew(v === true)} />
-                            )}
-                          </AddressForm>
-                        </div>
-                      ),
-                    },
-                  ]}
-                />
-              </div>
-              <Button size="xl" onClick={continueFromInfo} loading={pending && step === 1} className="sm:justify-self-start sm:px-12">
-                Continue to delivery
-              </Button>
-            </div>
-          </StepCard>
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-tile pt-4 pb-28 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)] lg:gap-10 lg:pt-6 lg:pb-0">
+        <div className="panel p-0 lg:hidden">
+          <button onClick={() => setSummaryOpen((o) => !o)} aria-expanded={summaryOpen} className="flex w-full items-center justify-between gap-3 p-5">
+            <span className="flex items-center gap-2 type-body-sm text-accent-ink">
+              <ShoppingBag className="size-4" strokeWidth={1.6} />
+              {summaryOpen ? "Hide" : "Show"} order summary
+              <ChevronDown className={cn("size-4 transition-transform duration-(--duration-spring) ease-spring", summaryOpen && "rotate-180")} />
+            </span>
+            <span className="type-heading-sm type-price">{total}</span>
+          </button>
+          <Expand open={summaryOpen}><div className="px-5 pb-5">{summary}</div></Expand>
         </div>
 
-        <div id="step-2" className="scroll-mt-(--header-h)">
-          <StepCard
-            index={2}
-            title="Delivery"
-            state={stateOf(2)}
-            onEdit={() => go(2)}
-            summary={
-              deliveryOption && (
-                <p className="flex items-center gap-2 type-body-sm text-ink-muted">
-                  <Truck className="size-4" strokeWidth={1.6} /> {deliveryOption.label}
-                  {deliveryOption.description && `, ${deliveryOption.description.toLowerCase()}`} · {deliveryOption.price ? formatPrice(deliveryOption.price, bag.currency) : "Free"}
-                </p>
-              )
-            }
-          >
-            <div className="grid gap-6">
-              {options.length ? (
+        <section className="min-w-0 overflow-x-clip">
+          {step !== "details" && step !== "review" && <StepRecap rows={recap} className="mb-8" />}
+
+          <div key={step} className={direction === "next" ? "animate-step-next" : "animate-step-back"}>
+            {step === "details" && (
+              <>
+                <StepHeading title="Your details" description="Where should we send your order and its updates?" />
+                <div className="grid gap-6">
+                  {!session && (
+                    <p className="rounded-lg bg-surface px-4 py-3 type-body-sm text-ink-muted ring-1 ring-line ring-inset">
+                      Have an account?{" "}
+                      <Link href="/sign-in?next=/checkout" className="text-accent-ink underline underline-offset-2">Sign in</Link> for saved addresses.
+                    </p>
+                  )}
+                  <TextField
+                    label="Email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    error={emailError}
+                    disabled={!!session}
+                    hint="Order confirmation and tracking go here."
+                  />
+                  <div className="grid gap-3">
+                    <p className="type-title">Shipping address</p>
+                    <RadioCards
+                      label="Shipping address"
+                      value={addressChoice}
+                      onValueChange={setAddressChoice}
+                      options={[
+                        ...addresses.map((a) => ({
+                          value: a.id,
+                          title: a.label ?? `${a.firstName} ${a.lastName}`,
+                          description: `${a.line1}, ${a.city} ${a.postalCode}`,
+                        })),
+                        {
+                          value: "new",
+                          title: addresses.length ? "Use a new address" : "New address",
+                          details: (
+                            <div className={addresses.length ? "border-t border-line pt-4" : undefined}>
+                              <AddressForm
+                                id="checkout-address"
+                                initial={
+                                  address ??
+                                  (session ? { firstName: session.customer.firstName, lastName: session.customer.lastName, phone: session.customer.phone } : undefined)
+                                }
+                                onSubmit={async (a) => {
+                                  if (session && saveNew) {
+                                    const res = await saveAddress({ ...a, label: a.label ?? "Address" }, true)
+                                    if (res.ok) setAddressChoice(res.data.id)
+                                  }
+                                  submitContact(fields(a))
+                                }}
+                              >
+                                {session && (
+                                  <Checkbox label="Save this address to my account" checked={saveNew} onCheckedChange={(v) => setSaveNew(v === true)} />
+                                )}
+                              </AddressForm>
+                            </div>
+                          ),
+                        },
+                      ]}
+                    />
+                  </div>
+                </div>
+                <ActionBar total={total}>
+                  <Button size="xl" onClick={continueFromDetails} loading={pending} className="lg:w-full">Continue to delivery</Button>
+                </ActionBar>
+              </>
+            )}
+
+            {step === "delivery" && (
+              <>
+                <StepHeading title="Delivery method" />
+                {options.length ? (
+                  <RadioCards
+                    label="Delivery method"
+                    value={delivery}
+                    onValueChange={setDelivery}
+                    options={options.map((o) => ({
+                      value: o.id,
+                      title: o.label,
+                      description: o.description,
+                      aside: o.price ? formatPrice(o.price, bag.currency) : "Free",
+                    }))}
+                  />
+                ) : (
+                  <div className="grid justify-items-center rounded-xl px-6 py-10 text-center ring-1 ring-line-strong ring-inset">
+                    <Truck className="size-6 text-ink-muted" strokeWidth={1.4} />
+                    <p className="mt-3 type-body font-medium">We can&apos;t deliver here yet</p>
+                    <p className="mt-1 max-w-[40ch] type-body-sm text-ink-muted">There are no delivery options for this address. Go back and check the PIN code.</p>
+                  </div>
+                )}
+                <ActionBar total={total}>
+                  <Button size="xl" onClick={continueFromDelivery} loading={pending} disabled={!options.length} className="lg:w-full">
+                    Continue to payment
+                  </Button>
+                </ActionBar>
+              </>
+            )}
+
+            {step === "payment" && (
+              <>
+                <StepHeading title="Payment" description="Choose how you'd like to pay. You confirm the amount on the next step." />
                 <RadioCards
-                  label="Delivery method"
-                  value={delivery}
-                  onValueChange={setDelivery}
-                  options={options.map((o) => ({
-                    value: o.id,
-                    title: o.label,
-                    description: o.description,
-                    aside: o.price ? formatPrice(o.price, bag.currency) : "Free",
+                  label="Payment method"
+                  value={payment}
+                  onValueChange={setPayment}
+                  options={paymentMethods.map((p) => ({
+                    value: p.id,
+                    title: p.label,
+                    description: p.description,
+                    aside: <span className="text-ink-muted [&_svg]:size-5">{paymentIcon[p.id]}</span>,
                   }))}
                 />
-              ) : (
-                <p className="type-body-sm text-ink-muted">No delivery options are available for this address.</p>
-              )}
-              <Button size="xl" onClick={continueFromDelivery} loading={pending && step === 2} disabled={!options.length} className="sm:justify-self-start sm:px-12">
-                Continue to payment
-              </Button>
-            </div>
-          </StepCard>
-        </div>
+                <div className="mt-5">
+                  <Checkbox label="Billing address same as shipping" defaultChecked disabled />
+                </div>
+                <ActionBar total={total}>
+                  <Button size="xl" onClick={continueFromPayment} loading={pending} className="lg:w-full">Review order</Button>
+                </ActionBar>
+              </>
+            )}
 
-        <div id="step-3" className="scroll-mt-(--header-h)">
-          <StepCard
-            index={3}
-            title="Payment"
-            state={stateOf(3)}
-            onEdit={() => go(3)}
-            summary={
-              <p className="flex items-center gap-2 type-body-sm text-ink-muted [&_svg]:size-4">
-                {paymentIcon[paymentOption.id]} {paymentOption.label}
-              </p>
-            }
-          >
-            <div className="grid gap-6">
-              <RadioCards
-                label="Payment method"
-                value={payment}
-                onValueChange={setPayment}
-                options={paymentMethods.map((p) => ({
-                  value: p.id,
-                  title: p.label,
-                  description: p.description,
-                  aside: <span className="text-ink-muted [&_svg]:size-5">{paymentIcon[p.id]}</span>,
-                }))}
-              />
-              <Checkbox label="Billing address same as shipping" defaultChecked disabled />
-              <Button size="xl" onClick={continueFromPayment} loading={pending && step === 3} className="sm:justify-self-start sm:px-12">
-                Review order
-              </Button>
-            </div>
-          </StepCard>
-        </div>
-
-        <div id="step-4" className="scroll-mt-(--header-h)">
-          <StepCard index={4} title="Review and place order" state={step === 4 ? "active" : "upcoming"}>
-            <div className="grid gap-5">
-              {demo && (
-                <p className="rounded-lg bg-accent-soft px-4 py-3 type-body-sm text-accent-soft-ink">
-                  Demo store: this places a sample order in your browser only. Nothing is charged or shipped.
+            {step === "review" && (
+              <>
+                <StepHeading title="Review and pay" />
+                <StepRecap rows={recap} />
+                {demo && (
+                  <p className="mt-5 rounded-lg bg-accent-soft px-4 py-3 type-body-sm text-accent-soft-ink">
+                    Demo store: this places a sample order in your browser only. Nothing is charged or shipped.
+                  </p>
+                )}
+                {nextNote && (
+                  <p className="mt-5 flex items-start gap-3 rounded-lg bg-surface px-4 py-3.5 type-body-sm text-ink-muted ring-1 ring-line ring-inset">
+                    <Info className="mt-px size-4 shrink-0" strokeWidth={1.6} />
+                    {nextNote}
+                  </p>
+                )}
+                <p className="mt-5 type-caption text-ink-muted">
+                  By placing your order you agree to our{" "}
+                  <Link href="/terms" className="text-ink underline underline-offset-2">terms</Link> and{" "}
+                  <Link href="/help/returns" className="text-ink underline underline-offset-2">returns policy</Link>.
                 </p>
-              )}
-              <p className="type-body-sm text-ink-muted">
-                Check the details above. By placing your order you agree to our{" "}
-                <Link href="/terms" className="text-ink underline underline-offset-2">terms</Link> and{" "}
-                <Link href="/help/returns" className="text-ink underline underline-offset-2">returns policy</Link>.
-              </p>
-              <div className="flex items-baseline justify-between rounded-lg bg-canvas px-4 py-3">
-                <span className="type-body-sm text-ink-muted">Total to pay</span>
-                <span className="type-heading-md type-price">{formatPrice(bag.total, bag.currency)}</span>
-              </div>
-              <Button size="xl" block loading={placing} onClick={submitOrder}>
-                <Lock strokeWidth={1.8} /> {paymentStart.kind === "none" ? "Place order" : `Pay ${formatPrice(bag.total, bag.currency)}`}
-              </Button>
-            </div>
-          </StepCard>
-        </div>
-      </div>
+                <ActionBar total={total}>
+                  <Button size="xl" loading={placing} onClick={submitOrder} className="lg:w-full">
+                    <Lock strokeWidth={1.8} /> {paymentStart.kind === "none" ? "Place order" : `Pay ${total}`}
+                  </Button>
+                </ActionBar>
+              </>
+            )}
+          </div>
+        </section>
 
-      <aside className="hidden lg:block">
-        <div className="panel sticky top-[calc(var(--header-h)+0.75rem)]">
-          <h2 className="mb-5 type-title">Order summary</h2>
-          {summary}
-        </div>
-      </aside>
-    </div>
+        <aside className="hidden lg:block">
+          <div className="panel sticky top-[calc(var(--header-h)+5rem)]">
+            <h2 className="mb-5 type-title">Order summary</h2>
+            {summary}
+          </div>
+        </aside>
+      </div>
+    </>
   )
 }

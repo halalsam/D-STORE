@@ -256,6 +256,8 @@
   --animate-pop: pop var(--duration-bounce) var(--ease-spring-bounce) both;
   --animate-shimmer: shimmer 1.6s var(--ease-linear) infinite;
   --animate-shake: shake 420ms var(--ease-out) both;
+  --animate-step-next: step-next var(--duration-spring) var(--ease-spring) both;
+  --animate-step-back: step-back var(--duration-spring) var(--ease-spring) both;
 
   @keyframes spin {
     to { transform: rotate(360deg); }
@@ -301,6 +303,12 @@
     40% { transform: translateX(5px); }
     60% { transform: translateX(-3px); }
     80% { transform: translateX(2px); }
+  }
+  @keyframes step-next {
+    from { opacity: 0; transform: translateX(24px); }
+  }
+  @keyframes step-back {
+    from { opacity: 0; transform: translateX(-24px); }
   }
   @keyframes shimmer {
     from { background-position: 150% 0; }
