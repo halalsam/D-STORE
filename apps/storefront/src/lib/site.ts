@@ -31,4 +31,4 @@ export const paymentMethods = [
 ] as const
 
 /** Shown on the empty search page. Keep to terms that return results. */
-export const popularSearches = ["Oversized tee", "Linen shirt", "Hoodie", "Tote", "Cap", "Coastline", "Heavyweight", "Navy"]
+export const popularSearches = ["Godzilla", "Polo", "Hoodie", "Denim jacket", "Backpack", "Joggers", "Knit", "Cap"]

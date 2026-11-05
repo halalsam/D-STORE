@@ -136,7 +136,7 @@ export function SearchView({ results, collections, latest }: Props) {
             autoCorrect="off"
             spellCheck={false}
             enterKeyHint="search"
-            placeholder="Tees, linen, navy..."
+            placeholder="Polos, hoodies, denim..."
             className="h-14 w-full min-w-0 bg-transparent font-display text-[2rem] leading-none font-bold tracking-[-0.03em] text-ink outline-none placeholder:text-ink-subtle/70 md:h-24 md:text-[4.25rem] [&::-webkit-search-cancel-button]:hidden"
           />
           {value && (
@@ -155,7 +155,7 @@ export function SearchView({ results, collections, latest }: Props) {
               <span className="text-ink tabular-nums">{results.total}</span> {results.total === 1 ? "result" : "results"} for &ldquo;{results.query}&rdquo;
             </span>
           ) : (
-            <span>Tees, shirts, hoodies, bags and caps. Results update as you type.</span>
+            <span>T-shirts, polos, hoodies, bags and caps. Results update as you type.</span>
           )}
           <span className="hidden items-center gap-1.5 md:flex">
             Press <kbd className="rounded-xs bg-surface-muted px-1.5 py-0.5 font-sans text-ink">/</kbd> to search,{" "}
@@ -242,7 +242,7 @@ function NoResults({ query, latest, onPick }: { query: string; latest: Product[]
       <div className="panel grid justify-items-center px-6 py-14 text-center md:py-20">
         <p className="type-overline text-ink-muted">No matches</p>
         <h2 className="mt-3 max-w-[18ch] text-balance type-heading-lg md:type-heading-xl">No products match &ldquo;{query}&rdquo;</h2>
-        <p className="mt-3 max-w-sm type-body-sm text-ink-muted">Check the spelling or try a broader word like &ldquo;tee&rdquo; or &ldquo;shirt&rdquo;. Popular searches:</p>
+        <p className="mt-3 max-w-sm type-body-sm text-ink-muted">Check the spelling or try a broader word like &ldquo;shirt&rdquo; or &ldquo;polo&rdquo;. Popular searches:</p>
         <div className="mt-7 flex justify-center [&_ul]:justify-center">
           <TermChips terms={popularSearches.slice(0, 5)} onPick={onPick} onPanel />
         </div>
