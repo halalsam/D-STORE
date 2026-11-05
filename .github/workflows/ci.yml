@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main, dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck backend
+        run: pnpm --filter @d-store/backend exec tsc --noEmit -p .
+      - name: Build backend
+        run: pnpm --filter @d-store/backend build
+      # No MEDUSA_BACKEND_URL: the storefront builds in demo mode.
+      - name: Build storefront
+        run: pnpm --filter @d-store/storefront build

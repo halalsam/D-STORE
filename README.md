@@ -6,7 +6,8 @@ Clothing e-commerce monorepo.
 | --- | --- | --- | --- |
 | Backend + Admin | `apps/backend` | Medusa 2.22.2 (server + admin dashboard) | http://localhost:9000 (admin at `/app`) |
 | Storefront | `apps/storefront` | Next.js 16, React 19, Tailwind CSS v4, Radix UI | http://localhost:8000 |
-| Infra | `docker-compose.yml` | PostgreSQL 16, Redis 7 | `5432`, `6379` |
+| Dev infra | `docker-compose.dev.yml` | PostgreSQL 16, Redis 7, Meilisearch | `5432`, `6379`, `7700` |
+| Production | `docker-compose.yml` | Traefik, Postgres, Redis, Meilisearch, Medusa server + worker, storefront, backups | see [DEPLOYMENT.md](./DEPLOYMENT.md) |
 
 Tooling: pnpm workspaces + Turborepo. Node >= 22.22.
 
@@ -14,7 +15,7 @@ Tooling: pnpm workspaces + Turborepo. Node >= 22.22.
 
 ```bash
 pnpm install
-pnpm infra:up                                   # start Postgres + Redis in Docker
+pnpm infra:up                                   # start Postgres, Redis and Meilisearch in Docker
 cp apps/backend/.env.template apps/backend/.env
 pnpm backend:migrate                            # run migrations + initial data seed
 pnpm backend:seed:dstore                        # D-STORE catalog: India region (INR), products, shipping, WELCOME10
@@ -36,7 +37,8 @@ pnpm backend:dev       # backend only
 pnpm storefront:dev    # storefront only
 pnpm lint              # lint everything
 pnpm build             # build everything
-pnpm infra:down        # stop Postgres + Redis (data persists in Docker volumes)
+pnpm infra:down        # stop dev infra (data persists in Docker volumes)
+pnpm backend:setup:integrations  # link configured payment/shipping providers to the India region
 ```
 
 Optional Medusa demo products: `pnpm backend:seed`.
@@ -52,3 +54,17 @@ Optional Medusa demo products: `pnpm backend:seed`.
 ## Redis
 
 When `REDIS_URL` is set, the backend uses Redis for the event bus, workflow engine and locking (see `apps/backend/medusa-config.ts`). Without it Medusa falls back to in-memory modules.
+
+## Integrations
+
+All optional; each turns on when its keys are set in `apps/backend/.env` (see `.env.template`).
+
+| Integration | Module | Notes |
+| --- | --- | --- |
+| Meilisearch | `apps/backend/src/modules/meilisearch` | Search Module provider; storefront `/search` queries Medusa `/store/search`. Unset = Postgres search |
+| S3 / R2 | `@medusajs/medusa/file-s3` | Product images and uploads. Unset = local disk |
+| Razorpay | `apps/backend/src/modules/razorpay` | UPI, cards, netbanking, wallets via Razorpay Checkout |
+| PhonePe | `apps/backend/src/modules/phonepe` | PG v2 hosted checkout, returns to `/checkout/payment-return` |
+| Google sign-in | `@medusajs/medusa/auth-google` | Storefront callback `/auth/google/callback`; set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` |
+| Resend | `apps/backend/src/modules/resend`, `src/subscribers/` | Order, shipping, account emails; contacts synced from marketing consent and newsletter |
+| Shiprocket | `apps/backend/src/modules/shiprocket` | Live courier rates at checkout; creating a fulfillment books the shipment, AWB and label |

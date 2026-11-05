@@ -6,7 +6,8 @@ D-STORE: a pnpm + Turborepo monorepo for a clothing store.
 
 - `apps/backend` (`@d-store/backend`): Medusa 2.22.2 server and admin dashboard. Based on Medusa's `dtc-starter` backend.
 - `apps/storefront` (`@d-store/storefront`): custom Next.js 16 App Router storefront, Tailwind CSS v4, Radix UI primitives (`radix-ui` package). Not based on the Medusa Next.js starter; UI is our own design system.
-- `docker-compose.yml`: PostgreSQL 16 and Redis 7 for local development.
+- `docker-compose.dev.yml`: PostgreSQL 16, Redis 7 and Meilisearch for local development.
+- `docker-compose.yml`: production stack (Traefik, Postgres, Redis, Meilisearch, Medusa server + worker, storefront, backup). Deploy flow in `DEPLOYMENT.md` and `.github/workflows/deploy.yml`.
 
 Package manager is **pnpm** (see `packageManager` in root `package.json`). Never create another lockfile. Install deps inside the app that needs them (`cd apps/<app> && pnpm add <pkg>`).
 
@@ -21,7 +22,13 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Module links | `apps/backend/src/links/` |
 | Subscribers / jobs | `apps/backend/src/subscribers/`, `apps/backend/src/jobs/` |
 | Admin customizations | `apps/backend/src/admin/` |
-| Medusa config (DB, Redis, CORS) | `apps/backend/medusa-config.ts` |
+| Medusa config (DB, Redis, CORS, every integration, gated on env) | `apps/backend/medusa-config.ts` |
+| Integration providers (Meilisearch, Razorpay, PhonePe, Resend, Shiprocket) | `apps/backend/src/modules/<name>/` |
+| Emails and Resend contact sync | `apps/backend/src/subscribers/`, `apps/backend/src/lib/notify.ts`, `apps/backend/src/modules/resend/templates.ts` |
+| Link providers to region / shipping options | `apps/backend/src/scripts/setup-integrations.ts` |
+| Checkout payment gateways (storefront) | `apps/storefront/src/lib/data/cart.ts` (`setPaymentMethod`), `components/checkout/razorpay.ts` |
+| Google OAuth (storefront) | `apps/storefront/src/lib/data/oauth.ts`, `src/app/auth/google/callback/route.ts` |
+| Dockerfiles | `apps/backend/Dockerfile`, `apps/storefront/Dockerfile`, `backup/Dockerfile` (build context: repo root) |
 | Storefront Medusa client (server only, no stored tokens) | `apps/storefront/src/lib/medusa.ts` |
 | Storefront API calls | `apps/storefront/src/lib/data/`: `catalog.ts` (cached reads, `"use cache"`), `cart.ts` + `customer.ts` (server actions), `adapters.ts` (Medusa -> view models), `cookies.ts` (JWT + cart id cookies) |
 | View model types / static nav config | `apps/storefront/src/lib/types.ts`, `apps/storefront/src/lib/site.ts` |
@@ -36,7 +43,7 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 ## Commands (from repo root)
 
 ```bash
-pnpm infra:up          # Postgres + Redis
+pnpm infra:up          # Postgres, Redis, Meilisearch (docker-compose.dev.yml)
 pnpm dev               # all apps
 pnpm backend:dev       # http://localhost:9000, admin at /app
 pnpm storefront:dev    # http://localhost:8000

@@ -1,0 +1,292 @@
+name: Deploy
+
+# Build-in-CI, pull-on-server deployment:
+#   1. Detect which services a push touched (or take them from a manual run).
+#   2. Build the affected images on GitHub runners and push them to GHCR,
+#      tagged `<branch>-<sha>` (immutable) and `<branch>` (moving).
+#   3. SSH to the server: pin the new tags in .env, `docker compose pull`,
+#      and recreate the services. The server never builds; a failed build
+#      means the deploy job never runs and prod is untouched.
+#
+# Rollback = set the service's *_TAG in the server's .env to an older
+# `<branch>-<sha>`, then `docker compose pull <svc> && docker compose up -d <svc>`
+# (see DEPLOYMENT.md).
+
+on:
+  push:
+    # main -> LIVE server (production environment)
+    # dev  -> DEV server  (dev environment)
+    branches: [main, dev]
+  workflow_dispatch:
+    inputs:
+      services:
+        description: "Space-separated compose services (e.g. 'frontend medusa-server')"
+        required: true
+        type: string
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  changes:
+    name: Detect changed services
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.map.outputs.services }}
+      build_medusa: ${{ steps.map.outputs.build_medusa }}
+      build_frontend: ${{ steps.map.outputs.build_frontend }}
+      build_backup: ${{ steps.map.outputs.build_backup }}
+    steps:
+      - uses: actions/checkout@v4
+        if: ${{ github.event_name == 'push' }}
+        with:
+          fetch-depth: 2
+
+      - name: Filter changed paths
+        id: filter
+        if: ${{ github.event_name == 'push' }}
+        uses: dorny/paths-filter@v3
+        with:
+          # Diff the push itself, not the merge-base with main.
+          base: ${{ github.ref_name }}
+          filters: |
+            shared:
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - '.npmrc'
+            medusa:
+              - 'apps/backend/**'
+            frontend:
+              - 'apps/storefront/**'
+            backup:
+              - 'backup/**'
+            compose:
+              - 'docker-compose.yml'
+
+      - name: Map changes to services and images
+        id: map
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_SERVICES: ${{ inputs.services }}
+          SHARED: ${{ steps.filter.outputs.shared }}
+          MEDUSA: ${{ steps.filter.outputs.medusa }}
+          FRONTEND: ${{ steps.filter.outputs.frontend }}
+          BACKUP: ${{ steps.filter.outputs.backup }}
+          COMPOSE: ${{ steps.filter.outputs.compose }}
+        run: |
+          set -euo pipefail
+          declare -A want=()
+          declare -A build=()
+
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            for svc in $INPUT_SERVICES; do
+              want[$svc]=1
+              case "$svc" in
+                medusa-server|medusa-worker) build[medusa]=1 ;;
+                frontend)                    build[frontend]=1 ;;
+                backup)                      build[backup]=1 ;;
+                traefik|postgres|redis|meilisearch) ;;
+                *) echo "Unknown service: $svc" >&2; exit 1 ;;
+              esac
+            done
+          else
+            # Compose-only change: recreate app services with their pinned tags.
+            if [ "$COMPOSE" = "true" ]; then
+              want[medusa-server]=1
+              want[medusa-worker]=1
+              want[frontend]=1
+            fi
+            # The lockfile and workspace config feed both app images.
+            if [ "$SHARED" = "true" ] || [ "$MEDUSA" = "true" ]; then
+              build[medusa]=1
+              want[medusa-server]=1
+              want[medusa-worker]=1
+            fi
+            if [ "$SHARED" = "true" ] || [ "$FRONTEND" = "true" ]; then
+              build[frontend]=1
+              want[frontend]=1
+            fi
+            if [ "$BACKUP" = "true" ]; then build[backup]=1; want[backup]=1; fi
+          fi
+
+          services="${!want[*]}"
+          echo "Deploy services: ${services:-<none>}"
+          echo "Build images:    ${!build[*]}"
+          {
+            echo "services=${services}"
+            echo "build_medusa=${build[medusa]:+true}"
+            echo "build_frontend=${build[frontend]:+true}"
+            echo "build_backup=${build[backup]:+true}"
+          } >> "$GITHUB_OUTPUT"
+
+  # One job per image, each with a per-branch registry cache.
+
+  build-medusa:
+    name: Build medusa image
+    needs: changes
+    if: ${{ needs.changes.outputs.build_medusa == 'true' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'dev' }}
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/halalsam/d-store/medusa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/backend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.ref_name }}-${{ github.sha }}
+            ${{ env.IMAGE }}:${{ github.ref_name }}
+          build-args: |
+            MEDUSA_BACKEND_URL=${{ vars.MEDUSA_BACKEND_URL }}
+          cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache-${{ github.ref_name }}
+          cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache-${{ github.ref_name }},mode=max
+
+  build-frontend:
+    name: Build frontend image
+    needs: changes
+    if: ${{ needs.changes.outputs.build_frontend == 'true' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'dev' }}
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/halalsam/d-store/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # NEXT_PUBLIC_* values are baked into the bundle, so the image is
+      # environment-specific. `next build` prerenders catalog pages from the
+      # backend's PUBLIC url: a backend outage fails the build and prod keeps running.
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/storefront/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.ref_name }}-${{ github.sha }}
+            ${{ env.IMAGE }}:${{ github.ref_name }}
+          build-args: |
+            MEDUSA_BACKEND_URL=${{ vars.MEDUSA_BACKEND_URL }}
+            NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ vars.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_SITE_URL }}
+            NEXT_PUBLIC_DEFAULT_REGION=${{ vars.NEXT_PUBLIC_DEFAULT_REGION || 'in' }}
+            NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=${{ vars.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED || 'false' }}
+          cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache-${{ github.ref_name }}
+          cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache-${{ github.ref_name }},mode=max
+
+  build-backup:
+    name: Build backup image
+    needs: changes
+    if: ${{ needs.changes.outputs.build_backup == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/halalsam/d-store/backup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: backup
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.ref_name }}-${{ github.sha }}
+            ${{ env.IMAGE }}:${{ github.ref_name }}
+          cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache-${{ github.ref_name }}
+          cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache-${{ github.ref_name }},mode=max
+
+  deploy:
+    name: Deploy to server
+    needs: [changes, build-medusa, build-frontend, build-backup]
+    if: ${{ !cancelled()
+            && needs.changes.result == 'success'
+            && needs.changes.outputs.services != ''
+            && !contains(needs.*.result, 'failure') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1.2.0
+        # main -> LIVE box (SERVER_*) | dev -> DEV box (DEV_SERVER_*)
+        with:
+          host: ${{ github.ref == 'refs/heads/main' && secrets.SERVER_HOST || secrets.DEV_SERVER_HOST }}
+          username: ${{ github.ref == 'refs/heads/main' && secrets.SERVER_USER || secrets.DEV_SERVER_USER }}
+          key: ${{ github.ref == 'refs/heads/main' && secrets.SSH_PRIVATE_KEY || secrets.DEV_SSH_PRIVATE_KEY }}
+          port: ${{ github.ref == 'refs/heads/main' && secrets.SERVER_PORT || secrets.DEV_SERVER_PORT }}
+          # No script_stop: it breaks multi-line if/else. `set -euo pipefail` handles failures.
+          command_timeout: 15m
+          script: |
+            set -euo pipefail
+            cd "${{ github.ref == 'refs/heads/main' && secrets.SERVER_PATH || secrets.DEV_SERVER_PATH }}"
+
+            BRANCH="${{ github.ref_name }}"
+            echo "==> Pulling compose/config from origin/${BRANCH} (no builds here)"
+            git fetch origin "${BRANCH}"
+            git checkout "${BRANCH}"
+            git pull --ff-only origin "${BRANCH}"
+
+            echo "==> Logging in to GHCR"
+            echo "${{ secrets.GHCR_PULL_TOKEN }}" \
+              | docker login ghcr.io -u "${{ secrets.GHCR_PULL_USER }}" --password-stdin
+
+            SERVICES="${{ needs.changes.outputs.services }}"
+            TAG="${BRANCH}-${{ github.sha }}"
+
+            # Pin only images this run rebuilt, so a partial deploy never points
+            # a service at a tag that was never pushed.
+            pin() {
+              if grep -q "^$1=" .env; then
+                sed -i "s|^$1=.*|$1=${TAG}|" .env
+              else
+                printf '%s=%s\n' "$1" "${TAG}" >> .env
+              fi
+              echo "    pinned $1=${TAG}"
+            }
+            echo "==> Pinning image tags"
+            if [ "${{ needs.changes.outputs.build_medusa }}" = "true" ];   then pin MEDUSA_TAG;   fi
+            if [ "${{ needs.changes.outputs.build_frontend }}" = "true" ]; then pin FRONTEND_TAG; fi
+            if [ "${{ needs.changes.outputs.build_backup }}" = "true" ];   then pin BACKUP_TAG;   fi
+
+            echo "==> Pulling images for: ${SERVICES}"
+            docker compose pull ${SERVICES}
+
+            # One instance each: recreate in dependency order. medusa-server
+            # runs migrations on start, so it goes before the worker.
+            for svc in medusa-server medusa-worker frontend backup traefik postgres redis meilisearch; do
+              if echo " ${SERVICES} " | grep -q " ${svc} "; then
+                echo "==> Recreating ${svc}"
+                docker compose up -d --no-deps --wait --wait-timeout 300 "${svc}"
+              fi
+            done
+
+            echo "==> Pruning stale images"
+            docker image prune -f
+
+            echo "==> Current status"
+            docker compose ps ${SERVICES}

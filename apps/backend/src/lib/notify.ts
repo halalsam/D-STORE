@@ -1,5 +1,5 @@
 import type { MedusaContainer } from "@medusajs/framework/types"
-import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys, MedusaError, Modules } from "@medusajs/framework/utils"
 import { Resend } from "resend"
 
 export const STOREFRONT_URL = (process.env.STOREFRONT_URL ?? "http://localhost:8000").replace(/\/$/, "")
@@ -42,9 +42,20 @@ export async function syncResendContact(
   }
   resend ??= new Resend(apiKey)
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const segmentId = process.env.RESEND_SEGMENT_ID
 
-  const update = await resend.contacts.update({
+  try {
+    await upsertContact(resend, contact)
+  } catch (e) {
+    logger.warn(`Resend contact sync failed for ${contact.email}: ${(e as Error).message}`)
+  }
+}
+
+async function upsertContact(
+  client: Resend,
+  contact: { email: string; firstName?: string | null; lastName?: string | null; subscribed: boolean }
+) {
+  const segmentId = process.env.RESEND_SEGMENT_ID
+  const update = await client.contacts.update({
     email: contact.email,
     unsubscribed: !contact.subscribed,
     firstName: contact.firstName ?? null,
@@ -53,7 +64,7 @@ export async function syncResendContact(
   if (!update.error) {
     return
   }
-  const created = await resend.contacts.create({
+  const created = await client.contacts.create({
     email: contact.email,
     unsubscribed: !contact.subscribed,
     firstName: contact.firstName ?? undefined,
@@ -61,6 +72,6 @@ export async function syncResendContact(
     ...(segmentId ? { segments: [{ id: segmentId }] } : {}),
   })
   if (created.error) {
-    logger.warn(`Resend contact sync failed for ${contact.email}: ${created.error.message}`)
+    throw new MedusaError(MedusaError.Types.UNEXPECTED_STATE, created.error.message)
   }
 }

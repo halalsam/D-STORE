@@ -1,37 +1,182 @@
+# Production stack, one instance of everything. Images are built in CI and
+# pulled here (see .github/workflows/deploy.yml and DEPLOYMENT.md).
+# Local development uses docker-compose.dev.yml instead.
 name: d-store
 
+x-medusa-env: &medusa-env
+  NODE_ENV: production
+  DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+  REDIS_URL: redis://redis:6379
+  MEILISEARCH_HOST: http://meilisearch:7700
+  MEILISEARCH_API_KEY: ${MEILI_MASTER_KEY}
+  MEDUSA_BACKEND_URL: https://${API_DOMAIN}
+  STOREFRONT_URL: https://${STORE_DOMAIN}
+  STORE_CORS: https://${STORE_DOMAIN}
+  ADMIN_CORS: https://${API_DOMAIN}
+  AUTH_CORS: https://${STORE_DOMAIN},https://${API_DOMAIN}
+  JWT_SECRET: ${JWT_SECRET}
+  COOKIE_SECRET: ${COOKIE_SECRET}
+
 services:
+  traefik:
+    image: traefik:v3.6
+    restart: unless-stopped
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=d-store_web
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls.certresolver=le
+      - --certificatesresolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+      - --ping=true
+      - --log.level=WARN
+      - --accesslog=true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+    networks: [web]
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-dstore}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dstore}
-      POSTGRES_DB: ${POSTGRES_DB:-dstore}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks: [internal]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dstore} -d ${POSTGRES_DB:-dstore}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 20
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes"]
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
     volumes:
       - redis_data:/data
+    networks: [internal]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
+      retries: 20
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.56
+    restart: unless-stopped
+    environment:
+      MEILI_ENV: production
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_NO_ANALYTICS: "true"
+    volumes:
+      - meili_data:/meili_data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:7700/health"]
+      interval: 10s
+      timeout: 5s
       retries: 10
 
+  medusa-server:
+    image: ghcr.io/halalsam/d-store/medusa:${MEDUSA_TAG:-main}
+    restart: unless-stopped
+    env_file: .env.backend
+    environment:
+      <<: *medusa-env
+      MEDUSA_WORKER_MODE: server
+      RUN_MIGRATIONS: "true"
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      meilisearch: { condition: service_healthy }
+    networks: [web, internal]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=Host(`${API_DOMAIN}`)
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.services.api.loadbalancer.server.port=9000
+      - traefik.http.services.api.loadbalancer.healthcheck.path=/health
+      - traefik.http.routers.api.middlewares=secure-headers
+      - traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000
+      - traefik.http.middlewares.secure-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.secure-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.secure-headers.headers.referrerPolicy=strict-origin-when-cross-origin
+
+  medusa-worker:
+    image: ghcr.io/halalsam/d-store/medusa:${MEDUSA_TAG:-main}
+    restart: unless-stopped
+    env_file: .env.backend
+    environment:
+      <<: *medusa-env
+      MEDUSA_WORKER_MODE: worker
+      DISABLE_MEDUSA_ADMIN: "true"
+    # Worker mode serves no HTTP, so the image's /health check does not apply.
+    healthcheck:
+      disable: true
+    depends_on:
+      medusa-server: { condition: service_healthy }
+    networks: [internal]
+
+  frontend:
+    image: ghcr.io/halalsam/d-store/frontend:${FRONTEND_TAG:-main}
+    restart: unless-stopped
+    environment:
+      MEDUSA_BACKEND_URL: http://medusa-server:9000
+    depends_on:
+      medusa-server: { condition: service_healthy }
+    networks: [web, internal]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.store.rule=Host(`${STORE_DOMAIN}`) || Host(`www.${STORE_DOMAIN}`)
+      - traefik.http.routers.store.entrypoints=websecure
+      - traefik.http.routers.store.middlewares=www-redirect,secure-headers
+      - traefik.http.middlewares.www-redirect.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.www-redirect.redirectregex.replacement=https://$${1}
+      - traefik.http.middlewares.www-redirect.redirectregex.permanent=true
+      - traefik.http.services.store.loadbalancer.server.port=8000
+
+  backup:
+    image: ghcr.io/halalsam/d-store/backup:${BACKUP_TAG:-main}
+    restart: unless-stopped
+    env_file: .env.backend
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 3 * * *}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - backups:/backups
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [internal]
+
+networks:
+  web:
+    name: d-store_web
+  internal:
+
 volumes:
+  letsencrypt:
   postgres_data:
   redis_data:
+  meili_data:
+  backups:
