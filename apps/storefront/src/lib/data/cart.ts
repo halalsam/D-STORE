@@ -152,7 +152,7 @@ export async function setCheckoutContact(input: {
     const shipping = shipping_options.map((o) => ({
       id: o.id,
       label: o.name,
-      description: (o as { type?: { description?: string } }).type?.description ?? "",
+      description: o.type?.description ?? "",
       price: o.amount ?? 0,
     }))
     return { ok: true, data: { bag: toBag(cart), shipping } }

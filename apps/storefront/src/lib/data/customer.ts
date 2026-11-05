@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { sdk } from "@/lib/medusa"
 import type { ActionResult, Address, Customer, Order } from "@/lib/types"
-import { toCustomer, toCustomerAddress, toMedusaAddress, toOrder, type PaymentChoice } from "./adapters"
+import { toCustomer, toCustomerAddress, toMedusaAddress, toOrder, type StoreOrderPaymentMethodResponse } from "./adapters"
 import { getAuthHeaders, getCartId, removeAuthToken, setAuthToken } from "./cookies"
 import { demoCustomer } from "./mock-backend"
 import { DEMO_MODE } from "./mode"
@@ -174,7 +174,9 @@ export async function getOrder(id: string): Promise<Order | null> {
     const [{ order }, payment] = await Promise.all([
       sdk.store.order.retrieve(id, { fields: ORDER_FIELDS }, headers),
       // Custom backend route (apps/backend/src/api/store/orders/[id]/payment-method).
-      sdk.client.fetch<PaymentChoice>(`/store/orders/${id}/payment-method`, { headers }).catch(() => undefined),
+      sdk.client
+        .fetch<StoreOrderPaymentMethodResponse>(`/store/orders/${encodeURIComponent(id)}/payment-method`, { headers })
+        .catch(() => undefined),
     ])
     return toOrder(order, payment)
   } catch {
