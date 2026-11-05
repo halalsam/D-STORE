@@ -173,29 +173,53 @@ export async function setShippingMethod(optionId: string): Promise<ActionResult<
   }
 }
 
-/**
- * Records the chosen method (UPI / card / COD) on the cart and opens a
- * payment session. All methods use the region's first provider until a
- * real gateway (Razorpay, Stripe) is installed in the backend.
- */
-export async function setPaymentMethod(method: string, upiId?: string): Promise<ActionResult<Bag>> {
-  if (DEMO_MODE) return demoCart.setPayment(method, upiId)
+export type PaymentStart =
+  | { kind: "razorpay"; keyId: string; orderId: string; amount: number; currency: string }
+  | { kind: "redirect"; url: string }
+  | { kind: "none" }
+
+const PROVIDER_FOR_METHOD: Record<string, string> = {
+  upi: "pp_razorpay_razorpay",
+  card: "pp_razorpay_razorpay",
+  phonepe: "pp_phonepe_phonepe",
+  cod: "pp_system_default",
+}
+
+function paymentStart(providerId: string, data: Record<string, unknown> | undefined): PaymentStart {
+  if (providerId.startsWith("pp_razorpay") && typeof data?.razorpay_order_id === "string") {
+    return {
+      kind: "razorpay",
+      keyId: String(data.key_id ?? ""),
+      orderId: data.razorpay_order_id,
+      amount: Number(data.amount ?? 0),
+      currency: String(data.currency ?? "INR"),
+    }
+  }
+  if (providerId.startsWith("pp_phonepe") && typeof data?.redirect_url === "string") {
+    return { kind: "redirect", url: data.redirect_url }
+  }
+  return { kind: "none" }
+}
+
+/** Opens a payment session with the gateway behind the chosen method (Razorpay, PhonePe, or system for COD). */
+export async function setPaymentMethod(method: string): Promise<ActionResult<{ bag: Bag; payment: PaymentStart }>> {
+  if (DEMO_MODE) {
+    const res = await demoCart.setPayment(method)
+    return res.ok ? { ok: true, data: { bag: res.data, payment: { kind: "none" } } } : res
+  }
   const cartId = await getCartId()
   if (!cartId) return { ok: false, error: "Your bag has expired" }
   try {
     const headers = await getAuthHeaders()
     const region = await getRegion()
-    const { cart } = await sdk.store.cart.update(
-      cartId,
-      { metadata: { payment_method: method, ...(upiId ? { upi_id: upiId } : {}) } },
-      { fields: CART_FIELDS },
-      headers
-    )
+    const { cart } = await sdk.store.cart.update(cartId, { metadata: { payment_method: method } }, { fields: CART_FIELDS }, headers)
     const { payment_providers } = await sdk.store.payment.listPaymentProviders({ region_id: region.id }, headers)
-    const provider = payment_providers[0]?.id
-    if (!provider) return { ok: false, error: "No payment provider is set up for this region" }
-    await sdk.store.payment.initiatePaymentSession(cart, { provider_id: provider }, {}, headers)
-    return { ok: true, data: toBag(await fetchCart(cartId)) }
+    const wanted = PROVIDER_FOR_METHOD[method]
+    const provider = payment_providers.find((p) => p.id === wanted)?.id
+    if (!provider) return { ok: false, error: "That payment method is not available right now" }
+    const { payment_collection } = await sdk.store.payment.initiatePaymentSession(cart, { provider_id: provider }, {}, headers)
+    const session = payment_collection.payment_sessions?.find((s) => s.provider_id === provider)
+    return { ok: true, data: { bag: toBag(await fetchCart(cartId)), payment: paymentStart(provider, session?.data) } }
   } catch (e) {
     return { ok: false, error: message(e, "Could not set payment method") }
   }

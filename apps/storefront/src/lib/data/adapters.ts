@@ -221,7 +221,7 @@ function orderStatus(o: HttpTypes.StoreOrder): OrderStatus {
   }
 }
 
-const PAYMENT_LABELS: Record<string, string> = { upi: "UPI", card: "Card", cod: "Cash on delivery" }
+const PAYMENT_LABELS: Record<string, string> = { upi: "UPI", card: "Card, netbanking or wallet", phonepe: "PhonePe", cod: "Cash on delivery" }
 
 export type PaymentChoice = { payment_method: string | null; upi_id: string | null }
 

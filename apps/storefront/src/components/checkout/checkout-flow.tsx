@@ -1,8 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState, useTransition } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useState, useTransition } from "react"
 import { AddressLines } from "@/components/account/address-card"
 import { AddressForm } from "@/components/account/address-form"
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,7 @@ import { ChevronDown, CreditCard, Lock, ShoppingBag, Smartphone, Truck, Wallet }
 import { RadioCards } from "@/components/ui/radio-cards"
 import { TextField } from "@/components/ui/text-field"
 import { toast } from "@/components/ui/toast"
-import { placeOrder, setCheckoutContact, setPaymentMethod, setShippingMethod, type ShippingChoice } from "@/lib/data/cart"
+import { placeOrder, setCheckoutContact, setPaymentMethod, setShippingMethod, type PaymentStart, type ShippingChoice } from "@/lib/data/cart"
 import { saveAddress, type Session } from "@/lib/data/customer"
 import { formatPrice } from "@/lib/format"
 import { paymentMethods } from "@/lib/site"
@@ -20,16 +20,17 @@ import { setBag as setClientBag } from "@/lib/stores/bag"
 import { emptyBag, type Address, type Bag } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { OrderSummary } from "./order-summary"
+import { openRazorpay } from "./razorpay"
 import { StepCard } from "./step-card"
 
 type Step = 1 | 2 | 3 | 4
 type AddressFields = Omit<Address, "id" | "isDefault" | "label">
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const UPI = /^[\w.-]{2,}@[a-zA-Z]{2,}$/
 const paymentIcon: Record<string, React.ReactNode> = {
   upi: <Smartphone strokeWidth={1.6} />,
   card: <CreditCard strokeWidth={1.6} />,
+  phonepe: <Smartphone strokeWidth={1.6} />,
   cod: <Wallet strokeWidth={1.6} />,
 }
 
@@ -54,11 +55,14 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
   const [options, setOptions] = useState<ShippingChoice[]>([])
   const [delivery, setDelivery] = useState<string>(initialBag.shippingMethodId ?? "")
   const [payment, setPayment] = useState<string>("upi")
-  const [upiId, setUpiId] = useState("")
-  const [upiError, setUpiError] = useState<string>()
+  const [paymentStart, setPaymentStart] = useState<PaymentStart>({ kind: "none" })
+  const searchParams = useSearchParams()
   const [pending, start] = useTransition()
   const [placing, setPlacing] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
+  useEffect(() => {
+    if (searchParams.get("payment") === "failed") toast("Payment was not completed. Choose a method and try again.", "error")
+  }, [searchParams])
 
   const updateBag = (b: Bag) => {
     setBagState(b)
@@ -117,19 +121,16 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       go(3)
     })
 
-  const continueFromPayment = () => {
-    if (payment === "upi" && !UPI.test(upiId)) return setUpiError("Enter a UPI ID like name@bank")
-    setUpiError(undefined)
+  const continueFromPayment = () =>
     start(async () => {
-      const res = await setPaymentMethod(payment, payment === "upi" ? upiId : undefined)
+      const res = await setPaymentMethod(payment)
       if (!res.ok) return void toast(res.error, "error")
-      updateBag(res.data)
+      updateBag(res.data.bag)
+      setPaymentStart(res.data.payment)
       go(4)
     })
-  }
 
-  const submitOrder = () => {
-    setPlacing(true)
+  const complete = () =>
     start(async () => {
       const res = await placeOrder()
       if (!res.ok) {
@@ -139,7 +140,26 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       setClientBag(emptyBag)
       router.push(`/checkout/confirmed?order=${res.data.orderId}`)
     })
+
+  const submitOrder = async () => {
+    setPlacing(true)
+    if (paymentStart.kind === "redirect") return void window.location.assign(paymentStart.url)
+    if (paymentStart.kind !== "razorpay") return complete()
+    try {
+      await openRazorpay(paymentStart, {
+        email,
+        phone: address?.phone,
+        name: address ? `${address.firstName} ${address.lastName}`.trim() : undefined,
+        method: payment,
+        onPaid: complete,
+        onClose: () => setPlacing(false),
+      })
+    } catch {
+      setPlacing(false)
+      toast("Could not open the payment window. Check your connection and try again.", "error")
+    }
   }
+
 
   const summary = <OrderSummary bag={bag} onBag={updateBag} />
 
@@ -284,7 +304,7 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
             onEdit={() => go(3)}
             summary={
               <p className="flex items-center gap-2 type-body-sm text-ink-muted [&_svg]:size-4">
-                {paymentIcon[paymentOption.id]} {payment === "upi" ? `UPI, ${upiId}` : paymentOption.label}
+                {paymentIcon[paymentOption.id]} {paymentOption.label}
               </p>
             }
           >
@@ -298,16 +318,6 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
                   title: p.label,
                   description: p.description,
                   aside: <span className="text-ink-muted [&_svg]:size-5">{paymentIcon[p.id]}</span>,
-                  details:
-                    p.id === "upi" ? (
-                      <TextField label="UPI ID" placeholder="name@bank" value={upiId} onChange={(e) => setUpiId(e.target.value)} error={upiError} autoComplete="off" />
-                    ) : p.id === "card" ? (
-                      <div className="grid place-items-center gap-1 rounded-md border border-dashed border-line-strong bg-canvas px-4 py-6 text-center">
-                        <Lock className="size-4 text-ink-muted" strokeWidth={1.8} />
-                        <p className="type-body-sm text-ink">Secure card form</p>
-                        <p className="max-w-xs type-caption text-ink-muted">Card details are entered in the payment provider&apos;s hosted field. It mounts here once a provider is connected.</p>
-                      </div>
-                    ) : undefined,
                 }))}
               />
               <Checkbox label="Billing address same as shipping" defaultChecked disabled />
@@ -336,7 +346,7 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
                 <span className="type-heading-md type-price">{formatPrice(bag.total, bag.currency)}</span>
               </div>
               <Button size="xl" block loading={placing} onClick={submitOrder}>
-                <Lock strokeWidth={1.8} /> Place order
+                <Lock strokeWidth={1.8} /> {paymentStart.kind === "none" ? "Place order" : `Pay ${formatPrice(bag.total, bag.currency)}`}
               </Button>
             </div>
           </StepCard>

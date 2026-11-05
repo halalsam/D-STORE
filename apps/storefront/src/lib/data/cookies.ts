@@ -29,3 +29,5 @@ export async function setCartId(id: string) {
 export async function removeCartId() {
   ;(await cookies()).delete(CART)
 }
+
+export const OAUTH_NEXT_COOKIE = "_dstore_oauth_next"

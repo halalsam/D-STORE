@@ -36,10 +36,11 @@ export const indianStates = [
   "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
 ]
 
-/** UI payment choices. All settle through the region's Medusa payment provider for now. */
+/** Checkout payment choices; lib/data/cart.ts maps each to a Medusa payment provider. */
 export const paymentMethods = [
-  { id: "upi", label: "UPI", description: "Google Pay, PhonePe, Paytm or any UPI app" },
-  { id: "card", label: "Credit or debit card", description: "Visa, Mastercard, RuPay, Amex" },
+  { id: "upi", label: "UPI", description: "Google Pay, PhonePe, Paytm or any UPI app, via Razorpay" },
+  { id: "card", label: "Card, netbanking or wallet", description: "Visa, Mastercard, RuPay, Amex and more, via Razorpay" },
+  { id: "phonepe", label: "PhonePe", description: "Pay on PhonePe's secure page" },
   { id: "cod", label: "Cash on delivery", description: "Pay when your order arrives" },
 ] as const
 

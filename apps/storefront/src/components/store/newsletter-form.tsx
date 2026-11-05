@@ -1,13 +1,15 @@
 "use client"
 
 import { ArrowRight, Check } from "@/components/ui/icons"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { TextField } from "@/components/ui/text-field"
+import { subscribeNewsletter } from "@/lib/data/newsletter"
 
-/** TODO: post to a newsletter endpoint once one exists. */
 export function NewsletterForm() {
   const [done, setDone] = useState(false)
+  const [error, setError] = useState<string>()
+  const [pending, start] = useTransition()
   if (done) {
     return (
       <p className="mt-5 flex animate-rise-in items-center gap-2 type-body-sm text-success">
@@ -20,7 +22,12 @@ export function NewsletterForm() {
       className="mt-5"
       onSubmit={(e) => {
         e.preventDefault()
-        setDone(true)
+        const email = String(new FormData(e.currentTarget).get("email") ?? "").trim()
+        start(async () => {
+          const res = await subscribeNewsletter(email)
+          if (res.ok) setDone(true)
+          else setError(res.error)
+        })
       }}
     >
       <TextField
@@ -31,9 +38,10 @@ export function NewsletterForm() {
         hideLabel
         placeholder="Email address"
         autoComplete="email"
+        error={error}
         fieldClassName="rounded-pill bg-canvas ring-0 [--autofill-bg:var(--color-canvas)]"
         trailing={
-          <Button type="submit" size="icon" aria-label="Subscribe">
+          <Button type="submit" size="icon" aria-label="Subscribe" loading={pending}>
             <ArrowRight strokeWidth={1.6} />
           </Button>
         }
