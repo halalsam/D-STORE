@@ -4,10 +4,10 @@
  */
 
 export type Tone = readonly [string, string]
-export type Silhouette = "tee" | "shirt" | "hoodie" | "bag" | "cap"
+export type Silhouette = "tee" | "shirt" | "hoodie" | "bag" | "cap" | "card"
 export type ColorFamily = "Blues" | "Browns" | "Greens" | "Neutrals" | "Purples" | "Reds"
 
-export type Size = { label: string; available: boolean; variantId: string }
+export type Size = { label: string; available: boolean; variantId: string; price?: number }
 
 export type Product = {
   id: string
@@ -33,9 +33,39 @@ export type Product = {
    * the generic one. Null: the product has no size guide (bags, caps).
    */
   sizeChart?: SizeChart | null
+  /** Digital gift card: the "sizes" are amounts, emailed after checkout. */
+  giftCard?: boolean
 }
 
 export type SizeChart = { columns: string[]; rows: string[][] }
+
+export type ReviewStats = {
+  average: number
+  count: number
+  /** Count per star, index 0 = 1 star. */
+  distribution: [number, number, number, number, number]
+}
+
+export type Review = {
+  id: string
+  name: string
+  rating: number
+  content: string
+  createdAt: string
+  images: string[]
+  response?: string
+}
+
+/** What the signed-in shopper can do about reviewing a product. */
+export type ReviewEligibility =
+  | { kind: "signed-out" }
+  | { kind: "not-purchased" }
+  | {
+      kind: "can-review"
+      orderId: string
+      lineId: string
+      existing?: { rating: number; content: string; images: string[]; status: "pending" | "approved" | "flagged" }
+    }
 
 export type Collection = {
   id: string
@@ -88,6 +118,7 @@ export type OrderLine = {
   tone: Tone
   silhouette: Silhouette
   thumbnail?: string
+  giftCard?: { recipientEmail?: string; recipientName?: string; message?: string }
 }
 
 export type Order = {
@@ -124,6 +155,13 @@ export type Bag = {
   shippingAddress?: Omit<Address, "id" | "isDefault" | "label">
   shippingMethodId?: string
   currency: string
+  /** Gift card codes applied to the bag. */
+  giftCards?: string[]
+  /** Gift card and store credit applied, taken off the total. */
+  credit?: number
+  storeCreditApplied?: boolean
+  /** False when the bag only holds digital items (gift cards). */
+  needsShipping?: boolean
 }
 
 export const emptyBag: Bag = {

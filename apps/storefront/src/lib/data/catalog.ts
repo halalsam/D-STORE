@@ -23,6 +23,7 @@ export const PRODUCT_FIELDS = [
   "*categories",
   "*images",
   "+metadata",
+  "+is_giftcard",
 ].join(",")
 
 export type RegionInfo = { id: string; currencyCode: string }

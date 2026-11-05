@@ -22,7 +22,7 @@ import type {
  */
 
 const FALLBACK_TONE: Tone = ["#2F4156", "#567C8D"]
-const SILHOUETTES: Silhouette[] = ["tee", "shirt", "hoodie", "bag", "cap"]
+const SILHOUETTES: Silhouette[] = ["tee", "shirt", "hoodie", "bag", "cap", "card"]
 
 type Meta = Record<string, unknown> | null | undefined
 
@@ -69,10 +69,12 @@ export function toProduct(p: HttpTypes.StoreProduct): Product {
       label: v.title ?? "",
       variantId: v.id,
       available: !v.manage_inventory || v.allow_backorder || (v.inventory_quantity ?? 0) > 0,
+      price: v.calculated_price?.calculated_amount ?? undefined,
     })),
     badge: str(meta, "badge"),
     description: p.description ?? "",
     washcare: Array.isArray(meta?.washcare) ? (meta.washcare as string[]) : [],
+    giftCard: p.is_giftcard || undefined,
   }
 }
 
@@ -100,6 +102,9 @@ function toLine(i: HttpTypes.StoreCartLineItem | HttpTypes.StoreOrderLineItem): 
     tone,
     silhouette: silhouette(meta),
     thumbnail: i.thumbnail ?? undefined,
+    giftCard: meta?.gift_card === true
+      ? { recipientEmail: str(meta, "gift_recipient_email"), recipientName: str(meta, "gift_recipient_name"), message: str(meta, "gift_message") }
+      : undefined,
   }
 }
 
@@ -179,8 +184,15 @@ export function toBag(cart: HttpTypes.StoreCart | null | undefined): Bag {
     shippingAddress: cart.shipping_address?.address_1 ? toAddressFields(cart.shipping_address) : undefined,
     shippingMethodId: method?.shipping_option_id ?? undefined,
     currency: cart.currency_code ?? "inr",
+    giftCards: ((cart as CartWithLoyalty).gift_cards ?? []).map((g) => g.code),
+    credit: Number((cart as CartWithLoyalty).credit_line_total ?? 0),
+    storeCreditApplied: ((cart as CartWithLoyalty).credit_lines ?? []).some((l) => l.reference === "store-credit"),
+    needsShipping: (cart.items ?? []).some((i) => (i as { requires_shipping?: boolean }).requires_shipping !== false),
   }
 }
+
+/** Fields the loyalty plugin adds to the store cart (apps/backend medusa-config: @medusajs/loyalty-plugin). */
+type CartWithLoyalty = HttpTypes.StoreCart & { gift_cards?: { code: string }[]; credit_line_total?: number; credit_lines?: { reference?: string }[] }
 
 function orderStatus(o: HttpTypes.StoreOrder): OrderStatus {
   if (o.status === "canceled") return "cancelled"
@@ -199,7 +211,7 @@ function orderStatus(o: HttpTypes.StoreOrder): OrderStatus {
   }
 }
 
-const PAYMENT_LABELS: Record<string, string> = { upi: "UPI", card: "Card, netbanking or wallet", phonepe: "PhonePe", cod: "Cash on delivery" }
+const PAYMENT_LABELS: Record<string, string> = { upi: "UPI", card: "Card, netbanking or wallet", phonepe: "PhonePe", cod: "Cash on delivery", gift_card: "Gift card or store credit" }
 
 /** Response of the custom GET /store/orders/:id/payment-method route (apps/backend). */
 export type StoreOrderPaymentMethodResponse = { payment_method: string | null; upi_id: string | null }

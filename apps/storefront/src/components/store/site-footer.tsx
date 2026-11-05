@@ -10,7 +10,7 @@ const staticColumns = [
 
 export async function SiteFooter() {
   const nav = await getNavigation()
-  const columns = [{ title: "Shop", links: nav.collections.slice(0, 5).map((l) => [l.label, l.href] as const) }, ...staticColumns]
+  const columns = [{ title: "Shop", links: [...nav.collections.slice(0, 4).map((l) => [l.label, l.href] as const), ["Gift cards", "/products/gift-card"] as const] }, ...staticColumns]
   return (
     <footer className="bg-canvas pb-[max(1rem,env(safe-area-inset-bottom))]">
       <div className="page-x">

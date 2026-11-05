@@ -9,6 +9,11 @@ overrides:
   '@types/react-dom': 19.0.5
   tsconfig-paths: ^4.2.0
 
+patchedDependencies:
+  '@lambdacurry/medusa-product-reviews@1.4.0':
+    hash: 12782e0f1e1cd93f06bccadf7d4b7d63a5ae55b67fc5260f9c5beefdfdc82230
+    path: patches/@lambdacurry__medusa-product-reviews@1.4.0.patch
+
 importers:
 
   .:
@@ -37,6 +42,9 @@ importers:
 
   apps/backend:
     dependencies:
+      '@lambdacurry/medusa-product-reviews':
+        specifier: 1.4.0
+        version: 1.4.0(patch_hash=12782e0f1e1cd93f06bccadf7d4b7d63a5ae55b67fc5260f9c5beefdfdc82230)(@medusajs/admin-sdk@2.22.2)(@medusajs/cli@2.22.2(@types/node@20.19.43))(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0))(@medusajs/icons@2.22.2(react@18.3.1))(@medusajs/medusa@2.22.2)(@medusajs/test-utils@2.22.2)(@medusajs/ui@4.2.9(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(@mikro-orm/cli@6.6.14(pg@8.23.1))(@mikro-orm/core@6.6.14)(@mikro-orm/knex@6.6.14(@mikro-orm/core@6.6.14)(pg@8.23.1))(@mikro-orm/migrations@6.6.14(@mikro-orm/core@6.6.14)(@types/node@20.19.43)(pg@8.23.1))(@mikro-orm/postgresql@6.6.14(@mikro-orm/core@6.6.14))(@types/node@20.19.43)(awilix@8.0.1)(express@4.22.3)(pg@8.23.1)(react-hook-form@7.83.0(react@18.3.1))
       '@medusajs/admin-sdk':
         specifier: 2.22.2
         version: 2.22.2
@@ -58,6 +66,9 @@ importers:
       '@medusajs/framework':
         specifier: 2.22.2
         version: 2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0)
+      '@medusajs/loyalty-plugin':
+        specifier: 2.22.2
+        version: 2.22.2(@medusajs/admin-sdk@2.22.2)(@medusajs/cli@2.22.2(@types/node@20.19.43))(@medusajs/dashboard@2.22.2(@sinclair/typebox@0.34.52)(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(ajv@8.13.0)(typescript@5.9.3))(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0))(@medusajs/icons@2.22.2(react@18.3.1))(@medusajs/medusa@2.22.2)(@medusajs/test-utils@2.22.2)(@medusajs/ui@4.2.9(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react-router-dom@7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@medusajs/medusa':
         specifier: 2.22.2
         version: 2.22.2(8022b7421425e46d5d163f528513c869)
@@ -877,6 +888,11 @@ packages:
       react-dom: '>=16.8.0'
       react-hook-form: ^7.0.0
 
+  '@hookform/resolvers@3.4.2':
+    resolution: {integrity: sha512-1m9uAVIO8wVf7VCDAGsuGA0t6Z3m6jVGAN50HkV9vYLl0yixKK/Z1lr01vaRvYCkIKGoy1noVRxMzQYb4y/j1Q==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+
   '@hookform/resolvers@6.0.0':
     resolution: {integrity: sha512-6iBzQnB+YwAveVc8HUi6QYLITn5X+xNKRMFIcNXHZlvp2aTI7yWbj4n/JodXxirMCcBc4VCjb2aYAJh4x07mVw==}
     peerDependencies:
@@ -1390,6 +1406,29 @@ packages:
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
 
+  '@lambdacurry/medusa-plugins-sdk@0.0.5':
+    resolution: {integrity: sha512-8325NYK9EHVpuZHKm7P63S5RDo1ls1W+R0d6ZPKq30/y1twvKV8y/7DESpwMcalpN+fbizT35UOD4g236V3ChQ==}
+    engines: {node: '>=20'}
+
+  '@lambdacurry/medusa-product-reviews@1.4.0':
+    resolution: {integrity: sha512-I5Ay4z/XVPZ1KJ5Lyv+76L9Y8hjudB2Jim1e8GnGr138/lUvp7JYsbvOTpqqYoh4Z7TNN9Pb5bb2mA9Dqn7uVw==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@medusajs/admin-sdk': ^2.13.5
+      '@medusajs/cli': ^2.13.5
+      '@medusajs/framework': ^2.13.5
+      '@medusajs/icons': ^2.13.5
+      '@medusajs/medusa': ^2.13.5
+      '@medusajs/test-utils': ^2.13.5
+      '@medusajs/ui': ^4.1.5
+      '@mikro-orm/cli': 6.4.16
+      '@mikro-orm/core': 6.4.16
+      '@mikro-orm/knex': 6.4.16
+      '@mikro-orm/migrations': 6.4.16
+      '@mikro-orm/postgresql': 6.4.16
+      awilix: ^8.0.1
+      pg: ^8.13.0
+
   '@medusajs/admin-bundler@2.22.2':
     resolution: {integrity: sha512-jrAE8VYBf/IPW12LbB3W2krVucOVMm+xqIwzMbcsroR9+7+Su2q5r5YnwC8jEsU4D1kYthDjoNX9xc+kTD+O0A==}
     engines: {node: '>=22.22.0'}
@@ -1659,6 +1698,41 @@ packages:
     resolution: {integrity: sha512-Fp+GWg1iCubmKF+FSdtL36/Y9p1KKKDloKD1hn0/SmFwfQCjwXR4Jd5vCiHcOFV67Ma2IE4RGWPyLVa34Zdj0Q==}
     peerDependencies:
       '@medusajs/framework': 2.22.2
+
+  '@medusajs/loyalty-plugin@2.22.2':
+    resolution: {integrity: sha512-xRXS0jNw/hunOKAPPuQD3TzO9Gmrc7LoApJMopi/vykb3KMVUbV4p+Rtd2w8dodl5q35l9j1zoSYmCgIVzL3GQ==}
+    engines: {node: '>=22.22.0'}
+    peerDependencies:
+      '@medusajs/admin-sdk': 2.22.2
+      '@medusajs/cli': 2.22.2
+      '@medusajs/dashboard': 2.22.2
+      '@medusajs/framework': 2.22.2
+      '@medusajs/icons': 2.22.2
+      '@medusajs/medusa': 2.22.2
+      '@medusajs/test-utils': 2.22.2
+      '@medusajs/ui': 4.2.9
+      react: ^18.3.1
+      react-dom: ^18.3.1
+      react-router-dom: ^6.30.4 || ^7.0.0
+    peerDependenciesMeta:
+      '@medusajs/admin-sdk':
+        optional: true
+      '@medusajs/cli':
+        optional: true
+      '@medusajs/dashboard':
+        optional: true
+      '@medusajs/icons':
+        optional: true
+      '@medusajs/test-utils':
+        optional: true
+      '@medusajs/ui':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      react-router-dom:
+        optional: true
 
   '@medusajs/medusa@2.22.2':
     resolution: {integrity: sha512-EtI6BszU32r67lXZ5cF9p2e1NjFEUAalUxlUBZIkBI0Ny7n6vi2R6hqKGe81bfxWqnQ3IKeaL/8jzCUAUuMYEQ==}
@@ -4168,8 +4242,14 @@ packages:
   '@types/express-serve-static-core@4.19.9':
     resolution: {integrity: sha512-QP2ESEe/ImWY0HDwNAnK9PvEffUyhLTnWkk7KXzHfyeWAnlrDe1fN77bXl6ia8KT3wPlmA7t9/VPRpnf4Ex9sg==}
 
+  '@types/express-serve-static-core@5.1.3':
+    resolution: {integrity: sha512-dPfW8NFiOF4wOHc7+N/QSxlY9cfSsenewGbAz8C8U/MULPd/YZ27LvJUIlzaXie7e6Ove9YunJGgC9tbHD2cKw==}
+
   '@types/express@4.17.25':
     resolution: {integrity: sha512-dVd04UKsfpINUnK0yBoYHDF3xu7xVH4BuDotC/xGuycx4CgbP48X/KF/586bcObxT0HENHXEU8Nqtu6NR+eKhw==}
+
+  '@types/express@5.0.6':
+    resolution: {integrity: sha512-sKYVuV7Sv9fbPIt/442koC7+IIwK5olP1KWeD88e/idgoJqDm3JV/YUiPwkoKK92ylff2MGxSz1CSjsXelx0YA==}
 
   '@types/graceful-fs@4.1.9':
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
@@ -4200,6 +4280,9 @@ packages:
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
+
+  '@types/multer@1.4.13':
+    resolution: {integrity: sha512-bhhdtPw7JqCiEfC9Jimx5LqX9BDIPJEh2q/fQ4bqbBPtyEZYr3cvF22NwG0DmPZNYA0CAf2CnqDB4KIGGpJcaw==}
 
   '@types/node@18.19.69':
     resolution: {integrity: sha512-ECPdY1nlaiO/Y6GUnwgtAAhLNaQ53AyIVz+eILxpEo5OvuqE6yWkqWBIb5dU0DqhKQtMeny+FBD3PK6lm7L5xQ==}
@@ -4241,6 +4324,9 @@ packages:
 
   '@types/serve-static@1.15.10':
     resolution: {integrity: sha512-tRs1dB+g8Itk72rlSI2ZrW6vZg0YrLI81iQSTkMmOqnqCaNr/8Ek4VwWcN5vZgCYWbg/JJSGBlUaYGAOP73qBw==}
+
+  '@types/serve-static@2.2.0':
+    resolution: {integrity: sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ==}
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -8416,6 +8502,9 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
   zod@4.2.0:
     resolution: {integrity: sha512-Bd5fw9wlIhtqCCxotZgdTOMwGm1a0u75wARVEY9HMs1X17trvA/lMi4+MGK5EUfYkXVTbX8UDiDKW4OgzHVUZw==}
 
@@ -9233,6 +9322,10 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-hook-form: 7.83.0(react@18.3.1)
 
+  '@hookform/resolvers@3.4.2(react-hook-form@7.83.0(react@18.3.1))':
+    dependencies:
+      react-hook-form: 7.83.0(react@18.3.1)
+
   '@hookform/resolvers@6.0.0(@sinclair/typebox@0.34.52)(ajv@8.13.0)(react-hook-form@7.83.0(react@18.3.1))(zod@4.6.6)':
     dependencies:
       '@standard-schema/utils': 0.3.0
@@ -9731,6 +9824,50 @@ snapshots:
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
+  '@lambdacurry/medusa-plugins-sdk@0.0.5':
+    dependencies:
+      '@medusajs/js-sdk': 2.22.2
+      '@types/express': 5.0.6
+      '@types/multer': 1.4.13
+      form-data: 4.0.6
+
+  '@lambdacurry/medusa-product-reviews@1.4.0(patch_hash=12782e0f1e1cd93f06bccadf7d4b7d63a5ae55b67fc5260f9c5beefdfdc82230)(@medusajs/admin-sdk@2.22.2)(@medusajs/cli@2.22.2(@types/node@20.19.43))(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0))(@medusajs/icons@2.22.2(react@18.3.1))(@medusajs/medusa@2.22.2)(@medusajs/test-utils@2.22.2)(@medusajs/ui@4.2.9(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(@mikro-orm/cli@6.6.14(pg@8.23.1))(@mikro-orm/core@6.6.14)(@mikro-orm/knex@6.6.14(@mikro-orm/core@6.6.14)(pg@8.23.1))(@mikro-orm/migrations@6.6.14(@mikro-orm/core@6.6.14)(@types/node@20.19.43)(pg@8.23.1))(@mikro-orm/postgresql@6.6.14(@mikro-orm/core@6.6.14))(@types/node@20.19.43)(awilix@8.0.1)(express@4.22.3)(pg@8.23.1)(react-hook-form@7.83.0(react@18.3.1))':
+    dependencies:
+      '@hookform/resolvers': 3.4.2(react-hook-form@7.83.0(react@18.3.1))
+      '@lambdacurry/medusa-plugins-sdk': 0.0.5
+      '@medusajs/admin-sdk': 2.22.2
+      '@medusajs/cli': 2.22.2(@types/node@20.19.43)
+      '@medusajs/framework': 2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0)
+      '@medusajs/icons': 2.22.2(react@18.3.1)
+      '@medusajs/js-sdk': 2.22.2
+      '@medusajs/medusa': 2.22.2(8022b7421425e46d5d163f528513c869)
+      '@medusajs/test-utils': 2.22.2(@medusajs/core-flows@2.22.2(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0)))(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0))(@medusajs/medusa@2.22.2)
+      '@medusajs/ui': 4.2.9(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
+      '@medusajs/workflows-sdk': 2.22.2(@types/node@20.19.43)(express@4.22.3)
+      '@mikro-orm/cli': 6.6.14(pg@8.23.1)
+      '@mikro-orm/core': 6.6.14
+      '@mikro-orm/knex': 6.6.14(@mikro-orm/core@6.6.14)(pg@8.23.1)
+      '@mikro-orm/migrations': 6.6.14(@mikro-orm/core@6.6.14)(@types/node@20.19.43)(pg@8.23.1)
+      '@mikro-orm/postgresql': 6.6.14(@mikro-orm/core@6.6.14)
+      awilix: 8.0.1
+      luxon: 3.7.2
+      pg: 8.23.1
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - '@types/node'
+      - better-sqlite3
+      - express
+      - libsql
+      - mariadb
+      - mysql
+      - mysql2
+      - pg-native
+      - pg-query-stream
+      - react-hook-form
+      - sqlite3
+      - supports-color
+      - tedious
+
   '@medusajs/admin-bundler@2.22.2(@sinclair/typebox@0.34.52)(@types/node@20.19.43)(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(ajv@8.13.0)(jiti@1.21.7)(lightningcss@1.33.0)(picomatch@4.0.7)(typescript@5.9.3)(yaml@2.9.1)':
     dependencies:
       '@medusajs/admin-shared': 2.22.2
@@ -10227,6 +10364,21 @@ snapshots:
   '@medusajs/locking@2.22.2(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0))':
     dependencies:
       '@medusajs/framework': 2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0)
+
+  '@medusajs/loyalty-plugin@2.22.2(@medusajs/admin-sdk@2.22.2)(@medusajs/cli@2.22.2(@types/node@20.19.43))(@medusajs/dashboard@2.22.2(@sinclair/typebox@0.34.52)(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(ajv@8.13.0)(typescript@5.9.3))(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0))(@medusajs/icons@2.22.2(react@18.3.1))(@medusajs/medusa@2.22.2)(@medusajs/test-utils@2.22.2)(@medusajs/ui@4.2.9(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react-router-dom@7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@medusajs/framework': 2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0)
+      '@medusajs/medusa': 2.22.2(8022b7421425e46d5d163f528513c869)
+    optionalDependencies:
+      '@medusajs/admin-sdk': 2.22.2
+      '@medusajs/cli': 2.22.2(@types/node@20.19.43)
+      '@medusajs/dashboard': 2.22.2(@sinclair/typebox@0.34.52)(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(ajv@8.13.0)(typescript@5.9.3)
+      '@medusajs/icons': 2.22.2(react@18.3.1)
+      '@medusajs/test-utils': 2.22.2(@medusajs/core-flows@2.22.2(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0)))(@medusajs/framework@2.22.2(@medusajs/cli@2.22.2(@types/node@20.19.43))(@types/node@20.19.43)(ioredis@5.11.1)(vite@7.3.7(@types/node@20.19.43)(jiti@1.21.7)(lightningcss@1.33.0)(yaml@2.9.1))(zod@4.2.0))(@medusajs/medusa@2.22.2)
+      '@medusajs/ui': 4.2.9(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-router-dom: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@medusajs/medusa@2.22.2(8022b7421425e46d5d163f528513c869)':
     dependencies:
@@ -13215,12 +13367,25 @@ snapshots:
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
 
+  '@types/express-serve-static-core@5.1.3':
+    dependencies:
+      '@types/node': 20.19.43
+      '@types/qs': 6.15.1
+      '@types/range-parser': 1.2.7
+      '@types/send': 1.2.1
+
   '@types/express@4.17.25':
     dependencies:
       '@types/body-parser': 1.19.6
       '@types/express-serve-static-core': 4.19.9
       '@types/qs': 6.15.1
       '@types/serve-static': 1.15.10
+
+  '@types/express@5.0.6':
+    dependencies:
+      '@types/body-parser': 1.19.6
+      '@types/express-serve-static-core': 5.1.3
+      '@types/serve-static': 2.2.0
 
   '@types/graceful-fs@4.1.9':
     dependencies:
@@ -13253,6 +13418,10 @@ snapshots:
   '@types/mime@1.3.5': {}
 
   '@types/ms@2.1.0': {}
+
+  '@types/multer@1.4.13':
+    dependencies:
+      '@types/express': 5.0.6
 
   '@types/node@18.19.69':
     dependencies:
@@ -13303,6 +13472,11 @@ snapshots:
       '@types/http-errors': 2.0.5
       '@types/node': 20.19.43
       '@types/send': 0.17.6
+
+  '@types/serve-static@2.2.0':
+    dependencies:
+      '@types/http-errors': 2.0.5
+      '@types/node': 20.19.43
 
   '@types/stack-utils@2.0.3': {}
 
@@ -14474,8 +14648,8 @@ snapshots:
       '@next/eslint-plugin-next': 16.4.4(eslint@9.39.5(jiti@2.7.0))
       eslint: 9.39.5(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@2.7.0))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-react: 7.37.5(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-react-hooks: 7.1.1(eslint@9.39.5(jiti@2.7.0))
@@ -14497,7 +14671,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@2.7.0)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -14508,22 +14682,22 @@ snapshots:
       tinyglobby: 0.2.17
       unrs-resolver: 1.13.0
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0))
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)):
+  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       eslint: 9.39.5(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@2.7.0))
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.2.0
@@ -14534,7 +14708,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.5(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
+      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0))
       hasown: 2.0.4
       is-core-module: 2.17.0
       is-glob: 4.0.3
@@ -18086,6 +18260,8 @@ snapshots:
   zod-validation-error@5.0.0(zod@4.2.0):
     dependencies:
       zod: 4.2.0
+
+  zod@3.25.76: {}
 
   zod@4.2.0: {}
 

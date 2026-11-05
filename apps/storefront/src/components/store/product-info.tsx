@@ -2,8 +2,8 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Bell, Check, RotateCcw, Truck, Wallet } from "@/components/ui/icons"
-import { useEffect, useRef, useState } from "react"
+import { Bell, RotateCcw, Truck, Wallet } from "@/components/ui/icons"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -12,6 +12,7 @@ import { Tabs } from "@/components/ui/tabs"
 import { genericChart } from "@/lib/size-chart"
 import { isSoldOut, type Product, type SizeChart } from "@/lib/types"
 import { useBag } from "@/lib/stores/bag"
+import { NotifyMe } from "./notify-me"
 import { SaveToggle } from "./product-card"
 import { SizeTable } from "./size-table"
 
@@ -36,13 +37,12 @@ const perks = [
 ]
 
 /** Title, price, sizes and the two CTAs. */
-export function ProductPurchase({ product }: { product: Product }) {
+export function ProductPurchase({ product, rating }: { product: Product; rating?: ReactNode }) {
   const router = useRouter()
   const { add } = useBag()
   const [pending, setPending] = useState<"add" | "buy" | null>(null)
   const firstAvailable = product.sizes.find((s) => s.available)?.label
   const [size, setSize] = useState(firstAvailable)
-  const [notify, setNotify] = useState(false)
   const soldOut = isSoldOut(product)
   const apparel = product.sizes.length > 1
   const ctaRef = useRef<HTMLDivElement>(null)
@@ -83,6 +83,7 @@ export function ProductPurchase({ product }: { product: Product }) {
             {product.type && ` · ${product.type}`}
           </p>
           <h1 className="mt-1.5 type-heading-md">{product.title}</h1>
+          {rating}
           <div className="mt-1 flex items-baseline gap-2">
             <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} className="type-body-lg" />
             <span className="type-caption text-ink-subtle">incl. GST</span>
@@ -100,6 +101,12 @@ export function ProductPurchase({ product }: { product: Product }) {
             {product.sizeChart !== null && <SizeGuide chart={product.sizeChart} />}
           </div>
           <SizeSelector sizes={product.sizes} value={size} onValueChange={setSize} columns={4} />
+          {product.sizes.some((s) => !s.available) && (
+            <NotifyMe
+              product={product}
+              trigger={<button type="button" className="pressable mt-2 type-caption text-accent-ink underline underline-offset-4">Size sold out? Get an email when it&rsquo;s back</button>}
+            />
+          )}
         </div>
       )}
 
@@ -107,9 +114,7 @@ export function ProductPurchase({ product }: { product: Product }) {
         {soldOut ? (
           <>
             <Button size="xl" disabled>Sold out</Button>
-            <Button variant="secondary" size="xl" onClick={() => setNotify(true)} disabled={notify}>
-              {notify ? <><Check strokeWidth={2} /> We will email you</> : <><Bell strokeWidth={1.6} /> Notify me</>}
-            </Button>
+            <NotifyMe product={product} trigger={<Button variant="secondary" size="xl"><Bell strokeWidth={1.6} /> Notify me</Button>} />
           </>
         ) : (
           <>
@@ -184,7 +189,20 @@ export function ProductTabs({ product }: { product: Product }) {
         defaultValue="details"
         className="flex min-h-0 flex-1 flex-col"
         contentClassName="min-h-0 flex-1 overflow-y-auto px-3 py-3.5 type-body-sm text-ink-muted md:px-4"
-        items={[
+        items={product.giftCard ? [
+          { value: "details", label: "Details", content: <p>{product.description}</p> },
+          {
+            value: "how",
+            label: "How it works",
+            content: (
+              <ul className="grid gap-1">
+                <li>The code arrives by email within a few minutes of paying.</li>
+                <li>Enter it at checkout, or add it to your account balance.</li>
+                <li>Pay by UPI, card or PhonePe. Not available with cash on delivery.</li>
+              </ul>
+            ),
+          },
+        ] : [
           { value: "details", label: "Details", content: <p>{product.description}</p> },
           {
             value: "washcare",

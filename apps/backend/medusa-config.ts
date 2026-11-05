@@ -170,6 +170,11 @@ const fulfillmentModule = [
 ]
 
 module.exports = defineConfig({
+  plugins: [
+    // New reviews wait for approval in Admin -> Product Reviews.
+    { resolve: "@lambdacurry/medusa-product-reviews", options: { defaultReviewStatus: "pending" } },
+    { resolve: "@medusajs/loyalty-plugin", options: { prefix: "DSTORE", sections: 3 } },
+  ],
   projectConfig: {
     databaseUrl: env.DATABASE_URL,
     redisUrl: REDIS_URL,
@@ -187,6 +192,7 @@ module.exports = defineConfig({
     backendUrl: env.MEDUSA_BACKEND_URL,
   },
   modules: [
+    { resolve: "./src/modules/restock" },
     ...redisModules,
     ...fileModule,
     ...searchModule,

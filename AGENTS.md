@@ -40,6 +40,11 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | D-STORE catalog seed (India/INR, products, shipping, WELCOME10) | `apps/backend/src/scripts/seed-dstore.ts` + `data/dstore-catalog.json` |
 | Custom store route: order payment method | `apps/backend/src/api/store/orders/[id]/payment-method/route.ts` |
 | Guest orders into accounts (email verification, order transfer) | `apps/backend/src/lib/guest-orders.ts`, `src/workflows/link-order-to-customer.ts`, `src/subscribers/link-guest-order.ts`, `src/api/store/email-verification/`, `src/api/store/customers/me/{guest-orders,email-verification}/`; storefront `lib/data/customer.ts` (`linkGuestOrders`), `app/(auth)/verify-email/` |
+| Product reviews (`@lambdacurry/medusa-product-reviews`, moderated in Admin -> Product Reviews) | plugin in `apps/backend/medusa-config.ts`, guards in `src/lib/review-guards.ts` + `src/api/middlewares.ts`, `src/api/store/customers/me/product-reviews/`; storefront `lib/data/reviews.ts`, `lib/data/review-actions.ts`, `components/store/product-reviews.tsx`, `review-form.tsx` |
+| Gift cards and store credit (`@medusajs/loyalty-plugin`) | plugin in `medusa-config.ts`, `src/jobs/send-gift-card-codes.ts`, `src/workflows/hooks/complete-cart-validate.ts` (no COD), `src/api/store/customers/me/gift-cards/`, gift card product in `seed-dstore.ts`; storefront `lib/data/cart.ts` (`applyGiftCard`, `setStoreCredit`), `components/store/gift-card-purchase.tsx`, `components/account/store-credit-card.tsx` |
+| Back-in-stock alerts | module `src/modules/restock/`, `src/workflows/subscribe-restock.ts`, `src/api/store/restock-subscriptions/`, `src/jobs/send-restock-alerts.ts`; storefront `components/store/notify-me.tsx`, `lib/data/restock.ts` |
+| Saved items synced to the account (customer metadata `saved_items`) | `apps/storefront/src/lib/stores/saved.ts`, `lib/data/customer.ts` (`loadSavedItems`, `saveSavedItems`) |
+| Patched dependencies | `patches/` via `pnpm patch` (reviews plugin: zod 4 compatibility, duplicate review images). Dockerfiles copy `patches/` before install |
 | Design system (tokens, rules, layout spec) | `apps/storefront/DESIGN.md`, `apps/storefront/src/styles/` |
 
 ## Commands (from repo root)

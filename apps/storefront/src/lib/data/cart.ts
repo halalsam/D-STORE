@@ -11,7 +11,7 @@ import { demoCart } from "./mock-backend"
 import { DEMO_MODE } from "./mode"
 
 const CART_FIELDS =
-  "*items,+items.metadata,*promotions,*shipping_methods,*shipping_address,*payment_collection,*payment_collection.payment_sessions,+completed_at"
+  "*items,+items.metadata,+items.requires_shipping,*promotions,*shipping_methods,*shipping_address,*payment_collection,*payment_collection.payment_sessions,+completed_at,*gift_cards,+credit_line_total,*credit_lines"
 
 function message(e: unknown, fallback = "Something went wrong. Please try again.") {
   return e instanceof Error && e.message ? e.message : fallback
@@ -67,17 +67,28 @@ async function ensureCartId() {
   return cart.id
 }
 
+export type GiftCardDetails = { recipientEmail?: string; recipientName?: string; message?: string }
+
 export async function addToBag(
   variantId: string,
   quantity: number,
-  display: { tone: Tone; silhouette: Silhouette }
+  display: { tone: Tone; silhouette: Silhouette },
+  gift?: GiftCardDetails
 ): Promise<ActionResult<Bag>> {
   if (DEMO_MODE) return demoCart.add(variantId, quantity)
   try {
     const cartId = await ensureCartId()
+    const giftMeta = gift
+      ? {
+          gift_card: true,
+          ...(gift.recipientEmail ? { gift_recipient_email: gift.recipientEmail.trim().toLowerCase() } : {}),
+          ...(gift.recipientName ? { gift_recipient_name: gift.recipientName.trim().slice(0, 80) } : {}),
+          ...(gift.message ? { gift_message: gift.message.trim().slice(0, 300) } : {}),
+        }
+      : {}
     const { cart } = await sdk.store.cart.createLineItem(
       cartId,
-      { variant_id: variantId, quantity, metadata: { tone: [...display.tone], silhouette: display.silhouette } },
+      { variant_id: variantId, quantity, metadata: { tone: [...display.tone], silhouette: display.silhouette, ...giftMeta } },
       { fields: CART_FIELDS },
       await getAuthHeaders()
     )
@@ -127,6 +138,57 @@ export async function removePromoCode(code: string): Promise<ActionResult<Bag>> 
     return { ok: true, data: toBag(cart) }
   } catch (e) {
     return { ok: false, error: message(e) }
+  }
+}
+
+/** Gift card codes (loyalty plugin route POST/DELETE /store/carts/:id/gift-cards). */
+export async function applyGiftCard(code: string): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return { ok: false, error: "Gift cards are not available in the demo store" }
+  const cartId = await getCartId()
+  if (!cartId) return { ok: false, error: "Your bag has expired" }
+  try {
+    await sdk.client.fetch(`/store/carts/${cartId}/gift-cards`, { method: "POST", body: { code: code.trim().toUpperCase() }, headers: await getAuthHeaders() })
+    return { ok: true, data: toBag(await fetchCart(cartId)) }
+  } catch (e) {
+    const msg = message(e, "")
+    return { ok: false, error: /not found/i.test(msg) || !msg ? "That gift card code is not valid" : msg }
+  }
+}
+
+export async function removeGiftCard(code: string): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return { ok: false, error: "Gift cards are not available in the demo store" }
+  const cartId = await getCartId()
+  if (!cartId) return { ok: false, error: "Your bag has expired" }
+  try {
+    await sdk.client.fetch(`/store/carts/${cartId}/gift-cards`, { method: "DELETE", body: { code }, headers: await getAuthHeaders() })
+    return { ok: true, data: toBag(await fetchCart(cartId)) }
+  } catch (e) {
+    return { ok: false, error: message(e) }
+  }
+}
+
+/** Signed-in customers only. Amount 0 removes it: the plugin replaces the store credit line each time. */
+export async function setStoreCredit(use: boolean): Promise<ActionResult<Bag>> {
+  if (DEMO_MODE) return { ok: false, error: "Store credit is not available in the demo store" }
+  const cartId = await getCartId()
+  if (!cartId) return { ok: false, error: "Your bag has expired" }
+  try {
+    await sdk.client.fetch(`/store/carts/${cartId}/store-credits`, { method: "POST", body: use ? {} : { amount: 0 }, headers: await getAuthHeaders() })
+    return { ok: true, data: toBag(await fetchCart(cartId)) }
+  } catch (e) {
+    return { ok: false, error: message(e, "Could not apply store credit") }
+  }
+}
+
+export async function getStoreCreditBalance(currency = "inr"): Promise<number> {
+  if (DEMO_MODE) return 0
+  const headers = await getAuthHeaders()
+  if (!("authorization" in headers)) return 0
+  try {
+    const res = await sdk.client.fetch<{ store_credit_accounts: { balance: number }[] }>("/store/store-credit-accounts", { query: { currency_code: currency }, headers })
+    return res.store_credit_accounts.reduce((sum, a) => sum + Number(a.balance ?? 0), 0)
+  } catch {
+    return 0
   }
 }
 
@@ -212,7 +274,10 @@ export async function setPaymentMethod(method: string): Promise<ActionResult<{ b
   try {
     const headers = await getAuthHeaders()
     const region = await getRegion()
-    const { cart } = await sdk.store.cart.update(cartId, { metadata: { payment_method: method } }, { fields: CART_FIELDS }, headers)
+    // Gift cards or store credit cover everything: Medusa completes the cart without a payment session.
+    const covered = ((await fetchCart(cartId)).total ?? 0) <= 0
+    const { cart } = await sdk.store.cart.update(cartId, { metadata: { payment_method: covered ? "gift_card" : method } }, { fields: CART_FIELDS }, headers)
+    if (covered) return { ok: true, data: { bag: toBag(cart), payment: { kind: "none" } } }
     const { payment_providers } = await sdk.store.payment.listPaymentProviders({ region_id: region.id }, headers)
     const wanted = PROVIDER_FOR_METHOD[method]
     const provider = payment_providers.find((p) => p.id === wanted)?.id

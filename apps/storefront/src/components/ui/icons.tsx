@@ -9,8 +9,10 @@ import {
   CreditCardIcon,
   DeliveryTruck01Icon,
   FilterHorizontalIcon,
+  GiftCardIcon,
   GridIcon,
   GridViewIcon,
+  ImageAdd01Icon,
   InformationCircleIcon,
   Location01Icon,
   Logout01Icon,
@@ -26,6 +28,7 @@ import {
   ShoppingBag01Icon,
   SmartPhone01Icon,
   SquareLock02Icon,
+  StarIcon,
   Tag01Icon,
   Tick02Icon,
   UserCircleIcon,
@@ -61,7 +64,9 @@ export const ChevronDown = make(ArrowDown01Icon, "ChevronDown")
 export const ChevronRight = make(ArrowRight01Icon, "ChevronRight")
 export const Copy = make(Copy01Icon, "Copy")
 export const CreditCard = make(CreditCardIcon, "CreditCard")
+export const Gift = make(GiftCardIcon, "Gift")
 export const Grip = make(GridIcon, "Grip")
+export const ImagePlus = make(ImageAdd01Icon, "ImagePlus")
 export const Info = make(InformationCircleIcon, "Info")
 export const LayoutGrid = make(GridViewIcon, "LayoutGrid")
 export const Lock = make(SquareLock02Icon, "Lock")
@@ -78,6 +83,7 @@ export const Search = make(Search01Icon, "Search")
 export const ShoppingBag = make(ShoppingBag01Icon, "ShoppingBag")
 export const SlidersHorizontal = make(FilterHorizontalIcon, "SlidersHorizontal")
 export const Smartphone = make(SmartPhone01Icon, "Smartphone")
+export const Star = make(StarIcon, "Star")
 export const Tag = make(Tag01Icon, "Tag")
 export const Truck = make(DeliveryTruck01Icon, "Truck")
 export const User = make(UserIcon, "User")

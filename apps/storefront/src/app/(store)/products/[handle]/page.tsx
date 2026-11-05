@@ -1,11 +1,14 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
+import { GiftCardPurchase } from "@/components/store/gift-card-purchase"
 import { ProductGrid } from "@/components/store/product-grid"
 import { ProductPurchase, ProductTabs } from "@/components/store/product-info"
+import { ProductReviews, RatingSummaryLink } from "@/components/store/product-reviews"
 import { ProductShowcase } from "@/components/store/product-showcase"
 import { SectionHeader } from "@/components/ui/section"
 import { getProduct, listProducts } from "@/lib/data/catalog"
+import { getProductReviews } from "@/lib/data/reviews"
 import { isSoldOut } from "@/lib/types"
 
 export async function generateStaticParams() {
@@ -46,10 +49,10 @@ async function ProductContent({ params }: { params: PageProps<"/products/[handle
   const { handle } = await params
   const product = await getProduct(handle)
   if (!product) notFound()
-  const all = await listProducts()
+  const [all, { stats, reviews }] = await Promise.all([listProducts(), getProductReviews(product.id)])
   const related = all.filter((p) => p.collection === product.collection && p.id !== product.id).slice(0, 4)
   // TODO: curated "complete the look" (product metadata or a module link).
-  const pairs = all.filter((p) => p.collection !== product.collection && !isSoldOut(p)).slice(0, 3)
+  const pairs = product.giftCard ? [] : all.filter((p) => p.collection !== product.collection && !isSoldOut(p) && !p.giftCard).slice(0, 3)
 
   return (
     <main className="sheet pt-[calc(var(--radius-sheet)*0.5)]">
@@ -58,11 +61,17 @@ async function ProductContent({ params }: { params: PageProps<"/products/[handle
         pairs={pairs}
         details={
           <>
-            <ProductPurchase product={product} />
+            {product.giftCard ? (
+              <GiftCardPurchase product={product} rating={<RatingSummaryLink stats={stats} />} />
+            ) : (
+              <ProductPurchase product={product} rating={<RatingSummaryLink stats={stats} />} />
+            )}
             <ProductTabs product={product} />
           </>
         }
       />
+
+      <ProductReviews productId={product.id} productTitle={product.title} handle={product.handle} stats={stats} reviews={reviews} />
 
       {related.length > 0 && (
         <section className="page-x pt-section pb-[calc(var(--spacing-section)*0.5)]">

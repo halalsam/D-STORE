@@ -63,7 +63,7 @@ function StepHeading({ title, description }: { title: string; description?: stri
   )
 }
 
-export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag: Bag; session: Session; demo?: boolean }) {
+export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 0 }: { initialBag: Bag; session: Session; demo?: boolean; storeCredit?: number }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const addresses = session?.addresses ?? []
@@ -111,7 +111,12 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
 
   const total = formatPrice(bag.total, bag.currency)
   const deliveryOption = options.find((o) => o.id === delivery)
-  const paymentOption = paymentMethods.find((p) => p.id === payment)!
+  // Gift card codes are issued when the order is placed, so the backend refuses them with cash on delivery.
+  const hasGiftCard = bag.lines.some((l) => l.giftCard)
+  const methods = hasGiftCard ? paymentMethods.filter((p) => p.id !== "cod") : paymentMethods
+  const paymentOption = methods.find((p) => p.id === payment) ?? methods[0]
+  const covered = bag.total <= 0
+  const steps = bag.needsShipping === false ? STEPS.filter((s) => s.id !== "delivery") : STEPS
 
   const submitContact = (a: AddressFields) =>
     start(async () => {
@@ -121,7 +126,7 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       setAddress(a)
       setOptions(res.data.shipping)
       if (!res.data.shipping.some((o) => o.id === delivery)) setDelivery(res.data.shipping[0]?.id ?? "")
-      go("delivery")
+      go(res.data.bag.needsShipping === false ? "payment" : "delivery")
     })
 
   const continueFromDetails = () => {
@@ -146,7 +151,7 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
 
   const continueFromPayment = () =>
     start(async () => {
-      const res = await setPaymentMethod(payment)
+      const res = await setPaymentMethod(paymentOption.id)
       if (!res.ok) return void toast(res.error, "error")
       updateBag(res.data.bag)
       setPaymentStart(res.data.payment)
@@ -193,7 +198,7 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
           onEdit: () => go("delivery"),
         }]
       : []),
-    ...(step === "review" ? [{ label: "Payment", value: paymentOption.label, onEdit: () => go("payment") }] : []),
+    ...(step === "review" ? [{ label: "Payment", value: covered ? "Gift card or store credit" : paymentOption.label, onEdit: () => go("payment") }] : []),
   ]
 
   const nextNote =
@@ -201,17 +206,17 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
       ? "A secure Razorpay window opens to finish your payment."
       : paymentStart.kind === "redirect"
         ? "You will finish paying on PhonePe, then come straight back here."
-        : payment === "cod"
+        : paymentOption.id === "cod" && !covered
           ? `Keep ${total} ready when your order arrives.`
           : null
 
-  const summary = <OrderSummary bag={bag} onBag={updateBag} />
+  const summary = <OrderSummary bag={bag} onBag={updateBag} storeCredit={storeCredit} />
 
   return (
     <>
       <div className="sticky top-(--header-h) z-(--z-sheet) -mx-gutter bg-canvas px-gutter pt-1 pb-3 md:pt-3">
         <div className="mx-auto max-w-6xl">
-          <Stepper steps={STEPS} current={step} onJump={pending || placing ? undefined : go} />
+          <Stepper steps={steps} current={step} onJump={pending || placing ? undefined : go} />
         </div>
       </div>
 
@@ -333,17 +338,22 @@ export function CheckoutFlow({ initialBag, session, demo = false }: { initialBag
             {step === "payment" && (
               <>
                 <StepHeading title="Payment" description="Choose how you'd like to pay. You confirm the amount on the next step." />
+                {covered ? (
+                  <p className="rounded-lg bg-success-soft px-4 py-3 type-body-sm text-success">Your gift card or store credit covers this order. Nothing more to pay.</p>
+                ) : (
                 <RadioCards
                   label="Payment method"
-                  value={payment}
+                  value={paymentOption.id}
                   onValueChange={setPayment}
-                  options={paymentMethods.map((p) => ({
+                  options={methods.map((p) => ({
                     value: p.id,
                     title: p.label,
                     description: p.description,
                     aside: <span className="text-ink-muted [&_svg]:size-5">{paymentIcon[p.id]}</span>,
                   }))}
                 />
+                )}
+                {hasGiftCard && !covered && <p className="mt-3 type-caption text-ink-muted">Cash on delivery is not available for gift cards.</p>}
                 <div className="mt-5">
                   <Checkbox label="Billing address same as shipping" defaultChecked disabled />
                 </div>

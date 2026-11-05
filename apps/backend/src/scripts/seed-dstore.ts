@@ -255,6 +255,40 @@ export default async function seedDstore({ container }: ExecArgs) {
     },
   })).result
 
+  // Gift card ---------------------------------------------------------
+  // Digital: no shipping profile and no inventory, so it skips delivery at checkout.
+  // Not discountable, because the loyalty plugin values the card at the line's pre-discount price.
+  if (!foundProducts.some((f) => f.handle === "gift-card")) {
+    const amounts = [1000, 2500, 5000]
+    const label = (n: number) => `\u20b9${n.toLocaleString("en-IN")}`
+    await createProductsWorkflow(container).run({
+      input: {
+        products: [
+          {
+            title: "D-STORE Gift Card",
+            handle: "gift-card",
+            description: "A digital gift card, emailed with your note within a few minutes of checkout. Spend it on anything at D-STORE; whatever is left stays on the card.",
+            status: ProductStatus.PUBLISHED,
+            is_giftcard: true,
+            discountable: false,
+            sales_channels: [{ id: salesChannelId }],
+            metadata: { type: "Gift card", silhouette: "card", tones: [["#2F4156", "#C8D9E6"]] },
+            options: [{ title: "Amount", values: amounts.map(label) }],
+            variants: amounts.map((n, rank) => ({
+              title: label(n),
+              sku: `GIFT-CARD-${n}`,
+              manage_inventory: false,
+              variant_rank: rank,
+              options: { Amount: label(n) },
+              prices: [{ amount: n, currency_code: "inr" }],
+            })),
+          },
+        ],
+      },
+    })
+    logger.info("[seed-dstore] Gift card product")
+  }
+
   // Stock -------------------------------------------------------------
   const stockBySku = new Map<string, number>()
   for (const p of catalog.products) for (const s of p.sizes) stockBySku.set(sku(p, s.label), s.stock)

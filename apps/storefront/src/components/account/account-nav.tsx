@@ -7,6 +7,7 @@ import { Bookmark, LayoutGrid, LogOut, MapPin, Package, UserRound } from "@/comp
 import { Button } from "@/components/ui/button"
 import { signOut } from "@/lib/data/customer"
 import { syncBag } from "@/lib/stores/bag"
+import { syncSaved } from "@/lib/stores/saved"
 import type { Customer } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -24,7 +25,7 @@ export function useSignOut() {
   const run = () =>
     start(async () => {
       await signOut()
-      await syncBag(true)
+      await Promise.all([syncBag(true), syncSaved()])
       router.push("/sign-in")
     })
   return { pending, run }

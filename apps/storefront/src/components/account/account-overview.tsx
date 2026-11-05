@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import type { ReactNode } from "react"
 import { ArrowRight, Bookmark, MapPin, Package } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { ProductMedia } from "@/components/store/product-media"
@@ -11,9 +12,9 @@ import { AddressLines } from "./address-card"
 import { PageTitle } from "./account-nav"
 import { OrderTracker, StatusBadge } from "./order-parts"
 
-type Props = { customer: Customer; orders: Order[]; addresses: Address[]; products: Product[] }
+type Props = { customer: Customer; orders: Order[]; addresses: Address[]; products: Product[]; storeCredit?: ReactNode }
 
-export function AccountOverview({ customer, orders, addresses, products }: Props) {
+export function AccountOverview({ customer, orders, addresses, products, storeCredit }: Props) {
   const saved = useSaved()
   const latest = orders[0]
   const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0]
@@ -61,6 +62,8 @@ export function AccountOverview({ customer, orders, addresses, products }: Props
             <Link href="/account/addresses">Manage addresses</Link>
           </Button>
         </section>
+
+        {storeCredit}
 
         <section className="panel xl:col-span-2">
           <div className="section-head mb-4">

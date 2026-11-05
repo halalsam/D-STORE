@@ -11,6 +11,7 @@ import { TextField } from "@/components/ui/text-field"
 import { signIn, signUp } from "@/lib/data/customer"
 import { startGoogleSignIn } from "@/lib/data/oauth"
 import { syncBag } from "@/lib/stores/bag"
+import { syncSaved } from "@/lib/stores/saved"
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const GOOGLE_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true"
@@ -77,7 +78,7 @@ export function SignInForm() {
         if (mode === "register" && /already exists/i.test(res.error)) setMode("signin")
         return fail(res.error)
       }
-      await syncBag(true)
+      await Promise.all([syncBag(true), syncSaved()])
       router.push(next)
       router.refresh()
     })

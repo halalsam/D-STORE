@@ -25,7 +25,10 @@ export function LineItem({ line, currency = "inr", compact = false }: { line: Or
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate type-body-sm font-medium">{line.title}</p>
-        <p className="type-caption text-ink-muted">Size {line.size}{line.quantity > 1 ? ` · Qty ${line.quantity}` : ""}</p>
+        <p className="truncate type-caption text-ink-muted">
+          {line.giftCard ? `Gift card${line.giftCard.recipientEmail ? ` for ${line.giftCard.recipientEmail}` : ""}` : `Size ${line.size}`}
+          {line.quantity > 1 ? ` · Qty ${line.quantity}` : ""}
+        </p>
       </div>
       <p className="type-body-sm type-price">{formatPrice(line.unitPrice * line.quantity, currency)}</p>
     </div>
@@ -39,9 +42,10 @@ type TotalsProps = {
   total: number
   currency?: string
   discountLabel?: string
+  credit?: number
 }
 
-export function Totals({ subtotal, discount = 0, shipping, total, currency = "inr", discountLabel }: TotalsProps) {
+export function Totals({ subtotal, discount = 0, shipping, total, currency = "inr", discountLabel, credit = 0 }: TotalsProps) {
   const row = "flex items-baseline justify-between type-body-sm"
   return (
     <dl className="grid gap-2">
@@ -50,6 +54,12 @@ export function Totals({ subtotal, discount = 0, shipping, total, currency = "in
         <div className={cn(row, "animate-rise-in")}>
           <dt className="text-ink-muted">Discount{discountLabel ? ` (${discountLabel})` : ""}</dt>
           <dd className="type-price text-success">-{formatPrice(discount, currency)}</dd>
+        </div>
+      )}
+      {credit > 0 && (
+        <div className={cn(row, "animate-rise-in")}>
+          <dt className="text-ink-muted">Gift card and credit</dt>
+          <dd className="type-price text-success">-{formatPrice(credit, currency)}</dd>
         </div>
       )}
       <div className={row}>

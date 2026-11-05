@@ -9,6 +9,7 @@ WORKDIR /repo
 
 FROM base AS deps
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
+COPY patches patches
 COPY apps/backend/package.json apps/backend/
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile --filter @d-store/backend...

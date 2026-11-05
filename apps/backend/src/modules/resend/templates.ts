@@ -8,6 +8,8 @@ export type TemplateData = {
   "password-reset": { reset_url: string }
   "newsletter-welcome": { shop_url: string; code?: string }
   "verify-email": { first_name?: string; verify_url: string; reason: "signup" | "guest-order" }
+  "gift-card": { code: string; amount: string; recipient_name?: string; sender_name?: string; message?: string; shop_url: string }
+  "back-in-stock": { product_title: string; variant_title: string; product_url: string }
 }
 
 export type TemplateName = keyof TemplateData
@@ -95,6 +97,23 @@ ${p(`<strong style="color:${NAVY}">Shipping to</strong><br>${esc(d.address).repl
     html: layout("New drops, first.", `${h1("You are on the list")}${p(`New drops reach you before anyone else.${d.code ? ` Use <strong style="color:${NAVY}">${esc(d.code)}</strong> for 10% off your first order.` : ""}`)}${button(d.shop_url, "Shop new arrivals")}`),
     text: `You are on the D-STORE list.${d.code ? ` Use ${d.code} for 10% off.` : ""}\n${d.shop_url}`,
   }),
+  "back-in-stock": (d) => ({
+    subject: `${d.product_title} is back${d.variant_title ? ` in ${d.variant_title}` : ""}`,
+    html: layout("It's back in stock.", `${h1("It's back")}${p(`<strong style="color:${NAVY}">${esc(d.product_title)}</strong>${d.variant_title ? ` in size ${esc(d.variant_title)}` : ""} is back in stock. Restocks go quickly, so grab it while it's here.`)}${button(d.product_url, "Shop now")}${p("You asked us to tell you once. We won't email you about it again.")}`),
+    text: `${d.product_title}${d.variant_title ? ` (${d.variant_title})` : ""} is back in stock: ${d.product_url}`,
+  }),
+  "gift-card": (d) => {
+    const from = d.sender_name ? `${esc(d.sender_name)} sent you` : "Here is"
+    return {
+      subject: d.sender_name ? `${d.sender_name} sent you a D-STORE gift card` : "Your D-STORE gift card",
+      html: layout(`A ${d.amount} gift card.`, `${greeting(d.recipient_name)}${h1(`${d.amount} to spend at D-STORE`)}${p(`${from} a D-STORE gift card.`)}${
+        d.message ? `<blockquote style="margin:0 0 20px;padding:12px 16px;border-left:3px solid ${NAVY};background:${BEIGE};font-size:15px;line-height:1.55">${esc(d.message).replace(/\n/g, "<br>")}</blockquote>` : ""
+      }<p style="margin:0 0 8px;font-size:13px;color:${MUTED};text-transform:uppercase;letter-spacing:.08em">Gift card code</p>
+<p style="margin:0 0 24px;font-size:24px;font-weight:800;letter-spacing:.08em;font-family:ui-monospace,Menlo,monospace">${esc(d.code)}</p>
+${p("Enter the code at checkout. Anything you don't spend stays on the card for next time.")}${button(d.shop_url, "Start shopping")}`),
+      text: `${d.sender_name ? `${d.sender_name} sent you` : "Here is"} a ${d.amount} D-STORE gift card.${d.message ? `\n\n"${d.message}"` : ""}\n\nCode: ${d.code}\nEnter it at checkout: ${d.shop_url}`,
+    }
+  },
   "verify-email": (d) => {
     const body =
       d.reason === "guest-order"

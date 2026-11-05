@@ -228,3 +228,48 @@ export async function verifyEmail(token: string): Promise<ActionResult<{ linked:
     return { ok: false, error: message(e, "This link is invalid or has expired") }
   }
 }
+
+/** Adds a gift card's balance to the account's store credit (custom route /store/customers/me/gift-cards). */
+export async function claimGiftCard(code: string): Promise<ActionResult> {
+  if (DEMO_MODE) return { ok: false, error: "Gift cards are not available in the demo store" }
+  try {
+    await sdk.client.fetch("/store/customers/me/gift-cards", { method: "POST", body: { code: code.trim() }, headers: await getAuthHeaders() })
+    revalidatePath("/account", "layout")
+    return { ok: true, data: undefined }
+  } catch (e) {
+    const msg = message(e, "")
+    return { ok: false, error: /not found|no balance|redeem/i.test(msg) || !msg ? "That gift card code is not valid or has been used" : msg }
+  }
+}
+
+const SAVED_KEY = "saved_items"
+const HANDLE = /^[a-z0-9][a-z0-9-]{0,99}$/
+
+function cleanHandles(list: unknown): string[] {
+  return Array.isArray(list) ? [...new Set(list.filter((h): h is string => typeof h === "string" && HANDLE.test(h)))].slice(0, 100) : []
+}
+
+/** Saved items live in customer metadata once signed in. Null when signed out. */
+export async function loadSavedItems(): Promise<{ customerId: string; items: string[] } | null> {
+  if (DEMO_MODE) return null
+  const headers = await getAuthHeaders()
+  if (!("authorization" in headers)) return null
+  try {
+    const { customer } = await sdk.store.customer.retrieve({ fields: "id,metadata" }, headers)
+    return { customerId: customer.id, items: cleanHandles(customer.metadata?.[SAVED_KEY]) }
+  } catch {
+    return null
+  }
+}
+
+export async function saveSavedItems(handles: string[]): Promise<ActionResult> {
+  if (DEMO_MODE) return { ok: true, data: undefined }
+  const headers = await getAuthHeaders()
+  if (!("authorization" in headers)) return { ok: false, error: "Not signed in" }
+  try {
+    await sdk.store.customer.update({ metadata: { [SAVED_KEY]: cleanHandles(handles) } }, {}, headers)
+    return { ok: true, data: undefined }
+  } catch (e) {
+    return { ok: false, error: message(e, "Could not save") }
+  }
+}

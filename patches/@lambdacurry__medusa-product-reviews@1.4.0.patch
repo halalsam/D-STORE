@@ -1,0 +1,116 @@
+diff --git a/.medusa/server/src/api/admin/product-review-stats/middlewares.js b/.medusa/server/src/api/admin/product-review-stats/middlewares.js
+index 179cc613444e39b2a783fe6016f473c5c8d2f174..d201fac1ee8031bb3b037b2af4d613425dbf7e26 100644
+--- a/.medusa/server/src/api/admin/product-review-stats/middlewares.js
++++ b/.medusa/server/src/api/admin/product-review-stats/middlewares.js
+@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.adminProductReviewStatRoutesMiddlewares = exports.defaultProductReviewStatsQueryConfig = exports.defaultAdminProductReviewStatFields = exports.listAdminProductReviewStatsQuerySchema = void 0;
+ const framework_1 = require("@medusajs/framework");
+ const validators_1 = require("@medusajs/medusa/api/utils/validators");
+-const zod_1 = require("zod");
++const zod_1 = require("@medusajs/framework/zod");
+ exports.listAdminProductReviewStatsQuerySchema = (0, validators_1.createFindParams)({
+     offset: 0,
+     limit: 50,
+diff --git a/.medusa/server/src/api/admin/product-reviews/[id]/response/middlewares.js b/.medusa/server/src/api/admin/product-reviews/[id]/response/middlewares.js
+index 3b37015f3317f9113953ab49d66a3f99e083c2cb..04ed8ae2c57c4db6a6b65c01ea7dd17eb08ee5c0 100644
+--- a/.medusa/server/src/api/admin/product-reviews/[id]/response/middlewares.js
++++ b/.medusa/server/src/api/admin/product-reviews/[id]/response/middlewares.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.adminProductReviewResponseRouteMiddlewares = exports.createProductReviewResponseDTO = void 0;
+-const zod_1 = require("zod");
++const zod_1 = require("@medusajs/framework/zod");
+ const framework_1 = require("@medusajs/framework");
+ exports.createProductReviewResponseDTO = zod_1.z.object({
+     content: zod_1.z.string().min(1),
+diff --git a/.medusa/server/src/api/admin/product-reviews/[id]/status/middlewares.js b/.medusa/server/src/api/admin/product-reviews/[id]/status/middlewares.js
+index f5855d9e3acdb42ba73207dc17a27e53899f2891..b2907b7d2a6787171fd10cc26ff5fc5bfdc0b9f2 100644
+--- a/.medusa/server/src/api/admin/product-reviews/[id]/status/middlewares.js
++++ b/.medusa/server/src/api/admin/product-reviews/[id]/status/middlewares.js
+@@ -2,7 +2,7 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.adminProductReviewStatusRoutesMiddlewares = exports.updateProductReviewStatusSchema = void 0;
+ const framework_1 = require("@medusajs/framework");
+-const zod_1 = require("zod");
++const zod_1 = require("@medusajs/framework/zod");
+ exports.updateProductReviewStatusSchema = zod_1.z.object({
+     status: zod_1.z.enum(['pending', 'approved', 'flagged']),
+ });
+diff --git a/.medusa/server/src/api/admin/product-reviews/middlewares.js b/.medusa/server/src/api/admin/product-reviews/middlewares.js
+index b0232eee2aa3a500529942ac9444e9cffb848b0a..b31145bd56ca36e0da9922a1b64dbfe4b18402a8 100644
+--- a/.medusa/server/src/api/admin/product-reviews/middlewares.js
++++ b/.medusa/server/src/api/admin/product-reviews/middlewares.js
+@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.adminProductReviewRoutesMiddlewares = exports.defaultProductReviewsQueryConfig = exports.defaultAdminProductReviewFields = exports.listAdminProductReviewsQuerySchema = void 0;
+ const framework_1 = require("@medusajs/framework");
+ const validators_1 = require("@medusajs/medusa/api/utils/validators");
+-const zod_1 = require("zod");
++const zod_1 = require("@medusajs/framework/zod");
+ const statuses = zod_1.z.enum(['pending', 'approved', 'rejected']);
+ exports.listAdminProductReviewsQuerySchema = (0, validators_1.createFindParams)({
+     offset: 0,
+diff --git a/.medusa/server/src/api/store/product-review-stats/middlewares.js b/.medusa/server/src/api/store/product-review-stats/middlewares.js
+index d1447f63994316a9fee38f4dd7bbe23cadb3364a..5ea0323d318c3deff946fdd9e90648d306518ea3 100644
+--- a/.medusa/server/src/api/store/product-review-stats/middlewares.js
++++ b/.medusa/server/src/api/store/product-review-stats/middlewares.js
+@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.storeProductReviewStatRoutesMiddlewares = exports.defaultStoreProductReviewStatsQueryConfig = exports.defaultStoreProductReviewStatFields = exports.listStoreProductReviewStatsQuerySchema = void 0;
+ const framework_1 = require("@medusajs/framework");
+ const validators_1 = require("@medusajs/medusa/api/utils/validators");
+-const zod_1 = require("zod");
++const zod_1 = require("@medusajs/framework/zod");
+ exports.listStoreProductReviewStatsQuerySchema = (0, validators_1.createFindParams)({
+     offset: 0,
+     limit: 50,
+diff --git a/.medusa/server/src/api/store/product-reviews/middlewares.js b/.medusa/server/src/api/store/product-reviews/middlewares.js
+index 62bc7fe986180f3ac6b8d9b1dc3388b9db97f422..623064b10ec03151cd6731261a77a7f22d6fb001 100644
+--- a/.medusa/server/src/api/store/product-reviews/middlewares.js
++++ b/.medusa/server/src/api/store/product-reviews/middlewares.js
+@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.storeProductReviewRoutesMiddlewares = exports.defaultStoreReviewsQueryConfig = exports.allowedStoreProductReviewFields = exports.defaultStoreProductReviewFields = exports.upsertProductReviewsSchema = exports.listStoreProductReviewsQuerySchema = void 0;
+ const framework_1 = require("@medusajs/framework");
+ const validators_1 = require("@medusajs/medusa/api/utils/validators");
+-const zod_1 = require("zod");
++const zod_1 = require("@medusajs/framework/zod");
+ const reviewStatuses = zod_1.z.enum(['pending', 'approved', 'flagged']);
+ exports.listStoreProductReviewsQuerySchema = (0, validators_1.createFindParams)({
+     offset: 0,
+diff --git a/.medusa/server/src/modules/product-review/service.js b/.medusa/server/src/modules/product-review/service.js
+index a9dafa811405243b3a520353404df953b31c7ba5..d6d0a35abdc68826ee1c3f45387ecdea5d707ee3 100644
+--- a/.medusa/server/src/modules/product-review/service.js
++++ b/.medusa/server/src/modules/product-review/service.js
+@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.modduleOptionsSchema = void 0;
+ const utils_1 = require("@medusajs/framework/utils");
+ const models_1 = require("./models");
+-const zod_1 = require("zod");
++const zod_1 = require("@medusajs/framework/zod");
+ exports.modduleOptionsSchema = zod_1.z.object({
+     defaultReviewStatus: zod_1.z.enum(['pending', 'approved', 'flagged']).default('approved'),
+ }).default({
+diff --git a/.medusa/server/src/workflows/steps/create-product-reviews.js b/.medusa/server/src/workflows/steps/create-product-reviews.js
+index 4a766ce3789d5e276592305f6bff543c586de6c8..96f25bcb9078849e289042e2705ba376e5f4d019 100644
+--- a/.medusa/server/src/workflows/steps/create-product-reviews.js
++++ b/.medusa/server/src/workflows/steps/create-product-reviews.js
+@@ -6,7 +6,6 @@ const product_review_1 = require("../../modules/product-review");
+ exports.createProductReviewsStepId = 'create-product-review-step';
+ exports.createProductReviewsStep = (0, workflows_sdk_1.createStep)(exports.createProductReviewsStepId, async (data, { container }) => {
+     const productReviewService = container.resolve(product_review_1.PRODUCT_REVIEW_MODULE);
+-    const images = data.flatMap((productReview, index) => (productReview.images ?? []).map((i) => ({ url: i.url, index })));
+     const createData = data.map((d) => ({
+         ...d,
+         status: productReviewService.defaultReviewStatus,
+@@ -14,11 +13,8 @@ exports.createProductReviewsStep = (0, workflows_sdk_1.createStep)(exports.creat
+             url: image.url,
+         })) ?? [],
+     }));
++    // Images are created through the nested `images` above; creating them again here duplicated every photo.
+     const productReviews = await productReviewService.createProductReviews(createData);
+-    await productReviewService.createProductReviewImages(images.map((i) => ({
+-        product_review_id: productReviews[i.index].id,
+-        url: i.url,
+-    })));
+     return new workflows_sdk_1.StepResponse(productReviews, {
+         productReviewIds: productReviews.map((productReview) => productReview.id),
+     });

@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useMemo } from "react"
-import { addToBag, getBag, updateBagLine } from "@/lib/data/cart"
+import { addToBag, getBag, updateBagLine, type GiftCardDetails } from "@/lib/data/cart"
 import { emptyBag, type Bag, type Product } from "@/lib/types"
 import { toast } from "@/components/ui/toast"
 import { createStore, useStore } from "./create-store"
@@ -30,11 +30,11 @@ export function useBag() {
 
   const setOpen = useCallback((o: boolean) => bagOpenStore.set(o), [])
 
-  const add = useCallback(async (product: Product, sizeLabel: string, options?: { open?: boolean; silent?: boolean }) => {
+  const add = useCallback(async (product: Product, sizeLabel: string, options?: { open?: boolean; silent?: boolean; gift?: GiftCardDetails }) => {
     const size = product.sizes.find((s) => s.label === sizeLabel)
     if (!size) return false
     busyStore.set(true)
-    const res = await addToBag(size.variantId, 1, { tone: product.tones[0], silhouette: product.silhouette })
+    const res = await addToBag(size.variantId, 1, { tone: product.tones[0], silhouette: product.silhouette }, product.giftCard ? options?.gift ?? {} : undefined)
     busyStore.set(false)
     if (!res.ok) {
       toast(res.error, "error")

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { CheckoutFlow } from "@/components/checkout/checkout-flow"
-import { readBag } from "@/lib/data/cart"
+import { getStoreCreditBalance, readBag } from "@/lib/data/cart"
 import { DEMO_MODE } from "@/lib/data/mode"
 import { currentSession } from "@/lib/data/session"
 
@@ -9,7 +9,8 @@ export const metadata: Metadata = { title: "Checkout" }
 
 async function Checkout() {
   const [bag, session] = await Promise.all([readBag(), currentSession()])
-  return <CheckoutFlow initialBag={bag} session={session} demo={DEMO_MODE} />
+  const storeCredit = session ? await getStoreCreditBalance(bag.currency) : 0
+  return <CheckoutFlow initialBag={bag} session={session} demo={DEMO_MODE} storeCredit={storeCredit} />
 }
 
 export default function CheckoutPage() {
