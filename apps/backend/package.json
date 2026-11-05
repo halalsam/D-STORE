@@ -11,7 +11,8 @@
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "seed": "medusa exec ./src/scripts/seed-demo-products.ts",
-    "seed:dstore": "medusa exec ./src/scripts/seed-dstore.ts"
+    "seed:dstore": "medusa exec ./src/scripts/seed-dstore.ts",
+    "setup:integrations": "medusa exec ./src/scripts/setup-integrations.ts"
   },
   "dependencies": {
     "@medusajs/admin-sdk": "2.22.2",
@@ -26,6 +27,7 @@
     "@tanstack/react-query": "5.64.2",
     "react-i18next": "13.5.0",
     "react-router-dom": "7.18.2",
+    "resend": "6.37.0",
     "zod": "4.2.0"
   },
   "devDependencies": {
