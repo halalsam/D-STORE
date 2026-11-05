@@ -309,6 +309,15 @@
 }
 
 /* Readability scrim for text on photography. */
+/* Keeps the transparent header legible over bright campaign photos. */
+@utility scrim-top {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--color-navy-950) 45%, transparent),
+    transparent 28%
+  );
+}
+
 @utility scrim-bottom {
   background-image: linear-gradient(
     to top,

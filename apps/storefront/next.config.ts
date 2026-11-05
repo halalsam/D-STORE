@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
     : {}),
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    // Product photos for the bundled demo catalog (src/lib/mock/catalog.json).
+    remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com", pathname: "/s/files/**" }],
+  },
   turbopack: {
     rules: {
       "*.css": {

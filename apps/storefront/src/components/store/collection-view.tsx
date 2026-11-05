@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Grip, LayoutGrid, SlidersHorizontal, X } from "@/components/ui/icons"
 import { Segmented } from "@/components/ui/segmented"
@@ -49,6 +49,24 @@ export function CollectionView({ title, products }: { title: string; products: P
   const [filters, setFilters] = useState<Filters>(emptyFilters)
   const [filterOpen, setFilterOpen] = useState(false)
   const results = useMemo(() => applyFilters(products, filters), [products, filters])
+  const available = useMemo(
+    () => ({
+      sizes: [...new Set(products.flatMap((p) => p.sizes.map((s) => s.label)))],
+      types: [...new Set(products.map((p) => p.type))],
+      colors: [...new Set(products.flatMap((p) => (p.color ? [p.color] : [])))],
+    }),
+    [products]
+  )
+
+  // Menu and SEO links arrive as ?type= / ?color=. Read after mount so the
+  // page stays statically rendered (useSearchParams would opt it out).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const types = params.getAll("type").filter((t) => available.types.includes(t))
+    const colors = params.getAll("color").filter((c) => (available.colors as string[]).includes(c))
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from the URL
+    if (types.length || colors.length) setFilters((f) => ({ ...f, types, colors: colors as Filters["colors"] }))
+  }, [available])
   const active = activeCount(filters)
   const chips = activeChips(filters)
   const countLabel = `${results.length} ${results.length === 1 ? "product" : "products"}`
@@ -151,6 +169,7 @@ export function CollectionView({ title, products }: { title: string; products: P
         value={filters}
         onApply={setFilters}
         countFor={(f) => applyFilters(products, f).length}
+        available={available}
       />
     </section>
   )

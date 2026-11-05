@@ -75,11 +75,14 @@ export function ProductShowcase({ product, details, pairs = [] }: Props) {
         ))}
       </ul>
 
-      {/* Pinned details, top aligned, filling the column */}
-      <aside className="pdp-pinned mt-tile flex min-w-0 flex-col gap-tile lg:mt-0 lg:h-(--pdp-pinned-h)">
+      {/* Pinned details, top aligned, filling the column. Scrolls inside only
+          as a last resort, so cards never overlap on short screens. */}
+      <aside className="pdp-pinned no-scrollbar mt-tile flex min-w-0 flex-col gap-tile lg:mt-0 lg:h-(--pdp-pinned-h) lg:overflow-y-auto">
         {details}
         {pairs.length > 0 && (
-          <section className="shrink-0 rounded-xl bg-surface p-3 ring-1 ring-line ring-inset">
+          // Pinned on short desktop screens it would squeeze the tabs; "You may
+          // also like" below the fold covers it there.
+          <section className="shrink-0 rounded-xl bg-surface p-3 ring-1 ring-line ring-inset lg:[@media(max-height:56rem)]:hidden">
             <p className="px-1 pb-2.5 type-overline text-ink-muted">Complete the look</p>
             <div className="grid grid-cols-3 gap-2">
               {pairs.slice(0, 3).map((p) => (

@@ -28,9 +28,26 @@ export type Product = {
   badge?: string
   description: string
   washcare: string[]
+  /**
+   * Garment measurements in inches. Undefined: no product-specific chart, show
+   * the generic one. Null: the product has no size guide (bags, caps).
+   */
+  sizeChart?: SizeChart | null
 }
 
-export type Collection = { id: string; handle: string; title: string; blurb: string; tone: Tone }
+export type SizeChart = { columns: string[]; rows: string[][] }
+
+export type Collection = {
+  id: string
+  handle: string
+  title: string
+  blurb: string
+  tone: Tone
+  /** Campaign banner, landscape. */
+  image?: string
+  /** Portrait crop of the banner for phones. */
+  imageMobile?: string
+}
 
 export type Address = {
   id: string

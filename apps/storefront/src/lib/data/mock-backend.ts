@@ -12,13 +12,15 @@ import type {
   Order,
   Product,
   Silhouette,
+  SizeChart,
   Tone,
 } from "@/lib/types"
 
 /**
  * DEMO MODE BACKEND
  * Used when MEDUSA_BACKEND_URL is not set (e.g. a Vercel preview without a
- * backend). Catalog comes from a bundled copy of the D-STORE seed data;
+ * backend). Catalog comes from the bundled lib/mock/catalog.json (real
+ * BLUORNG collections, photos hotlinked from cdn.shopify.com);
  * cart, customer, addresses and orders live in httpOnly cookies, so the
  * whole flow works per browser. Nothing is persisted server side and no
  * real orders are placed.
@@ -61,11 +63,12 @@ const PRODUCTS: Product[] = catalog.products.map((p) => ({
   color: p.color as ColorFamily,
   silhouette: p.silhouette as Silhouette,
   tones: p.tones as unknown as Tone[],
-  images: [],
+  images: "images" in p && Array.isArray(p.images) ? p.images : [],
   sizes: p.sizes.map((s) => ({ label: s.label, available: s.stock > 0, variantId: `${p.handle}::${s.label}` })),
   badge: "badge" in p && typeof p.badge === "string" ? p.badge : undefined,
   description: p.description,
   washcare: p.washcare,
+  sizeChart: "sizeChart" in p && p.sizeChart ? (p.sizeChart as SizeChart) : null,
 }))
 
 const COLLECTIONS: Collection[] = catalog.collections.map((c) => ({
@@ -74,6 +77,8 @@ const COLLECTIONS: Collection[] = catalog.collections.map((c) => ({
   title: c.title,
   blurb: c.blurb,
   tone: c.tone as unknown as Tone,
+  image: "image" in c && typeof c.image === "string" ? c.image : undefined,
+  imageMobile: "imageMobile" in c && typeof c.imageMobile === "string" ? c.imageMobile : undefined,
 }))
 
 export const demoCatalog = {
@@ -125,6 +130,7 @@ function toBag(cart: DemoCart): Bag {
       unitPrice: hit.product.price,
       tone: hit.product.tones[0],
       silhouette: hit.product.silhouette,
+      thumbnail: hit.product.images[0],
     })
   }
   const subtotal = lines.reduce((n, l) => n + l.unitPrice * l.quantity, 0)
@@ -238,7 +244,7 @@ function expandOrder(o: DemoOrder): Order {
   const lines = o.l.flatMap(([v, quantity, unitPrice]) => {
     const hit = variant(v)
     return hit
-      ? [{ id: v, handle: hit.product.handle, title: hit.product.title, size: hit.size.label, quantity, unitPrice, tone: hit.product.tones[0], silhouette: hit.product.silhouette }]
+      ? [{ id: v, handle: hit.product.handle, title: hit.product.title, size: hit.size.label, quantity, unitPrice, tone: hit.product.tones[0], silhouette: hit.product.silhouette, thumbnail: hit.product.images[0] }]
       : []
   })
   const subtotal = lines.reduce((n, l) => n + l.unitPrice * l.quantity, 0)

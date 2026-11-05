@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { CountBubble } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { useBag } from "@/lib/stores/bag"
+import type { Navigation } from "@/lib/data/navigation"
 import { MegaMenu } from "./mega-menu"
 
 function subscribeScroll(cb: () => void) {
@@ -21,7 +22,7 @@ const getServerScrolled = () => false
 /** Routes whose first block is full-bleed media under a transparent header. */
 const OVERLAY_ROUTES = new Set(["/"])
 
-export function SiteHeader() {
+export function SiteHeader({ nav }: { nav: Navigation }) {
   const pathname = usePathname()
   const scrolled = useSyncExternalStore(subscribeScroll, getScrolled, getServerScrolled)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -125,12 +126,16 @@ export function SiteHeader() {
             if ((e.target as HTMLElement).closest("a")) setMenuOpen(false)
           }}
           className={cn(
-            "z-(--z-header) w-[calc(var(--radix-popper-anchor-width)-1.25rem)] origin-top",
-            "max-h-[calc(100dvh-var(--header-h)-0.75rem)] overflow-y-auto overscroll-contain rounded-panel bg-canvas shadow-lg",
+            // Edge-to-edge white wrapper continuing the header, rounded at the
+            // bottom; its corner stays concentric with the panel inside.
+            "z-(--z-header) flex w-(--radix-popper-anchor-width) origin-top flex-col bg-surface px-3 pb-3 shadow-lg",
+            "max-h-[calc(100dvh-var(--header-h))] rounded-b-[calc(var(--radius-panel)+0.75rem)]",
             "data-[state=open]:animate-menu-in data-[state=closed]:animate-menu-out"
           )}
         >
-          <MegaMenu searchRef={searchRef} />
+          <div className="min-h-0 overflow-y-auto overscroll-contain rounded-panel bg-canvas">
+            <MegaMenu nav={nav} searchRef={searchRef} />
+          </div>
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

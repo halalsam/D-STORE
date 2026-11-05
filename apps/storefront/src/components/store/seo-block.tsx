@@ -6,21 +6,16 @@ import { Tabs } from "@/components/ui/tabs"
 import { chipVariants } from "@/components/ui/chip"
 import { cn } from "@/lib/utils"
 
-const linkSets = {
-  popular: ["Oversized tees", "Linen shirts", "Graphic hoodies", "Cargo pants", "Leather bags", "Caps"],
-  category: ["T-Shirts", "Shirts", "Hoodies", "Jackets", "Bottoms", "Accessories"],
-  style: ["Streetwear", "Resort", "Minimal", "Graphic", "Workwear"],
-  color: ["Navy", "Bone", "Black", "Sand", "Sea green", "Rose"],
-}
+export type LinkSet = { value: string; label: string; links: { label: string; href: string }[] }
 
 /** Collection footer: SEO copy with "Read more" plus tabbed link clouds. */
-export function SeoBlock({ title, body }: { title: string; body: string }) {
+export function SeoBlock({ title, body, linkSets }: { title: string; body: string; linkSets: LinkSet[] }) {
   const [expanded, setExpanded] = useState(false)
-  const chips = (items: string[]) => (
+  const chips = (items: LinkSet["links"]) => (
     <div className="flex flex-wrap gap-2 pt-3">
       {items.map((t) => (
-        <Link key={t} href={`/collections/new-arrivals?q=${encodeURIComponent(t)}`} className={chipVariants({ tone: "muted", size: "sm" })}>
-          {t}
+        <Link key={t.href} href={t.href} className={chipVariants({ tone: "muted", size: "sm" })}>
+          {t.label}
         </Link>
       ))}
     </div>
@@ -39,12 +34,7 @@ export function SeoBlock({ title, body }: { title: string; body: string }) {
         <Tabs
           variant="pills"
           contentClassName="animate-fade-in"
-          items={[
-            { value: "popular", label: "Popular searches", content: chips(linkSets.popular) },
-            { value: "category", label: "Shop by category", content: chips(linkSets.category) },
-            { value: "style", label: "Shop by style", content: chips(linkSets.style) },
-            { value: "color", label: "Shop by color", content: chips(linkSets.color) },
-          ]}
+          items={linkSets.filter((s) => s.links.length).map((s) => ({ value: s.value, label: s.label, content: chips(s.links) }))}
         />
       </div>
     </div>
