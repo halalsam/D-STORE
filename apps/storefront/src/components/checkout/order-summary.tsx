@@ -9,6 +9,7 @@ import { TextField } from "@/components/ui/text-field"
 import { applyGiftCard, applyPromoCode, removeGiftCard, removePromoCode, setStoreCredit } from "@/lib/data/cart"
 import { formatPrice } from "@/lib/format"
 import type { Bag } from "@/lib/types"
+import { useShake } from "@/lib/use-shake"
 import { cn } from "@/lib/utils"
 
 type Props = { bag: Bag; onBag: (bag: Bag) => void; className?: string; storeCredit?: number }
@@ -86,7 +87,7 @@ function GiftCards({ bag, onBag, storeCredit = 0 }: Props) {
 
 export function OrderSummary({ bag, onBag, className, storeCredit }: Props) {
   const [error, setError] = useState<string>()
-  const [attempt, setAttempt] = useState(0)
+  const [shakeRef, shake] = useShake<HTMLFormElement>()
   const [pending, start] = useTransition()
   const promo = bag.promoCodes[0]
 
@@ -119,8 +120,7 @@ export function OrderSummary({ bag, onBag, className, storeCredit }: Props) {
         </div>
       ) : (
         <form
-          key={attempt}
-          className={attempt > 0 && error ? "animate-shake" : undefined}
+          ref={shakeRef}
           onSubmit={(e) => {
             e.preventDefault()
             const code = String(new FormData(e.currentTarget).get("code") ?? "").trim().toUpperCase()
@@ -132,7 +132,7 @@ export function OrderSummary({ bag, onBag, className, storeCredit }: Props) {
                 onBag(res.data)
               } else {
                 setError(res.error)
-                setAttempt((n) => n + 1)
+                shake()
               }
             })
           }}

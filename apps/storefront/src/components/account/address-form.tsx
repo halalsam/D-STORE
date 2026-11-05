@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select } from "@/components/ui/select"
 import { TextField } from "@/components/ui/text-field"
 import { indianStates } from "@/lib/site"
+import { useShake } from "@/lib/use-shake"
 import type { Address } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -37,7 +38,7 @@ type Props = {
  */
 export function AddressForm({ id, initial, allowDefault = false, onSubmit, children, className }: Props) {
   const [errors, setErrors] = useState<Errors>({})
-  const [shake, setShake] = useState(0)
+  const [shakeRef, shake] = useShake<HTMLDivElement>()
 
   const clear = (name: string) =>
     setErrors((prev) => {
@@ -67,7 +68,7 @@ export function AddressForm({ id, initial, allowDefault = false, onSubmit, child
     const errs = validate(a)
     setErrors(errs)
     if (Object.keys(errs).length) {
-      setShake((n) => n + 1)
+      shake()
       return
     }
     onSubmit(a)
@@ -91,7 +92,7 @@ export function AddressForm({ id, initial, allowDefault = false, onSubmit, child
       onInput={(e) => clear((e.target as HTMLInputElement).name)}
       className={cn("grid gap-4", className)}
     >
-      <div key={shake} className={cn("grid gap-4", shake > 0 && "animate-shake")}>
+      <div ref={shakeRef} className="grid gap-4">
         {allowDefault && field("label", "Label (optional)", { placeholder: "Home, Studio..." })}
         <div className="grid gap-4 sm:grid-cols-2">
           {field("firstName", "First name", { autoComplete: "given-name" })}

@@ -12,6 +12,7 @@ import { signIn, signUp } from "@/lib/data/customer"
 import { startGoogleSignIn } from "@/lib/data/oauth"
 import { syncBag } from "@/lib/stores/bag"
 import { syncSaved } from "@/lib/stores/saved"
+import { useShake } from "@/lib/use-shake"
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const GOOGLE_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true"
@@ -42,12 +43,12 @@ export function SignInForm() {
   const [error, setError] = useState<string>()
   const [googleError, setGoogleError] = useState(params.get("error") === "google" ? "Google sign-in did not finish. Try again." : undefined)
   const [googlePending, startGoogle] = useTransition()
-  const [shake, setShake] = useState(0)
+  const [shakeRef, shake] = useShake<HTMLDivElement>()
   const [pending, start] = useTransition()
 
   const fail = (msg: string) => {
     setError(msg)
-    setShake((n) => n + 1)
+    shake()
   }
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -97,7 +98,7 @@ export function SignInForm() {
             : "Track orders, save addresses and check out faster."}
       </p>
 
-      <div key={shake} className={shake ? "animate-shake" : undefined}>
+      <div ref={shakeRef}>
         <TextField
           type="email"
           name="email"
