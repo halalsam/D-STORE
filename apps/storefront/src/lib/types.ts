@@ -54,10 +54,13 @@ export type Review = {
   createdAt: string
   images: string[]
   response?: string
+  /** Demo store sample, not a real customer review. */
+  sample?: boolean
 }
 
 /** What the signed-in shopper can do about reviewing a product. */
 export type ReviewEligibility =
+  | { kind: "demo" }
   | { kind: "signed-out" }
   | { kind: "not-purchased" }
   | {

@@ -22,6 +22,9 @@ const getReviewEligibility = cache(fetchEligibility)
 
 async function ReviewAction({ productId, productTitle, handle }: { productId: string; productTitle: string; handle: string }) {
   const eligibility = await getReviewEligibility(productId)
+  if (eligibility.kind === "demo") {
+    return <p className="type-caption text-ink-muted">Demo store: these are sample reviews, not from real buyers. Writing reviews is turned off.</p>
+  }
   if (eligibility.kind === "signed-out") {
     return (
       <p className="type-body-sm text-ink-muted">
@@ -67,7 +70,7 @@ function ReviewItem({ review, compact = false }: { review: Review; compact?: boo
         <div className="flex items-center gap-2">
           <Stars rating={review.rating} className="text-[0.95rem]" />
           <span className="type-body-sm font-medium">{review.name}</span>
-          <span className="type-caption text-ink-subtle">Verified buyer</span>
+          <span className="type-caption text-ink-subtle">{review.sample ? "Sample review" : "Verified buyer"}</span>
         </div>
         <time dateTime={review.createdAt} className="type-caption text-ink-subtle">{formatDate(review.createdAt)}</time>
       </div>

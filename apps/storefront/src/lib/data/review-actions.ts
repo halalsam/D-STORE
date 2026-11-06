@@ -13,7 +13,7 @@ function message(e: unknown, fallback: string) {
 
 /** Reviews are tied to an order line, so only shoppers who bought the product can write one. */
 export async function getReviewEligibility(productId: string): Promise<ReviewEligibility> {
-  if (DEMO_MODE) return { kind: "signed-out" }
+  if (DEMO_MODE) return { kind: "demo" }
   const headers = await getAuthHeaders()
   if (!("authorization" in headers)) return { kind: "signed-out" }
   try {

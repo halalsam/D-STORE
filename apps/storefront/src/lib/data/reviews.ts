@@ -2,6 +2,7 @@ import "server-only"
 import { cacheLife, cacheTag } from "next/cache"
 import { sdk } from "@/lib/medusa"
 import type { Review, ReviewStats } from "@/lib/types"
+import { demoReviews } from "./mock-backend"
 import { DEMO_MODE } from "./mode"
 
 /** Approved reviews only (the backend enforces it). Public, so cached like the catalog. */
@@ -44,7 +45,7 @@ export async function getProductReviews(productId: string): Promise<{ stats: Rev
   "use cache"
   cacheLife("minutes")
   cacheTag("reviews", `reviews:${productId}`)
-  if (DEMO_MODE) return { stats: emptyReviewStats, reviews: [] }
+  if (DEMO_MODE) return demoReviews(productId)
   try {
     const [stats, list] = await Promise.all([
       sdk.client.fetch<{ product_review_stats: StatsRow[] }>("/store/product-review-stats", { query: { product_id: productId } }),

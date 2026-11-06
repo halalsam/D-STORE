@@ -11,6 +11,8 @@ import type {
   Customer,
   Order,
   Product,
+  Review,
+  ReviewStats,
   Silhouette,
   SizeChart,
   Tone,
@@ -324,4 +326,59 @@ export const demoCustomer = {
     const o = (await read<DemoOrder[]>(COOKIE.orders, [])).find((x) => x.id === id)
     return o ? expandOrder(o) : null
   },
+}
+
+/**
+ * Sample reviews for the demo store, so the reviews UI can be seen without a
+ * backend. They are not real customer reviews, and the storefront labels them
+ * "Sample review" with a note saying so. Picked deterministically per product.
+ */
+const SAMPLE_NAMES = ["Aarav M.", "Diya S.", "Kabir R.", "Meera P.", "Rohan K.", "Ananya G.", "Vikram T.", "Isha N.", "Arjun D.", "Sara F."]
+
+const SAMPLE_TEXT: Record<"apparel" | "accessory", { rating: number; text: string }[]> = {
+  apparel: [
+    { rating: 5, text: "Fits true to size with that slightly boxy drop I wanted. Fabric feels heavier than most at this price." },
+    { rating: 5, text: "Washed it three times now, cold and inside out. No shrinking and the print still looks sharp." },
+    { rating: 4, text: "Great colour in person. I sized up for a looser fit and it sits well on the shoulders." },
+    { rating: 4, text: "Soft from the first wear. Took a star off because delivery took a day longer than shown." },
+    { rating: 3, text: "Nice quality but runs a little long for me at 5'6\". Size down if you're between sizes." },
+    { rating: 5, text: "Got compliments the first day I wore it. Stitching is neat and the collar holds its shape." },
+  ],
+  accessory: [
+    { rating: 5, text: "Solid build, strap feels sturdy and the hardware has not loosened after weeks of daily use." },
+    { rating: 4, text: "Looks exactly like the photos. Slightly smaller than I expected, so check the dimensions." },
+    { rating: 5, text: "Goes with everything I own. Material has held up well through monsoon commutes." },
+    { rating: 4, text: "Good value for the price. Colour is a touch darker in person, which I actually prefer." },
+  ],
+}
+
+function seed(text: string) {
+  let h = 2166136261
+  for (const c of text) h = Math.imul(h ^ c.charCodeAt(0), 16777619)
+  return h >>> 0
+}
+
+export function demoReviews(productId: string): { stats: ReviewStats; reviews: Review[] } {
+  const product = PRODUCTS.find((p) => p.id === productId)
+  if (!product) return { stats: { average: 0, count: 0, distribution: [0, 0, 0, 0, 0] }, reviews: [] }
+  const pool = SAMPLE_TEXT[product.silhouette === "bag" || product.silhouette === "cap" ? "accessory" : "apparel"]
+  const h = seed(product.handle)
+  const count = 2 + (h % 3)
+  const base = Date.UTC(2026, 9, 28)
+  const reviews: Review[] = Array.from({ length: count }, (_, i) => {
+    const pick = pool[(h + i * 7) % pool.length]
+    return {
+      id: `demo_rev_${product.handle}_${i}`,
+      name: SAMPLE_NAMES[(h + i * 3) % SAMPLE_NAMES.length],
+      rating: pick.rating,
+      content: pick.text,
+      createdAt: new Date(base - (((h >>> (i + 2)) % 40) + i * 9) * 86400000).toISOString(),
+      images: [],
+      sample: true,
+    }
+  }).sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  const distribution: ReviewStats["distribution"] = [0, 0, 0, 0, 0]
+  for (const r of reviews) distribution[r.rating - 1]++
+  const average = Math.round((reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) * 10) / 10
+  return { stats: { average, count: reviews.length, distribution }, reviews }
 }
