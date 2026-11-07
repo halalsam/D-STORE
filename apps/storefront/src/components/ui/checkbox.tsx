@@ -16,7 +16,7 @@ export function Checkbox({ label, className, id, ...props }: Props) {
       <CheckboxPrimitive.Root
         id={boxId}
         className={cn(
-          "pressable grid size-5 shrink-0 place-items-center rounded-pill bg-surface ring-1 ring-line-strong ring-inset",
+          "pressable grid size-5 shrink-0 place-items-center rounded-xs bg-surface ring-1 ring-line-strong ring-inset",
           "data-[state=checked]:bg-accent data-[state=checked]:ring-transparent"
         )}
         {...props}

@@ -18,7 +18,7 @@ export function LineItem({ line, currency = "inr", compact = false }: { line: Or
       <div className={cn("relative aspect-card shrink-0 overflow-hidden rounded-md", compact ? "w-14" : "w-16")}>
         <ProductMedia tone={line.tone} src={line.thumbnail} silhouette={line.silhouette} alt={line.title} />
         {line.quantity > 1 && (
-          <span className="absolute top-1 right-1 grid h-5 min-w-5 place-items-center rounded-pill bg-surface-inverse px-1 text-[0.6875rem] text-ink-inverse tabular-nums">
+          <span className="absolute top-1 right-1 grid h-5 min-w-5 place-items-center rounded-full bg-surface-inverse px-1 text-[0.6875rem] text-ink-inverse tabular-nums">
             {line.quantity}
           </span>
         )}
@@ -91,10 +91,10 @@ export function OrderTracker({ status }: { status: OrderStatus }) {
   const current = flow.indexOf(status)
   return (
     <ol className="relative grid grid-cols-4">
-      <span aria-hidden className="absolute top-3 right-[12.5%] left-[12.5%] h-0.5 rounded-pill bg-surface-strong" />
+      <span aria-hidden className="absolute top-3 right-[12.5%] left-[12.5%] h-0.5 rounded-full bg-surface-strong" />
       <span
         aria-hidden
-        className="absolute top-3 left-[12.5%] h-0.5 origin-left rounded-pill bg-accent transition-transform duration-(--duration-bounce) ease-spring"
+        className="absolute top-3 left-[12.5%] h-0.5 origin-left rounded-full bg-accent transition-transform duration-(--duration-bounce) ease-spring"
         style={{ width: "75%", transform: `scaleX(${current / (flow.length - 1)})` }}
       />
       {flow.map((s, i) => {
@@ -103,12 +103,12 @@ export function OrderTracker({ status }: { status: OrderStatus }) {
           <li key={s} className="relative grid justify-items-center gap-2 text-center">
             <span
               className={cn(
-                "grid size-6 place-items-center rounded-pill ring-4 ring-surface transition-colors duration-(--duration-base)",
+                "grid size-6 place-items-center rounded-full ring-4 ring-surface transition-colors duration-(--duration-base)",
                 done ? "bg-accent text-white" : "bg-surface-strong text-ink-subtle"
               )}
               style={{ transitionDelay: `${i * 120}ms` }}
             >
-              {done ? <Check className="size-3.5" strokeWidth={3} /> : <span className="size-1.5 rounded-pill bg-current" />}
+              {done ? <Check className="size-3.5" strokeWidth={3} /> : <span className="size-1.5 rounded-full bg-current" />}
             </span>
             <span className={cn("type-caption", done ? "text-ink" : "text-ink-subtle")} aria-current={i === current ? "step" : undefined}>
               {orderStatusLabel[s]}

@@ -1,3 +1,4 @@
+import { STOREFRONT_URL } from "../../lib/notify"
 type Line = { title: string; variant?: string; quantity: number; total: string }
 
 export type TemplateData = {
@@ -14,9 +15,9 @@ export type TemplateData = {
 
 export type TemplateName = keyof TemplateData
 
-const NAVY = "#2F4156"
-const BEIGE = "#F5EFEB"
-const MUTED = "#566577"
+const NAVY = "#0A1730"
+const BEIGE = "#FEF4F0"
+const MUTED = "#4B5568"
 
 function esc(s: unknown) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!)
@@ -32,9 +33,9 @@ function layout(preheader: string, body: string) {
 <span style="display:none;max-height:0;overflow:hidden">${esc(preheader)}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
-<tr><td style="padding:0 8px 24px;font-size:26px;font-weight:800;letter-spacing:-.04em">D-STORE</td></tr>
+<tr><td style="padding:0 8px 24px"><img src="${STOREFRONT_URL}/brand/motionfit-email.png" width="220" height="34" alt="MotionFit" style="display:block;border:0;width:220px;height:auto"></td></tr>
 <tr><td style="background:#fff;border-radius:24px;padding:32px">${body}</td></tr>
-<tr><td style="padding:24px 8px;font-size:12px;color:${MUTED}">D-STORE, Mumbai. You are receiving this because of your account or order with us.</td></tr>
+<tr><td style="padding:24px 8px;font-size:12px;color:${MUTED}">MotionFit, Mumbai. You are receiving this because of your account or order with us.</td></tr>
 </table></td></tr></table></body></html>`
 }
 
@@ -83,19 +84,19 @@ ${p(`<strong style="color:${NAVY}">Shipping to</strong><br>${esc(d.address).repl
     text: `Order #${d.display_id} was cancelled. Refunds reach the original payment method within 5 to 7 business days.\n${d.order_url}`,
   }),
   "customer-welcome": (d) => ({
-    subject: "Welcome to D-STORE",
+    subject: "Welcome to MotionFit",
     html: layout("Your account is ready.", `${greeting(d.first_name)}${h1("Your account is ready")}${p("Save addresses, track orders and keep a list of pieces you like.")}${button(d.shop_url, "Shop new arrivals")}`),
-    text: `Your D-STORE account is ready.\n${d.shop_url}`,
+    text: `Your MotionFit account is ready.\n${d.shop_url}`,
   }),
   "password-reset": (d) => ({
-    subject: "Reset your D-STORE password",
+    subject: "Reset your MotionFit password",
     html: layout("Reset your password.", `${h1("Reset your password")}${p("Use the button below within 15 minutes. If you did not ask for this, ignore this email.")}${button(d.reset_url, "Reset password")}`),
     text: `Reset your password (valid 15 minutes): ${d.reset_url}`,
   }),
   "newsletter-welcome": (d) => ({
-    subject: "You are on the D-STORE list",
+    subject: "You are on the MotionFit list",
     html: layout("New drops, first.", `${h1("You are on the list")}${p(`New drops reach you before anyone else.${d.code ? ` Use <strong style="color:${NAVY}">${esc(d.code)}</strong> for 10% off your first order.` : ""}`)}${button(d.shop_url, "Shop new arrivals")}`),
-    text: `You are on the D-STORE list.${d.code ? ` Use ${d.code} for 10% off.` : ""}\n${d.shop_url}`,
+    text: `You are on the MotionFit list.${d.code ? ` Use ${d.code} for 10% off.` : ""}\n${d.shop_url}`,
   }),
   "back-in-stock": (d) => ({
     subject: `${d.product_title} is back${d.variant_title ? ` in ${d.variant_title}` : ""}`,
@@ -105,23 +106,23 @@ ${p(`<strong style="color:${NAVY}">Shipping to</strong><br>${esc(d.address).repl
   "gift-card": (d) => {
     const from = d.sender_name ? `${esc(d.sender_name)} sent you` : "Here is"
     return {
-      subject: d.sender_name ? `${d.sender_name} sent you a D-STORE gift card` : "Your D-STORE gift card",
-      html: layout(`A ${d.amount} gift card.`, `${greeting(d.recipient_name)}${h1(`${d.amount} to spend at D-STORE`)}${p(`${from} a D-STORE gift card.`)}${
+      subject: d.sender_name ? `${d.sender_name} sent you a MotionFit gift card` : "Your MotionFit gift card",
+      html: layout(`A ${d.amount} gift card.`, `${greeting(d.recipient_name)}${h1(`${d.amount} to spend at MotionFit`)}${p(`${from} a MotionFit gift card.`)}${
         d.message ? `<blockquote style="margin:0 0 20px;padding:12px 16px;border-left:3px solid ${NAVY};background:${BEIGE};font-size:15px;line-height:1.55">${esc(d.message).replace(/\n/g, "<br>")}</blockquote>` : ""
       }<p style="margin:0 0 8px;font-size:13px;color:${MUTED};text-transform:uppercase;letter-spacing:.08em">Gift card code</p>
 <p style="margin:0 0 24px;font-size:24px;font-weight:800;letter-spacing:.08em;font-family:ui-monospace,Menlo,monospace">${esc(d.code)}</p>
 ${p("Enter the code at checkout. Anything you don't spend stays on the card for next time.")}${button(d.shop_url, "Start shopping")}`),
-      text: `${d.sender_name ? `${d.sender_name} sent you` : "Here is"} a ${d.amount} D-STORE gift card.${d.message ? `\n\n"${d.message}"` : ""}\n\nCode: ${d.code}\nEnter it at checkout: ${d.shop_url}`,
+      text: `${d.sender_name ? `${d.sender_name} sent you` : "Here is"} a ${d.amount} MotionFit gift card.${d.message ? `\n\n"${d.message}"` : ""}\n\nCode: ${d.code}\nEnter it at checkout: ${d.shop_url}`,
     }
   },
   "verify-email": (d) => {
     const body =
       d.reason === "guest-order"
-        ? "We got an order placed with this email. Confirm it is yours and we will add it, along with any other orders you placed as a guest, to your D-STORE account."
+        ? "We got an order placed with this email. Confirm it is yours and we will add it, along with any other orders you placed as a guest, to your MotionFit account."
         : "Confirm this is your email so we can add orders you placed as a guest to your account. The link works for 3 days."
     return {
-      subject: d.reason === "guest-order" ? "Add your order to your D-STORE account" : "Confirm your email",
-      html: layout("Confirm your email.", `${greeting(d.first_name)}${h1("Confirm your email")}${p(body)}${button(d.verify_url, "Confirm email")}${p("If you did not create a D-STORE account, ignore this email.")}`),
+      subject: d.reason === "guest-order" ? "Add your order to your MotionFit account" : "Confirm your email",
+      html: layout("Confirm your email.", `${greeting(d.first_name)}${h1("Confirm your email")}${p(body)}${button(d.verify_url, "Confirm email")}${p("If you did not create a MotionFit account, ignore this email.")}`),
       text: `${body}\n${d.verify_url}`,
     }
   },

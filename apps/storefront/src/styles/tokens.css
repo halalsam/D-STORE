@@ -1,5 +1,5 @@
 /*
- * D-STORE design tokens
+ * MotionFit design tokens
  * ------------------------------------------------------------------
  * Layer 1  primitives   raw palette ramps, never used in components
  * Layer 2  semantic     what components use: canvas, surface, ink...
@@ -17,7 +17,8 @@
 @theme {
   /* ---------------------------------------------------------------
    * Color: primitives
-   * Base swatches sit at: navy-800, teal-500, sky-200, beige-100.
+   * Brand swatches (logo): navy-800, sky-400, beige-100 (cream). teal-500 is
+   * the deep sky used where white text sits on the accent.
    * ------------------------------------------------------------- */
   --color-*: initial;
 
@@ -26,53 +27,53 @@
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  --color-navy-50: #eff1f2;
-  --color-navy-100: #d5d9de;
-  --color-navy-200: #bbc1c9;
-  --color-navy-300: #a2abb5;
-  --color-navy-400: #8994a1;
-  --color-navy-500: #717e8e;
-  --color-navy-600: #5a697b;
-  --color-navy-700: #445568;
-  --color-navy-800: #2f4156; /* Navy */
-  --color-navy-900: #273647;
-  --color-navy-950: #1f2b39;
+  --color-navy-50: #f1f2f4;
+  --color-navy-100: #dadde2;
+  --color-navy-200: #bcc1c9;
+  --color-navy-300: #9da3af;
+  --color-navy-400: #7e8796;
+  --color-navy-500: #616b7d;
+  --color-navy-600: #475267;
+  --color-navy-700: #26334a;
+  --color-navy-800: #0a1730; /* MotionFit navy */
+  --color-navy-900: #040c1d;
+  --color-navy-950: #02050f;
 
-  --color-teal-50: #ecf0f2;
-  --color-teal-100: #cdd8dd;
-  --color-teal-200: #aec0c9;
-  --color-teal-300: #90a9b5;
-  --color-teal-400: #7392a1;
-  --color-teal-500: #567c8d; /* Teal */
-  --color-teal-600: #4c6d7d;
-  --color-teal-700: #425e6d;
-  --color-teal-800: #38505e;
-  --color-teal-900: #2f424f;
-  --color-teal-950: #263540;
+  --color-teal-50: #f3f6f8;
+  --color-teal-100: #e0e7ed;
+  --color-teal-200: #c2cfdb;
+  --color-teal-300: #a1b5c7;
+  --color-teal-400: #7a96af;
+  --color-teal-500: #496f90; /* deep sky: accent fills */
+  --color-teal-600: #3d5e7e;
+  --color-teal-700: #324f6e;
+  --color-teal-800: #27415e;
+  --color-teal-900: #1d334f;
+  --color-teal-950: #152742;
 
-  --color-sky-50: #f2f6f9;
-  --color-sky-100: #dde8f0;
-  --color-sky-200: #c8d9e6; /* Sky Blue */
-  --color-sky-300: #b5cadb;
-  --color-sky-400: #a3bbcd;
-  --color-sky-500: #7e9bb2;
-  --color-sky-600: #607e96;
-  --color-sky-700: #4b6479;
-  --color-sky-800: #3a4e60;
-  --color-sky-900: #2c3b49;
-  --color-sky-950: #1f2b36;
+  --color-sky-50: #f7fafd;
+  --color-sky-100: #ecf4fa;
+  --color-sky-200: #daeaf4;
+  --color-sky-300: #c0daec;
+  --color-sky-400: #7ab3d7; /* MotionFit sky */
+  --color-sky-500: #5e8daf;
+  --color-sky-600: #496f90;
+  --color-sky-700: #385876;
+  --color-sky-800: #294461;
+  --color-sky-900: #1d324e;
+  --color-sky-950: #152742;
 
-  --color-beige-50: #fbf9f7;
-  --color-beige-100: #f5efeb; /* Beige */
-  --color-beige-200: #ece4de;
-  --color-beige-300: #ded4cc;
-  --color-beige-400: #c7bab0;
-  --color-beige-500: #a89a90;
-  --color-beige-600: #857a73;
-  --color-beige-700: #655d59;
-  --color-beige-800: #4a4543;
-  --color-beige-900: #33302f;
-  --color-beige-950: #221f1e;
+  --color-beige-50: #fff9f7;
+  --color-beige-100: #fef4f0; /* MotionFit cream */
+  --color-beige-200: #f4eae5;
+  --color-beige-300: #e9ded9;
+  --color-beige-400: #d5c9c3;
+  --color-beige-500: #bdafa9;
+  --color-beige-600: #8d827d;
+  --color-beige-700: #786d68;
+  --color-beige-800: #655a55;
+  --color-beige-900: #554a45;
+  --color-beige-950: #493d38;
 
   /* ---------------------------------------------------------------
    * Color: semantic
@@ -88,8 +89,8 @@
   --color-surface-tint: var(--color-sky-100); /* soft brand highlight */
 
   /* Text and icons */
-  --color-ink: var(--color-navy-800); /* 9.2:1 on canvas, 10.4:1 on surface */
-  --color-ink-muted: var(--color-navy-600); /* 4.9:1 on canvas, secondary text */
+  --color-ink: var(--color-navy-800); /* 16.5:1 on canvas, 17.8:1 on surface */
+  --color-ink-muted: var(--color-navy-600); /* 7.3:1 on canvas, secondary text */
   --color-ink-subtle: var(--color-navy-400); /* placeholders, decorative only */
   --color-ink-inverse: var(--color-white);
   --color-ink-on-media: var(--color-white); /* text over photography */
@@ -100,7 +101,7 @@
 
   /* Brand accent */
   --color-accent: var(--color-teal-500); /* fills, focus, active underline */
-  --color-accent-ink: var(--color-teal-700); /* accent text on canvas, 6:1 */
+  --color-accent-ink: var(--color-teal-600); /* accent text on canvas */
   --color-accent-soft: var(--color-sky-200); /* selected chip, tags, selection */
   --color-accent-soft-ink: var(--color-navy-800);
 
@@ -176,34 +177,37 @@
   --text-overline--letter-spacing: 0.1em;
 
   /* ---------------------------------------------------------------
-   * Radius: iOS-style, generous, concentric
+   * Radius: tight and sporty, matching the MotionFit logo's sharp cuts.
    * Inner radius = outer radius - padding between them.
+   * "pill" is the control radius (buttons, chips, inputs, size pills);
+   * "full" is for real circles (avatars, dots, switches, counts).
    * ------------------------------------------------------------- */
   --radius-*: initial;
-  --radius-xs: 0.375rem; /* 6  tags, badges */
-  --radius-sm: 0.625rem; /* 10 small icon buttons, inputs inside cards */
-  --radius-md: 0.875rem; /* 14 thumbnails, inputs */
-  --radius-lg: 1.125rem; /* 18 product media */
-  --radius-xl: 1.5rem; /* 24 info card, drawers, popovers */
-  --radius-2xl: 2rem; /* 32 inset panels, mega menu */
-  --radius-3xl: 2.75rem; /* 44 page sheet */
-  --radius-pill: 9999px;
+  --radius-xs: 0.1875rem; /* 3  tags, badges */
+  --radius-sm: 0.3125rem; /* 5  small icon buttons, inputs inside cards */
+  --radius-md: 0.4375rem; /* 7  thumbnails, inputs */
+  --radius-lg: 0.5625rem; /* 9  product media */
+  --radius-xl: 0.75rem; /* 12 info card, drawers, popovers */
+  --radius-2xl: 1rem; /* 16 inset panels, mega menu */
+  --radius-3xl: 1.25rem; /* 20 page sheet */
+  --radius-pill: var(--radius-sm);
+  --radius-full: 9999px;
 
-  --radius-card: var(--radius-lg);
-  --radius-panel: var(--radius-2xl);
+  --radius-card: var(--radius-md);
+  --radius-panel: var(--radius-xl);
   --radius-sheet: var(--radius-3xl);
 
   /* ---------------------------------------------------------------
    * Elevation: navy tinted, soft, mostly flat
    * ------------------------------------------------------------- */
   --shadow-*: initial;
-  --shadow-xs: 0 1px 2px rgb(31 43 57 / 0.06);
-  --shadow-sm: 0 1px 2px rgb(31 43 57 / 0.05), 0 2px 8px rgb(31 43 57 / 0.05);
-  --shadow-md: 0 2px 4px rgb(31 43 57 / 0.04), 0 10px 28px rgb(31 43 57 / 0.08);
-  --shadow-lg: 0 4px 10px rgb(31 43 57 / 0.04),
-    0 28px 56px -10px rgb(31 43 57 / 0.16);
+  --shadow-xs: 0 1px 2px rgb(10 23 48 / 0.06);
+  --shadow-sm: 0 1px 2px rgb(10 23 48 / 0.05), 0 2px 8px rgb(10 23 48 / 0.05);
+  --shadow-md: 0 2px 4px rgb(10 23 48 / 0.04), 0 10px 28px rgb(10 23 48 / 0.08);
+  --shadow-lg: 0 4px 10px rgb(10 23 48 / 0.04),
+    0 28px 56px -10px rgb(10 23 48 / 0.16);
   --shadow-glass: inset 0 0 0 0.5px rgb(255 255 255 / 0.55),
-    0 8px 32px rgb(31 43 57 / 0.12);
+    0 8px 32px rgb(10 23 48 / 0.12);
 
   /* ---------------------------------------------------------------
    * Layout
@@ -350,6 +354,6 @@
 /* Phones: a tighter page-sheet corner keeps content closer to the header. */
 @media (width < 48rem) {
   :root {
-    --radius-3xl: 1.75rem;
+    --radius-3xl: 0.875rem;
   }
 }

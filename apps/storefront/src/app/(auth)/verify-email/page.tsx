@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Check } from "@/components/ui/icons"
 import { verifyEmail } from "@/lib/data/customer"
+import { Logo } from "@/components/ui/logo"
 
 export const metadata: Metadata = { title: "Confirm email", robots: { index: false } }
 
@@ -33,8 +34,8 @@ async function Verify({ searchParams }: { searchParams: PageProps<"/verify-email
 export default function VerifyEmailPage({ searchParams }: PageProps<"/verify-email">) {
   return (
     <div className="flex min-h-dvh flex-col items-center bg-surface px-gutter">
-      <Link href="/" className="pressable mt-12 font-display text-[2rem] font-bold tracking-[-0.04em]">
-        D-STORE
+      <Link href="/" aria-label="MotionFit home" className="pressable mt-12 block">
+        <Logo decorative className="h-6" />
       </Link>
       <main className="flex w-full max-w-sm flex-1 flex-col justify-center py-16">
         <Suspense fallback={<div className="h-48 rounded-xl skeleton" />}>

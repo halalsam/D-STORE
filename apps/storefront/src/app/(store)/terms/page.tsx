@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { InfoPage, InfoSection } from "@/components/store/info-page"
 
-export const metadata: Metadata = { title: "Terms of service", description: "The terms that apply when you shop with D-STORE." }
+export const metadata: Metadata = { title: "Terms of service", description: "The terms that apply when you shop with MotionFit." }
 
 // Plain-language draft. Review with counsel before launch.
 export default function TermsPage() {

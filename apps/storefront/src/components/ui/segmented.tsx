@@ -40,7 +40,7 @@ export function Segmented({ options, value, onValueChange, label, iconOnly = fal
           value={o.value}
           aria-label={o.label}
           className={cn(
-            "pressable relative z-[1] inline-flex h-8 items-center justify-center gap-1.5 rounded-pill type-body-sm text-ink-muted transition-colors data-[state=on]:text-ink [&_svg]:size-4",
+            "pressable relative z-[1] inline-flex h-8 items-center justify-center gap-1.5 rounded-full type-body-sm text-ink-muted transition-colors data-[state=on]:text-ink [&_svg]:size-4",
             iconOnly ? "w-10" : "px-4"
           )}
         >

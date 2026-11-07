@@ -38,7 +38,7 @@ export function BagDrawer() {
         {lines.length === 0 ? (
           <div className="grid h-full place-items-center p-8 text-center">
             <div className="animate-rise-in">
-              <span className="mx-auto grid size-16 place-items-center rounded-pill bg-surface-muted text-ink-muted">
+              <span className="mx-auto grid size-16 place-items-center rounded-full bg-surface-muted text-ink-muted">
                 <ShoppingBag className="size-6" strokeWidth={1.4} />
               </span>
               <p className="mt-5 type-heading-sm">Your bag is empty</p>

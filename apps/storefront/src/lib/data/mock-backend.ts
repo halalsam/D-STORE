@@ -101,7 +101,7 @@ function variant(variantId: string) {
 export const SHIPPING = [
   { id: "standard", label: "Standard delivery", description: "3 to 5 business days", price: 0 },
   { id: "express", label: "Express delivery", description: "1 to 2 business days, metro cities", price: 250 },
-  { id: "pickup", label: "Pick up in store", description: "D-STORE Bandra, ready in 24 hours", price: 0 },
+  { id: "pickup", label: "Pick up in store", description: "MotionFit Bandra, ready in 24 hours", price: 0 },
 ]
 const PROMOS: Record<string, number> = { WELCOME10: 10 }
 
@@ -253,7 +253,7 @@ function expandOrder(o: DemoOrder): Order {
   const ship = SHIPPING.find((s) => s.id === o.s) ?? SHIPPING[0]
   return {
     id: o.id,
-    displayId: `DS-${String(o.n).padStart(5, "0")}`,
+    displayId: `MF-${String(o.n).padStart(5, "0")}`,
     createdAt: o.d,
     status: "placed",
     email: o.e,

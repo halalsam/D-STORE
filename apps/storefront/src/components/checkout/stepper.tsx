@@ -28,7 +28,7 @@ export function Stepper<T extends string>({ steps, current, onJump }: Props<T>) 
                 aria-current={active ? "step" : undefined}
                 className="group block w-full text-left disabled:cursor-default"
               >
-                <span className="block h-1 overflow-hidden rounded-pill bg-line">
+                <span className="block h-1 overflow-hidden rounded-full bg-line">
                   <span
                     className={cn(
                       "block h-full origin-left rounded-pill bg-surface-inverse transition-transform duration-(--duration-spring) ease-spring",

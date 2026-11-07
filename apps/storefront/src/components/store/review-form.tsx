@@ -101,7 +101,7 @@ export function ReviewForm({ productTitle, target }: { productTitle: string; tar
                   aria-label={`${n} ${n === 1 ? "star" : "stars"}`}
                   onMouseEnter={() => setHover(n)}
                   onClick={() => setRating(n)}
-                  className="pressable grid size-10 place-items-center rounded-pill hover:bg-surface-muted"
+                  className="pressable grid size-10 place-items-center rounded-full hover:bg-surface-muted"
                 >
                   <svg viewBox="0 0 24 24" className={cn("size-7 transition-colors", n <= shown ? "text-ink" : "text-line-strong")} aria-hidden>
                     <path fill="currentColor" d="M12 2.6l2.83 5.94 6.47.82-4.76 4.5 1.22 6.42L12 17.13l-5.76 3.15 1.22-6.42-4.76-4.5 6.47-.82z" />
@@ -137,7 +137,7 @@ export function ReviewForm({ productTitle, target }: { productTitle: string; tar
                   type="button"
                   aria-label="Remove photo"
                   onClick={() => setPhotos((p) => p.filter((u) => u !== url))}
-                  className="absolute top-1 right-1 grid size-6 place-items-center rounded-pill bg-surface/90 text-ink"
+                  className="absolute top-1 right-1 grid size-6 place-items-center rounded-full bg-surface/90 text-ink"
                 >
                   <X className="size-3.5" />
                 </button>

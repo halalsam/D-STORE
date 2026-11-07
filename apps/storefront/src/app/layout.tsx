@@ -11,12 +11,17 @@ import "./globals.css"
 const FONTSHARE_CSS =
   "https://api.fontshare.com/v2/css?f[]=amulya@500,700&f[]=synonym@400,500,600&display=swap"
 
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined)
+
 export const metadata: Metadata = {
+  ...(SITE_URL ? { metadataBase: new URL(SITE_URL) } : {}),
   title: {
-    default: "D-STORE",
-    template: "%s | D-STORE",
+    default: "MotionFit",
+    template: "%s | MotionFit",
   },
-  description: "D-STORE clothing storefront",
+  description: "MotionFit: graphic tees, shirts, outerwear and accessories, delivered across India.",
+  applicationName: "MotionFit",
+  openGraph: { siteName: "MotionFit", type: "website" },
 }
 
 export const viewport: Viewport = {

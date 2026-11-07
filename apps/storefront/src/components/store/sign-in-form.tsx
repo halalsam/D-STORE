@@ -181,7 +181,7 @@ export function SignInForm() {
       )}
 
       <p className="mt-5 text-center type-body-sm text-ink-muted">
-        {mode === "signin" ? "New to D-STORE? " : "Already have an account? "}
+        {mode === "signin" ? "New to MotionFit? " : "Already have an account? "}
         <button
           type="button"
           onClick={() => {

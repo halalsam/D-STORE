@@ -69,7 +69,7 @@ export function SheetContent({
         {...props}
       >
         {(side === "bottom" || side === "adaptive" || side === "responsive") && (
-          <span aria-hidden className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-pill bg-line-strong md:hidden" />
+          <span aria-hidden className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-line-strong md:hidden" />
         )}
         <header className="relative grid shrink-0 place-items-center border-b border-line px-14 py-4 text-center">
           <Dialog.Title className="type-label">{title}</Dialog.Title>

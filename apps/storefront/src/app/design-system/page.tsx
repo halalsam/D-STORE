@@ -39,7 +39,7 @@ export default function DesignSystemPage() {
         <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(70%_80%_at_85%_10%,color-mix(in_oklab,var(--color-teal-500)_70%,transparent),transparent_70%),radial-gradient(60%_70%_at_10%_100%,color-mix(in_oklab,var(--color-sky-300)_35%,transparent),transparent_70%)]" />
         <div className="sticky top-0"><DsHeader overMedia /></div>
         <div className="page-x pt-[10vh] pb-[calc(var(--radius-sheet)+4rem)]">
-          <p className="animate-rise-in type-overline text-sky-200">D-STORE / Foundations v1</p>
+          <p className="animate-rise-in type-overline text-sky-200">MotionFit / Foundations v1</p>
           <h1 className="mt-5 max-w-[11ch] animate-rise-in type-display-2xl [animation-delay:60ms]">
             Design system
           </h1>

@@ -67,7 +67,7 @@ export default async function seedDstore({ container }: ExecArgs) {
     input: {
       selector: { id: store.id },
       update: {
-        name: "D-STORE",
+        name: "MotionFit",
         supported_currencies: [
           { currency_code: "inr", is_default: true },
           ...[...currencies].map((code) => ({ currency_code: code as string, is_default: false })),
@@ -179,7 +179,7 @@ export default async function seedDstore({ container }: ExecArgs) {
   const missingOptions = [
     option("Standard delivery", "standard", "3 to 5 business days", 0),
     option("Express delivery", "express", "1 to 2 business days, metro cities", 250),
-    option("Pick up in store", "pickup", "D-STORE Bandra, ready in 24 hours", 0),
+    option("Pick up in store", "pickup", "MotionFit Bandra, ready in 24 hours", 0),
   ].filter((o) => !foundOptions.some((f) => f.name === o.name))
   if (missingOptions.length) await createShippingOptionsWorkflow(container).run({ input: missingOptions })
 
@@ -265,14 +265,14 @@ export default async function seedDstore({ container }: ExecArgs) {
       input: {
         products: [
           {
-            title: "D-STORE Gift Card",
+            title: "MotionFit Gift Card",
             handle: "gift-card",
-            description: "A digital gift card, emailed with your note within a few minutes of checkout. Spend it on anything at D-STORE; whatever is left stays on the card.",
+            description: "A digital gift card, emailed with your note within a few minutes of checkout. Spend it on anything at MotionFit; whatever is left stays on the card.",
             status: ProductStatus.PUBLISHED,
             is_giftcard: true,
             discountable: false,
             sales_channels: [{ id: salesChannelId }],
-            metadata: { type: "Gift card", silhouette: "card", tones: [["#2F4156", "#C8D9E6"]] },
+            metadata: { type: "Gift card", silhouette: "card", tones: [["#0A1730", "#7AB3D7"]] },
             options: [{ title: "Amount", values: amounts.map(label) }],
             variants: amounts.map((n, rank) => ({
               title: label(n),

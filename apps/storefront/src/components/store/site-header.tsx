@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import { useBag } from "@/lib/stores/bag"
 import type { Navigation } from "@/lib/data/navigation"
 import { MegaMenu } from "./mega-menu"
+import { Logo } from "@/components/ui/logo"
 
 function subscribeScroll(cb: () => void) {
   window.addEventListener("scroll", cb, { passive: true })
@@ -66,10 +67,10 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
           {/* Wordmark */}
           <Link
             href="/"
-            aria-label="D-STORE home"
-            className="pressable font-display text-[1.375rem] leading-none font-bold tracking-[-0.04em] sm:text-[1.75rem] lg:text-[2.125rem]"
+            aria-label="MotionFit home"
+            className="pressable block"
           >
-            D-STORE
+            <HeaderLogo overlay={overlay} />
           </Link>
 
           {/* Right */}
@@ -147,12 +148,28 @@ export function SiteHeaderFallback() {
   return (
     <header className="header-grid sticky top-0 z-(--z-header) bg-surface text-ink">
       <div />
-      <Link href="/" className="font-display text-[1.375rem] leading-none font-bold tracking-[-0.04em] sm:text-[1.75rem] lg:text-[2.125rem]">
-        D-STORE
+      <Link href="/" aria-label="MotionFit home" className="block">
+        <HeaderLogo overlay={false} />
       </Link>
       <div className="flex justify-end">
         <span className="ml-1 h-8 w-14 rounded-pill bg-surface-muted md:ml-2" />
       </div>
     </header>
+  )
+}
+
+/**
+ * Navy logo on the white header, the light one over hero photos (cross-faded
+ * so scrolling never flashes). Under 360px only the mark fits beside the icons.
+ */
+function HeaderLogo({ overlay }: { overlay: boolean }) {
+  const fade = (on: boolean) => cn("transition-opacity duration-(--duration-base)", on ? "opacity-100" : "opacity-0")
+  return (
+    <span className="relative block">
+      <Logo decorative className={cn("hidden h-3 min-[360px]:block sm:h-5 lg:h-6", fade(!overlay))} />
+      <Logo variant="logo-on-dark" decorative className={cn("absolute inset-0 hidden h-3 min-[360px]:block sm:h-5 lg:h-6", fade(overlay))} />
+      <Logo variant="mark" decorative className={cn("h-5 min-[360px]:hidden", fade(!overlay))} />
+      <Logo variant="mark-on-dark" decorative className={cn("absolute inset-0 h-5 min-[360px]:hidden", fade(overlay))} />
+    </span>
   )
 }

@@ -6,34 +6,16 @@ import { Bell, RotateCcw, Truck, Wallet } from "@/components/ui/icons"
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { SizeSelector } from "@/components/ui/size-selector"
-import { Tabs } from "@/components/ui/tabs"
-import { genericChart } from "@/lib/size-chart"
-import { isSoldOut, type Product, type SizeChart } from "@/lib/types"
+import { isSoldOut, type Product } from "@/lib/types"
 import { useBag } from "@/lib/stores/bag"
 import { NotifyMe } from "./notify-me"
 import { SaveToggle } from "./product-card"
-import { SizeTable } from "./size-table"
+import { DeliveryEstimate } from "./delivery-estimate"
 
-function SizeGuide({ chart }: { chart?: SizeChart }) {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <button className="pressable type-caption text-accent-ink underline underline-offset-4">Size guide</button>
-      </SheetTrigger>
-      <SheetContent side="adaptive" title="Size guide" subtitle="Measurements in inches" bodyClassName="p-4 md:p-6">
-        <SizeTable chart={chart ?? genericChart} />
-        {!chart && <p className="mt-4 type-caption text-ink-muted">Boxy fit. Size down for a closer silhouette.</p>}
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-const perks = [
-  { icon: Truck, label: "Free delivery" },
-  { icon: RotateCcw, label: "14 day returns" },
-  { icon: Wallet, label: "Cash on delivery" },
+const services = [
+  { icon: RotateCcw, label: "Returns within 14 days, picked up from your door" },
+  { icon: Wallet, label: "Cash on delivery, UPI or card" },
 ]
 
 /** Title, price, sizes and the two CTAs. */
@@ -78,7 +60,7 @@ export function ProductPurchase({ product, rating }: { product: Product; rating?
                 {product.collectionTitle ?? "Collection"}
               </Link>
             ) : (
-              "D-STORE"
+              "MotionFit"
             )}
             {product.type && ` · ${product.type}`}
           </p>
@@ -86,6 +68,9 @@ export function ProductPurchase({ product, rating }: { product: Product; rating?
           {rating}
           <div className="mt-1 flex items-baseline gap-2">
             <Price amount={product.price} compareAt={product.compareAt} currency={product.currency} className="type-body-lg" />
+            {product.compareAt && (
+              <span className="rounded-xs bg-success-soft px-1.5 py-0.5 type-caption text-success">{Math.round((1 - product.price / product.compareAt) * 100)}% off</span>
+            )}
             <span className="type-caption text-ink-subtle">incl. GST</span>
           </div>
         </div>
@@ -98,7 +83,9 @@ export function ProductPurchase({ product, rating }: { product: Product; rating?
             <p className="type-body-sm">
               Size <span className="text-ink-muted">{size ? `· ${size}` : ""}</span>
             </p>
-            {product.sizeChart !== null && <SizeGuide chart={product.sizeChart} />}
+            {product.sizeChart !== null && (
+              <a href="#size-fit" className="pressable type-caption text-accent-ink underline underline-offset-4">Size guide</a>
+            )}
           </div>
           <SizeSelector sizes={product.sizes} value={size} onValueChange={setSize} columns={4} />
           {product.sizes.some((s) => !s.available) && (
@@ -145,10 +132,14 @@ export function ProductPurchase({ product, rating }: { product: Product; rating?
         )}
       </div>
 
-      <ul className="mt-4 grid grid-cols-3 gap-2 border-t border-line pt-3.5">
-        {perks.map(({ icon: Icon, label }) => (
-          <li key={label} className="flex flex-col items-center gap-1 text-center type-caption text-ink-muted sm:flex-row sm:justify-center sm:gap-1.5">
-            <Icon className="size-4 shrink-0 sm:size-3.5" strokeWidth={1.8} /> {label}
+      <ul className="mt-4 grid gap-2.5 border-t border-line pt-4 type-body-sm text-ink-muted">
+        <li className="flex items-start gap-2.5">
+          <Truck className="mt-0.5 size-4 shrink-0 text-ink" strokeWidth={1.8} />
+          <span><DeliveryEstimate /></span>
+        </li>
+        {services.map(({ icon: Icon, label }) => (
+          <li key={label} className="flex items-start gap-2.5">
+            <Icon className="mt-0.5 size-4 shrink-0 text-ink" strokeWidth={1.8} /> {label}
           </li>
         ))}
       </ul>
@@ -182,51 +173,3 @@ export function ProductPurchase({ product, rating }: { product: Product; rating?
 }
 
 /** Details / Washcare / Shipping. */
-export function ProductTabs({ product, reviews }: { product: Product; reviews?: { content: ReactNode } }) {
-  const reviewsTab = reviews ? [{ value: "reviews", label: "Reviews", content: reviews.content }] : []
-  return (
-    <section className="flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface px-3 pb-1 ring-1 ring-line ring-inset lg:min-h-36 lg:flex-1">
-      <Tabs
-        defaultValue="details"
-        className="flex min-h-0 flex-1 flex-col"
-        contentClassName="min-h-0 flex-1 overflow-y-auto px-3 py-3.5 type-body-sm text-ink-muted md:px-4"
-        items={[...(product.giftCard ? [
-          { value: "details", label: "Details", content: <p>{product.description}</p> },
-          {
-            value: "how",
-            label: "How it works",
-            content: (
-              <ul className="grid gap-1">
-                <li>The code arrives by email within a few minutes of paying.</li>
-                <li>Enter it at checkout, or add it to your account balance.</li>
-                <li>Pay by UPI, card or PhonePe. Not available with cash on delivery.</li>
-              </ul>
-            ),
-          },
-        ] : [
-          { value: "details", label: "Details", content: <p>{product.description}</p> },
-          {
-            value: "washcare",
-            label: "Washcare",
-            content: (
-              <ul className="grid gap-1">
-                {product.washcare.map((w) => <li key={w}>{w}</li>)}
-              </ul>
-            ),
-          },
-          {
-            value: "shipping",
-            label: "Shipping",
-            content: (
-              <ul className="grid gap-1">
-                <li>Packed within 24 hours, dispatched next day.</li>
-                <li>Free delivery nationwide.</li>
-                <li>Easy 14 day returns.</li>
-              </ul>
-            ),
-          },
-        ]), ...reviewsTab]}
-      />
-    </section>
-  )
-}

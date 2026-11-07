@@ -74,7 +74,7 @@ export function Button({
         <>
           <span className="invisible contents">{children}</span>
           <span aria-hidden className="absolute inset-0 grid place-items-center">
-            <span className="size-4 animate-spin rounded-pill border-2 border-current border-r-transparent" />
+            <span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
           </span>
         </>
       ) : (

@@ -46,7 +46,7 @@ export function GiftCardPurchase({ product, rating }: { product: Product; rating
 
   return (
     <section className="shrink-0 rounded-xl bg-surface p-4 ring-1 ring-line ring-inset md:p-5">
-      <p className="type-overline text-ink-muted">D-STORE · Digital gift card</p>
+      <p className="type-overline text-ink-muted">MotionFit · Digital gift card</p>
       <h1 className="mt-1.5 type-heading-md">{product.title}</h1>
       {rating}
       <Price amount={price} currency={product.currency} className="mt-1 block type-body-lg" />

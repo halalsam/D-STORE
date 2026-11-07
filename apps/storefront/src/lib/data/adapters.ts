@@ -21,7 +21,7 @@ import type {
  * in the admin under the product's Metadata section.
  */
 
-const FALLBACK_TONE: Tone = ["#2F4156", "#567C8D"]
+const FALLBACK_TONE: Tone = ["#0A1730", "#496F90"]
 const SILHOUETTES: Silhouette[] = ["tee", "shirt", "hoodie", "bag", "cap", "card"]
 
 type Meta = Record<string, unknown> | null | undefined
@@ -228,7 +228,7 @@ export function toOrder(o: HttpTypes.StoreOrder, payment?: StoreOrderPaymentMeth
     .find((l) => l.tracking_number)?.tracking_number ?? undefined
   return {
     id: o.id,
-    displayId: o.display_id ? `DS-${String(o.display_id).padStart(5, "0")}` : `DS-${o.id.slice(-6).toUpperCase()}`,
+    displayId: o.display_id ? `MF-${String(o.display_id).padStart(5, "0")}` : `MF-${o.id.slice(-6).toUpperCase()}`,
     createdAt: String(o.created_at),
     status: orderStatus(o),
     email: o.email ?? "",

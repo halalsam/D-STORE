@@ -39,7 +39,7 @@ export function Hero({ kicker, title, cta, src, mobileSrc, alt = "" }: Props) {
           className="absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(60% 55% at 50% 8%, rgb(200 217 230 / 0.55), transparent 70%), radial-gradient(70% 60% at 85% 85%, rgb(86 124 141 / 0.6), transparent 70%), radial-gradient(60% 60% at 10% 90%, rgb(47 65 86 / 0.9), transparent 70%), linear-gradient(180deg, #2f4156, #141b24)",
+              "radial-gradient(60% 55% at 50% 8%, rgb(122 179 215 / 0.45), transparent 70%), radial-gradient(70% 60% at 85% 85%, rgb(73 111 144 / 0.6), transparent 70%), radial-gradient(60% 60% at 10% 90%, rgb(10 23 48 / 0.9), transparent 70%), linear-gradient(180deg, #0a1730, #040c1d)",
           }}
         />
       )}

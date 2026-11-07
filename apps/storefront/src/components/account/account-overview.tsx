@@ -90,7 +90,7 @@ export function AccountOverview({ customer, orders, addresses, products, storeCr
 export function EmptyCard({ icon, title, body, href, cta }: { icon: React.ReactNode; title: string; body: string; href: string; cta: string }) {
   return (
     <section className="panel grid place-items-center py-14 text-center">
-      <span className="grid size-14 place-items-center rounded-pill bg-surface-muted text-ink-muted [&_svg]:size-6">{icon}</span>
+      <span className="grid size-14 place-items-center rounded-full bg-surface-muted text-ink-muted [&_svg]:size-6">{icon}</span>
       <p className="mt-4 type-heading-sm">{title}</p>
       <p className="mt-1 max-w-xs type-body-sm text-ink-muted">{body}</p>
       <Button asChild size="md" className="mt-5"><Link href={href}>{cta}</Link></Button>

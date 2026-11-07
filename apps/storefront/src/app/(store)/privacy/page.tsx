@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { InfoPage, InfoSection } from "@/components/store/info-page"
 
-export const metadata: Metadata = { title: "Privacy policy", description: "What D-STORE collects, why, and how to reach us about it." }
+export const metadata: Metadata = { title: "Privacy policy", description: "What MotionFit collects, why, and how to reach us about it." }
 
 // Plain-language draft describing what the storefront actually stores. Review with counsel before launch.
 export default function PrivacyPage() {

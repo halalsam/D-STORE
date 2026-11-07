@@ -4,7 +4,7 @@ import { Suspense, type ReactNode } from "react"
 import { AccountNav } from "@/components/account/account-nav"
 import { currentSession } from "@/lib/data/session"
 
-export const metadata: Metadata = { title: { default: "Account", template: "%s | Account | D-STORE" } }
+export const metadata: Metadata = { title: { default: "Account", template: "%s | Account | MotionFit" } }
 
 async function AccountShell({ children }: { children: ReactNode }) {
   const session = await currentSession()

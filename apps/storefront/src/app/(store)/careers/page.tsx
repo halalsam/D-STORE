@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { InfoPage, InfoSection } from "@/components/store/info-page"
 
-export const metadata: Metadata = { title: "Careers", description: "Work with D-STORE." }
+export const metadata: Metadata = { title: "Careers", description: "Work with MotionFit." }
 
 export default function CareersPage() {
   return (

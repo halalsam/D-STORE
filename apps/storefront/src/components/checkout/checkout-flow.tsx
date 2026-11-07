@@ -101,7 +101,7 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
   if (bag.lines.length === 0 && !placing) {
     return (
       <div className="panel mx-auto mt-6 grid max-w-lg animate-rise-in place-items-center py-16 text-center">
-        <span className="grid size-16 place-items-center rounded-pill bg-surface-muted text-ink-muted"><ShoppingBag className="size-6" strokeWidth={1.4} /></span>
+        <span className="grid size-16 place-items-center rounded-full bg-surface-muted text-ink-muted"><ShoppingBag className="size-6" strokeWidth={1.4} /></span>
         <h1 className="mt-5 type-heading-md">Your bag is empty</h1>
         <p className="mt-1 type-body-sm text-ink-muted">Add a few pieces, then come back to check out.</p>
         <Button asChild className="mt-6"><Link href="/collections/new-arrivals">Shop new in</Link></Button>

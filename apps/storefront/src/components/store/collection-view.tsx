@@ -79,7 +79,7 @@ export function CollectionView({ title, products }: { title: string; products: P
       <SlidersHorizontal strokeWidth={1.6} />
       Filter
       {active > 0 && (
-        <span key={active} className="grid h-5 min-w-5 animate-pop place-items-center rounded-pill bg-surface-inverse px-1.5 text-[0.6875rem] text-ink-inverse tabular-nums">
+        <span key={active} className="grid h-5 min-w-5 animate-pop place-items-center rounded-full bg-surface-inverse px-1.5 text-[0.6875rem] text-ink-inverse tabular-nums">
           {active}
         </span>
       )}

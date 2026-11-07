@@ -113,7 +113,7 @@ function MediaCarousel({ product, href, priority }: { product: Product; href: st
               <span
                 key={i}
                 className={cn(
-                  "h-1.5 rounded-pill bg-white transition-all duration-(--duration-spring) ease-spring",
+                  "h-1.5 rounded-full bg-white transition-all duration-(--duration-spring) ease-spring",
                   i === index ? "w-4" : "w-1.5 opacity-60"
                 )}
               />
@@ -143,7 +143,7 @@ export function SaveToggle({
       onPressedChange={(on) => toggleSaved(handle, on)}
       aria-label={`Save ${title}`}
       className={cn(
-        "group/save pressable grid size-9 place-items-center rounded-pill",
+        "group/save pressable grid size-9 place-items-center rounded-full",
         tone === "media" ? "text-ink-on-media hover:bg-white/15" : "text-ink-muted hover:bg-surface-muted",
         className
       )}
@@ -214,7 +214,7 @@ function QuickAdd({ product }: { product: Product }) {
                 <span className={pending === s.label ? "invisible" : undefined}>{s.label}</span>
                 {pending === s.label && (
                   <span className="absolute inset-0 grid place-items-center">
-                    <span className="size-3.5 animate-spin rounded-pill border-2 border-current border-r-transparent" />
+                    <span className="size-3.5 animate-spin rounded-full border-2 border-current border-r-transparent" />
                   </span>
                 )}
               </button>

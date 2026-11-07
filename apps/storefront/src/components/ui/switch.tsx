@@ -22,14 +22,14 @@ export function Switch({ label, description, className, id, ...props }: Props) {
       <SwitchPrimitive.Root
         id={switchId}
         className={cn(
-          "pressable relative h-[1.9rem] w-[3.1rem] shrink-0 rounded-pill bg-surface-strong p-0.5",
+          "pressable relative h-[1.9rem] w-[3.1rem] shrink-0 rounded-full bg-surface-strong p-0.5",
           "transition-colors duration-(--duration-base) ease-standard data-[state=checked]:bg-accent"
         )}
         {...props}
       >
         <SwitchPrimitive.Thumb
           className={cn(
-            "block size-[1.65rem] rounded-pill bg-white shadow-[0_2px_6px_rgb(31_43_57/0.2),0_0_0_0.5px_rgb(31_43_57/0.06)]",
+            "block size-[1.65rem] rounded-full bg-white shadow-[0_2px_6px_rgb(10_23_48/0.2),0_0_0_0.5px_rgb(10_23_48/0.06)]",
             "transition-transform duration-(--duration-spring) ease-spring data-[state=checked]:translate-x-[1.2rem]"
           )}
         />

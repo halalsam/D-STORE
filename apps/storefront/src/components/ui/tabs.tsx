@@ -54,7 +54,7 @@ export function Tabs({ items, defaultValue, className, contentClassName, variant
         ))}
         <span
           aria-hidden
-          className="absolute -bottom-px left-0 h-0.5 rounded-pill bg-ink transition-transform duration-(--duration-spring) ease-spring"
+          className="absolute -bottom-px left-0 h-0.5 rounded-full bg-ink transition-transform duration-(--duration-spring) ease-spring"
           style={{ width: `${100 / items.length}%`, transform: `translateX(${index * 100}%)` }}
         />
       </TabsPrimitive.List>

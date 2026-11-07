@@ -52,7 +52,7 @@ function Distribution({ stats }: { stats: ReviewStats }) {
         return (
           <li key={star} className="grid grid-cols-[2.5rem_1fr_2rem] items-center gap-2 type-caption text-ink-muted">
             <span className="tabular-nums">{star} star</span>
-            <span className="h-1.5 overflow-hidden rounded-pill bg-surface-muted">
+            <span className="h-1.5 overflow-hidden rounded-full bg-surface-muted">
               <span className="block h-full rounded-pill bg-surface-inverse" style={{ width: `${pct}%` }} />
             </span>
             <span className="text-right tabular-nums">{n}</span>
@@ -87,7 +87,7 @@ function ReviewItem({ review, compact = false }: { review: Review; compact?: boo
       )}
       {!compact && review.response && (
         <div className="mt-1 rounded-md bg-surface-muted px-4 py-3">
-          <p className="type-overline text-ink-muted">Reply from D-STORE</p>
+          <p className="type-overline text-ink-muted">Reply from MotionFit</p>
           <p className="mt-1 type-body-sm text-ink-muted">{review.response}</p>
         </div>
       )}

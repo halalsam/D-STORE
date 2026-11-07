@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Bookmark, MapPin, Menu, Search, ShoppingBag, User } from "@/components/ui/icons"
+import { Logo } from "@/components/ui/logo"
 
 const icons = [
   { Icon: MapPin, label: "Stores", mobile: false },
@@ -20,7 +21,7 @@ export function DsHeader({ overMedia = false }: { overMedia?: boolean }) {
       }
     >
       <div className="md:hidden">
-        <button aria-label="Search" className="pressable -ml-2 grid size-10 place-items-center rounded-pill hover:bg-current/8">
+        <button aria-label="Search" className="pressable -ml-2 grid size-10 place-items-center rounded-full hover:bg-current/8">
           <Search className="size-[1.2rem]" strokeWidth={1.6} />
         </button>
       </div>
@@ -28,11 +29,8 @@ export function DsHeader({ overMedia = false }: { overMedia?: boolean }) {
         <Link href="#layout" className="pressable opacity-90 hover:opacity-100">New in</Link>
         <Link href="#layout" className="pressable opacity-90 hover:opacity-100">Collections</Link>
       </nav>
-      <Link
-        href="/design-system"
-        className="font-display text-[1.375rem] leading-none font-bold tracking-[-0.04em] sm:text-[1.75rem] lg:text-[2.125rem]"
-      >
-        D-STORE
+      <Link href="/design-system" aria-label="MotionFit design system" className="block">
+        <Logo decorative className="h-3 sm:h-5 lg:h-6" />
       </Link>
       <div className="flex items-center justify-end gap-1">
         {icons.map(({ Icon, label, mobile }) => (
@@ -40,7 +38,7 @@ export function DsHeader({ overMedia = false }: { overMedia?: boolean }) {
             key={label}
             aria-label={label}
             className={
-              "pressable size-10 place-items-center rounded-pill hover:bg-current/8 " +
+              "pressable size-10 place-items-center rounded-full hover:bg-current/8 " +
               (mobile ? "grid" : "hidden md:grid")
             }
           >

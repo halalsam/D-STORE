@@ -326,30 +326,32 @@
   );
 }
 
-/* ------------------------------------------------------------------
- * Product page: [pinned main image] [vertical image list] [pinned details]
- * The main image column is capped so the 3:4 image always fits the
- * viewport height; list and details share the rest.
+/* ----------------------------------------------------------------
+ * Product page: [photo grid, scrolls] [buy panel, pinned]
+ * The panel scrolls inside only on screens too short for it.
  * ---------------------------------------------------------------- */
-@utility pdp-grid {
-  --pdp-pinned-h: calc(100dvh - var(--header-h) - var(--spacing-gutter) * 1.25);
+@utility pdp-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: var(--spacing-tile);
 
   @media (width >= 64rem) {
-    grid-template-columns:
-      min(40%, calc(var(--pdp-pinned-h) * 0.75))
-      minmax(0, 1fr)
-      minmax(21rem, 0.85fr);
+    grid-template-columns: minmax(0, 1.55fr) minmax(22rem, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (width >= 80rem) {
+    grid-template-columns: minmax(0, 1.75fr) minmax(24rem, 30rem);
   }
 }
 
-@utility pdp-pinned {
+@utility pdp-panel {
   @media (width >= 64rem) {
     position: sticky;
     top: calc(var(--header-h) + var(--spacing-gutter) * 0.25);
-    max-height: var(--pdp-pinned-h);
+    max-height: calc(100dvh - var(--header-h) - var(--spacing-gutter) * 1.25);
+    overflow-y: auto;
+    scrollbar-width: none;
   }
 }

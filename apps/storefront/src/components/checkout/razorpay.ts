@@ -39,9 +39,9 @@ export async function openRazorpay(
     order_id: start.orderId,
     amount: start.amount,
     currency: start.currency,
-    name: "D-STORE",
+    name: "MotionFit",
     prefill: { email: opts.email, contact: opts.phone, name: opts.name, ...(opts.method === "upi" ? { method: "upi" } : {}) },
-    theme: { color: "#2F4156" },
+    theme: { color: "#0A1730" },
     handler: opts.onPaid,
     modal: { ondismiss: opts.onClose },
   })

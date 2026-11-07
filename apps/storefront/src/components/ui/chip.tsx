@@ -58,7 +58,7 @@ export function SwatchStack({ colors, className }: { colors: string[]; className
         <span
           key={c}
           style={{ backgroundColor: c }}
-          className="size-3 rounded-pill ring-1 ring-black/5"
+          className="size-3 rounded-full ring-1 ring-black/5"
         />
       ))}
     </span>

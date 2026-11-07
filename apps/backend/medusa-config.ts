@@ -132,7 +132,7 @@ const notificationModule = [
             {
               resolve: "./src/modules/resend",
               id: "resend",
-              options: { channels: ["email"], apiKey: env.RESEND_API_KEY, from: env.RESEND_FROM ?? "D-STORE <orders@example.com>", replyTo: env.RESEND_REPLY_TO },
+              options: { channels: ["email"], apiKey: env.RESEND_API_KEY, from: env.RESEND_FROM ?? "MotionFit <orders@example.com>", replyTo: env.RESEND_REPLY_TO },
             },
             { resolve: "@medusajs/medusa/notification-local", id: "local", options: { channels: ["feed"] } },
           ]
@@ -173,7 +173,7 @@ module.exports = defineConfig({
   plugins: [
     // New reviews wait for approval in Admin -> Product Reviews.
     { resolve: "@lambdacurry/medusa-product-reviews", options: { defaultReviewStatus: "pending" } },
-    { resolve: "@medusajs/loyalty-plugin", options: { prefix: "DSTORE", sections: 3 } },
+    { resolve: "@medusajs/loyalty-plugin", options: { prefix: "MFIT", sections: 3 } },
   ],
   projectConfig: {
     databaseUrl: env.DATABASE_URL,

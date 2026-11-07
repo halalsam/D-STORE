@@ -41,7 +41,7 @@ export function AccountNav({ customer }: { customer: Customer }) {
     <aside className="min-w-0 lg:sticky lg:top-[calc(var(--header-h)+0.5rem)] lg:self-start">
       <div className="panel p-3 lg:p-3">
         <div className="flex items-center gap-3 p-2 lg:pb-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-pill bg-surface-inverse type-title text-ink-inverse">
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-surface-inverse type-title text-ink-inverse">
             {initials}
           </span>
           <div className="min-w-0">

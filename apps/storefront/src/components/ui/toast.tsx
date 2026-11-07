@@ -28,7 +28,7 @@ export function Toaster() {
             t.tone === "error" ? "bg-danger text-white" : "material-dark bg-navy-900/85 text-ink-on-media"
           )}
         >
-          <span className="grid size-5 shrink-0 place-items-center rounded-pill bg-white/20 [&_svg]:size-3.5">
+          <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white/20 [&_svg]:size-3.5">
             {t.tone === "error" ? <X strokeWidth={2.4} /> : <Check strokeWidth={2.4} />}
           </span>
           {t.message}

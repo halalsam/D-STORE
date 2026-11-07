@@ -16,9 +16,9 @@ function CardSketch({ tone, soldOut = false, name, price }: { tone: string; sold
         {soldOut && <span className="absolute top-3 left-3 type-caption text-ink-on-media">Sold out</span>}
         <Bookmark className="absolute top-3 right-3 size-5 fill-current/70 text-ink-on-media" strokeWidth={0} />
         <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1.5">
-          <span className="size-1.5 rounded-pill bg-white" />
-          <span className="size-1.5 rounded-pill bg-white/60" />
-          <span className="size-1 self-center rounded-pill bg-white/60" />
+          <span className="size-1.5 rounded-full bg-white" />
+          <span className="size-1.5 rounded-full bg-white/60" />
+          <span className="size-1 self-center rounded-full bg-white/60" />
         </div>
       </div>
       <div className="flex items-start justify-between gap-3 px-3 pt-2.5">
@@ -26,7 +26,7 @@ function CardSketch({ tone, soldOut = false, name, price }: { tone: string; sold
           <p className="truncate type-body-sm font-medium">{name}</p>
           <p className="type-body-sm type-price text-ink-muted">{price}</p>
         </div>
-        <span className="grid size-8 shrink-0 place-items-center rounded-pill text-ink">
+        <span className="grid size-8 shrink-0 place-items-center rounded-full text-ink">
           <Plus className="size-5" strokeWidth={1.4} />
         </span>
       </div>
@@ -105,7 +105,7 @@ export function LayoutBlueprint() {
             <span className="absolute top-3 left-3"><Note>gallery · 2 up · radius 18</Note></span>
           </div>
           <div className={`relative hidden aspect-card rounded-card md:block ${tones[3]}`}>
-            <span className="absolute top-3 left-3 grid size-7 place-items-center rounded-pill bg-white text-ink">
+            <span className="absolute top-3 left-3 grid size-7 place-items-center rounded-full bg-white text-ink">
               <ZoomIn className="size-3.5" />
             </span>
           </div>
@@ -147,7 +147,7 @@ export function LayoutBlueprint() {
               <div className="grid grid-cols-3 border-b border-line text-center type-body-sm">
                 <span className="py-2.5 text-ink-muted">Details</span>
                 <span className="py-2.5 text-ink-muted">Washcare</span>
-                <span className="relative py-2.5 font-medium">Shipping<span className="absolute inset-x-0 -bottom-px h-0.5 rounded-pill bg-ink" /></span>
+                <span className="relative py-2.5 font-medium">Shipping<span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-ink" /></span>
               </div>
               <div className="space-y-1 px-8 py-4 type-body-sm text-ink-muted">
                 <p>Packed within 24 hours.</p>

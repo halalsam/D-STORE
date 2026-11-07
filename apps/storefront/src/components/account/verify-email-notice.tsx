@@ -13,7 +13,7 @@ export function VerifyEmailNotice({ email }: { email: string }) {
 
   return (
     <section className="panel mb-tile flex flex-wrap items-center gap-4 animate-rise-in">
-      <span className="grid size-11 shrink-0 place-items-center rounded-pill bg-surface-muted text-ink-muted [&_svg]:size-5">
+      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-surface-muted text-ink-muted [&_svg]:size-5">
         <MailCheck />
       </span>
       <div className="min-w-0 flex-1">

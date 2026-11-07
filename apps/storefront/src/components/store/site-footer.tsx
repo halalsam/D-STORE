@@ -2,6 +2,7 @@ import Link from "next/link"
 import { DEMO_MODE } from "@/lib/data/mode"
 import { getNavigation } from "@/lib/data/navigation"
 import { NewsletterForm } from "./newsletter-form"
+import { Logo } from "@/components/ui/logo"
 
 const staticColumns = [
   { title: "Help", links: [["Shipping", "/help/shipping"], ["Returns", "/help/returns"], ["Size guide", "/help/size-guide"], ["Contact", "/help/contact"]] },
@@ -37,12 +38,10 @@ export async function SiteFooter() {
         </div>
       </div>
       <div className="page-x overflow-hidden pt-8">
-        <p aria-hidden className="font-display text-[clamp(4rem,19vw,22rem)] leading-[0.78] font-bold tracking-[-0.06em] text-ink select-none">
-          D-STORE
-        </p>
+        <Logo variant="wordmark" decorative className="h-auto w-full" />
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 type-caption text-ink-muted">
           <p className="flex items-center gap-2">
-            D-STORE. All rights reserved.
+            © MotionFit. All rights reserved.
             {DEMO_MODE && <span className="rounded-xs bg-accent-soft px-2 py-0.5 text-accent-soft-ink">Demo store: BLUORNG catalog for demonstration, no real orders</span>}
           </p>
           <div className="flex gap-5">

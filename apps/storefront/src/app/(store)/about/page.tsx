@@ -3,14 +3,14 @@ import Link from "next/link"
 import { InfoPage, InfoSection } from "@/components/store/info-page"
 import { DEMO_MODE } from "@/lib/data/mode"
 
-export const metadata: Metadata = { title: "About", description: "D-STORE is a streetwear store from Mumbai, shipping across India." }
+export const metadata: Metadata = { title: "About", description: "MotionFit is a streetwear store from Mumbai, shipping across India." }
 
 export default function AboutPage() {
   return (
-    <InfoPage nav="company" current="/about" title="About D-STORE" intro="A streetwear store from Mumbai, shipping across India.">
+    <InfoPage nav="company" current="/about" title="About MotionFit" intro="A streetwear store from Mumbai, shipping across India.">
       <InfoSection title="What we do">
         <p>
-          D-STORE brings together graphic tees, shirts, outerwear and accessories in one place, with clear sizing, honest prices in rupees and delivery to every
+          MotionFit brings together graphic tees, shirts, outerwear and accessories in one place, with clear sizing, honest prices in rupees and delivery to every
           pin code we can reach.
         </p>
         <p>
@@ -33,7 +33,7 @@ export default function AboutPage() {
       {DEMO_MODE && (
         <InfoSection title="About this demo">
           <p>
-            This is a demonstration build of the D-STORE storefront. The products, photos and campaign images shown are from BLUORNG and are used here for demonstration
+            This is a demonstration build of the MotionFit storefront. The products, photos and campaign images shown are from BLUORNG and are used here for demonstration
             only. No orders are placed or charged.
           </p>
         </InfoSection>

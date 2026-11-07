@@ -52,11 +52,11 @@ export function RadioCards({ options, value, onValueChange, label, name, classNa
               <span
                 aria-hidden
                 className={cn(
-                  "grid size-5 shrink-0 place-items-center rounded-pill ring-1 ring-line-strong ring-inset transition-colors",
+                  "grid size-5 shrink-0 place-items-center rounded-full ring-1 ring-line-strong ring-inset transition-colors",
                   selected && "bg-ink ring-ink"
                 )}
               >
-                <RadioGroup.Indicator className="size-2 animate-pop rounded-pill bg-white" />
+                <RadioGroup.Indicator className="size-2 animate-pop rounded-full bg-white" />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block type-body font-medium text-ink">{o.title}</span>

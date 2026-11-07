@@ -94,7 +94,7 @@ export function MotionLab() {
                       transition: `transform ${c.ms}ms ${c.ease}`,
                     }}
                   >
-                    <div className="size-10 rounded-pill bg-surface-inverse shadow-sm" />
+                    <div className="size-10 rounded-full bg-surface-inverse shadow-sm" />
                   </div>
                 </div>
                 <p className="pointer-events-none absolute top-1/2 right-14 hidden -translate-y-1/2 type-caption text-ink-subtle lg:block">{c.use}</p>
@@ -118,7 +118,7 @@ export function MotionLab() {
           <div className="mt-2 flex gap-2">
             <button className="pressable h-9 rounded-pill bg-surface-muted px-4 type-body-sm">Shirts</button>
             <button className="pressable h-9 rounded-pill bg-accent-soft px-4 type-body-sm">Selected</button>
-            <button aria-label="Quick add" className="pressable ml-auto grid size-9 place-items-center rounded-pill hover:bg-surface-muted">
+            <button aria-label="Quick add" className="pressable ml-auto grid size-9 place-items-center rounded-full hover:bg-surface-muted">
               <Plus className="size-5" strokeWidth={1.5} />
             </button>
           </div>
@@ -139,7 +139,7 @@ export function MotionLab() {
               </button>
             ))}
             <span
-              className="absolute -bottom-px left-0 h-0.5 w-1/3 rounded-pill bg-ink transition-transform duration-(--duration-spring) ease-spring"
+              className="absolute -bottom-px left-0 h-0.5 w-1/3 rounded-full bg-ink transition-transform duration-(--duration-spring) ease-spring"
               style={{ transform: `translateX(${tab * 100}%)` }}
             />
           </div>
@@ -202,7 +202,7 @@ export function MotionLab() {
             >
               Add <span className="relative"><ShoppingBag className="size-4" strokeWidth={1.8} />
                 {bag > 0 && (
-                  <span key={bag} className="absolute -top-2 -right-2.5 grid size-4 animate-pop place-items-center rounded-pill bg-accent-soft text-[0.625rem] font-semibold text-ink">
+                  <span key={bag} className="absolute -top-2 -right-2.5 grid size-4 animate-pop place-items-center rounded-full bg-accent-soft text-[0.625rem] font-semibold text-ink">
                     {bag}
                   </span>
                 )}

@@ -45,6 +45,7 @@ Package manager is **pnpm** (see `packageManager` in root `package.json`). Never
 | Back-in-stock alerts | module `src/modules/restock/`, `src/workflows/subscribe-restock.ts`, `src/api/store/restock-subscriptions/`, `src/jobs/send-restock-alerts.ts`; storefront `components/store/notify-me.tsx`, `lib/data/restock.ts` |
 | Saved items synced to the account (customer metadata `saved_items`) | `apps/storefront/src/lib/stores/saved.ts`, `lib/data/customer.ts` (`loadSavedItems`, `saveSavedItems`) |
 | Patched dependencies | `patches/` via `pnpm patch` (reviews plugin: zod 4 compatibility, duplicate review images). Dockerfiles copy `patches/` before install |
+| Brand (MotionFit logo files, favicon, share image) | `apps/storefront/public/brand/`, `components/ui/logo.tsx`, `src/app/{icon.svg,apple-icon.png,favicon.ico,opengraph-image.png}`; emails use `public/brand/motionfit-email.png` |
 | Design system (tokens, rules, layout spec) | `apps/storefront/DESIGN.md`, `apps/storefront/src/styles/` |
 
 ## Commands (from repo root)
