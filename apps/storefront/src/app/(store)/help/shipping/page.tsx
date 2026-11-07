@@ -13,7 +13,6 @@ export default function ShippingPage() {
           items={[
             { title: "Standard delivery", value: "Free", note: "3 to 5 business days" },
             { title: "Express delivery", value: "₹250", note: "1 to 2 business days, metro cities" },
-            { title: "Pick up in store", value: "Free", note: "MotionFit Bandra, ready in 24 hours" },
           ]}
         />
       </InfoSection>
@@ -25,12 +24,6 @@ export default function ShippingPage() {
       </InfoSection>
       <InfoSection title="Paying on delivery">
         <p>Cash on delivery is available on every option. You can also pay by UPI or card at checkout.</p>
-      </InfoSection>
-      <InfoSection title="Store pickup">
-        <p>
-          Pick up in store orders are held at MotionFit Bandra. We will let you know when yours is ready; bring your order number. See{" "}
-          <Link href="/stores">Stores</Link> for the address.
-        </p>
       </InfoSection>
     </InfoPage>
   )

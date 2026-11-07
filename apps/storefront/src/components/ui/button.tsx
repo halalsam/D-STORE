@@ -12,16 +12,16 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        /** Filled navy. Buy now, Apply, Discover more on white panels. */
-        primary: "bg-surface-inverse text-ink-inverse hover:bg-navy-900",
-        /** White with hairline. Add to bag, Remove all. */
-        secondary: "bg-surface text-ink ring-1 ring-line-strong ring-inset hover:bg-beige-50",
+        /** Light fill. Buy now, Apply, Discover more. */
+        primary: "bg-surface-inverse text-ink-inverse hover:bg-surface-inverse-hover",
+        /** Surface with hairline. Add to bag, Remove all. */
+        secondary: "bg-surface text-ink ring-1 ring-line-strong ring-inset hover:bg-surface-muted",
         /** Muted fill. Menu pill, Size guide, secondary chips. */
         soft: "bg-surface-muted text-ink hover:bg-surface-strong",
         /** No fill until hover. Header icons, quick add. */
         ghost: "text-current hover:bg-current/8",
-        /** White on photography. */
-        media: "bg-white text-ink hover:bg-beige-50",
+        /** Light pill on photography. */
+        media: "bg-surface-inverse text-ink-inverse hover:bg-surface-inverse-hover",
         /** Frosted glass on photography. */
         glass: "material-dark text-ink-on-media shadow-glass hover:bg-navy-950/50",
         /** Text with an animated underline. "Shop now" on the hero. */

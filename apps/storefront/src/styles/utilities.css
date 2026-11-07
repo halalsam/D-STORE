@@ -177,10 +177,10 @@
 /* ------------------------------------------------------------------
  * Layout primitives (from the reference layout)
  *
- *   <header>        white, h = --header-h, 3 columns
- *   .sheet          beige canvas, big rounded top, slides over hero
+ *   <header>        surface, h = --header-h, 3 columns
+ *   .sheet          canvas, big rounded top, slides over hero
  *     .section      gutter padding, .section-head row, product grid
- *     .panel        white inset container inside the sheet
+ *     .panel        surface inset container inside the sheet
  * ---------------------------------------------------------------- */
 @utility page-x {
   padding-inline: var(--spacing-gutter);

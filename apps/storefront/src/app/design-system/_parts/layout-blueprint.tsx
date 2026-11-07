@@ -4,7 +4,7 @@ import { DsHeader } from "./ds-header"
 const tones = [
   "bg-[linear-gradient(160deg,var(--color-sky-300),var(--color-teal-600))]",
   "bg-[linear-gradient(160deg,var(--color-navy-700),var(--color-navy-950))]",
-  "bg-[linear-gradient(160deg,var(--color-beige-300),var(--color-beige-500))]",
+  "bg-[linear-gradient(160deg,var(--color-night-500),var(--color-night-800))]",
   "bg-[linear-gradient(160deg,var(--color-teal-300),var(--color-navy-800))]",
 ]
 
@@ -36,7 +36,7 @@ function CardSketch({ tone, soldOut = false, name, price }: { tone: string; sold
 
 function Note({ children }: { children: React.ReactNode }) {
   return (
-    <span className="pointer-events-none relative z-10 inline-block whitespace-nowrap rounded-xs bg-accent px-1.5 py-0.5 font-mono text-[0.625rem] text-white shadow-sm">
+    <span className="pointer-events-none relative z-10 inline-block whitespace-nowrap rounded-xs bg-accent px-1.5 py-0.5 font-mono text-[0.625rem] text-ink-on-accent shadow-sm">
       {children}
     </span>
   )
@@ -105,7 +105,7 @@ export function LayoutBlueprint() {
             <span className="absolute top-3 left-3"><Note>gallery · 2 up · radius 18</Note></span>
           </div>
           <div className={`relative hidden aspect-card rounded-card md:block ${tones[3]}`}>
-            <span className="absolute top-3 left-3 grid size-7 place-items-center rounded-full bg-white text-ink">
+            <span className="absolute top-3 left-3 grid size-7 place-items-center rounded-full bg-surface-inverse text-ink-inverse">
               <ZoomIn className="size-3.5" />
             </span>
           </div>

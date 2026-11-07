@@ -14,27 +14,29 @@ Default Tailwind colours, radii, shadows, eases and fonts are **removed**. Anyth
 
 ## Colour
 
-Brand swatches: Navy `#2F4156`, Teal `#567C8D`, Sky Blue `#C8D9E6`, Beige `#F5EFEB`, White `#FFFFFF`. Each has an 11-step ramp (`navy-50` to `navy-950`, etc.). Components use the **semantic** tokens only:
+The storefront is dark only (`color-scheme: dark`). Swatches: Night `#0A0E16` (canvas), Surface `#121722`, Frost `#E8ECF2` (ink and filled actions), Sky `#7AB3D7` (accent), Navy `#0A1730` (logo). Primitive ramps: `night` (navy-tinted neutrals every surface is built from), `navy`, `sky`, `teal`. Components use the **semantic** tokens only:
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `canvas` | beige-100 | Rounded page sheet |
-| `surface` | white | Header, cards, inset panels |
-| `surface-muted` | beige-200 | Chips, inputs, menu pill |
-| `surface-strong` | beige-300 | Pressed chip, disabled fill |
-| `surface-inverse` | navy-800 | Filled CTA, selected size pill |
-| `surface-tint` | sky-100 | Soft brand highlight |
-| `ink` | navy-800 | Primary text (9.2:1 on canvas) |
-| `ink-muted` | navy-600 | Prices, secondary text (4.9:1) |
-| `ink-subtle` | navy-400 | Placeholders, decoration only |
-| `ink-inverse` / `ink-on-media` | white | Text on navy / on photos |
-| `line` / `line-strong` | navy at 11% / 22% | Hairlines, outlined buttons |
-| `accent` | teal-500 | Focus ring, active indicators |
-| `accent-ink` | teal-700 | Accent text and links (6:1) |
-| `accent-soft` | sky-200 | Selected chip, text selection |
-| `success` / `warning` / `danger` (+ `-soft`) | custom | Stock, pre-order, errors, sale |
+| `canvas` | night-900 | Rounded page sheet, drawers |
+| `surface` | night-800 | Header, cards, inset panels |
+| `surface-muted` | night-700 | Chips, inputs, menu pill, media placeholders |
+| `surface-strong` | night-600 | Pressed chip, disabled fill, segmented thumb |
+| `surface-inverse` (+ `-hover`) | night-50 / white | Filled CTA, selected size pill, toasts |
+| `surface-tint` | sky-900 | Soft brand highlight |
+| `ink` | night-50 | Primary text (16.3:1 on canvas, 15.1:1 on surface) |
+| `ink-muted` | night-200 | Prices, secondary text (7.9:1 on surface) |
+| `ink-subtle` | night-300 | Placeholders, meta (5.1:1 on surface) |
+| `ink-inverse` | night-900 | Text on `surface-inverse` |
+| `ink-on-media` | white | Text on photos |
+| `ink-on-accent` | navy-900 | Text on accent fills (8.6:1) |
+| `line` / `line-strong` | night-50 at 11% / 22% | Hairlines, outlined buttons |
+| `accent` | sky-400 | Focus ring, active indicators, checked controls |
+| `accent-ink` | sky-300 | Accent text and links (9.5:1) |
+| `accent-soft` / `accent-soft-ink` | sky-800 / sky-100 | Selected chip, tags, text selection |
+| `success` / `warning` / `danger` (+ `-soft`) | custom | Light tones for text, dark `-soft` fills |
 
-Mapping from the reference layout: **black becomes navy, grey becomes beige, teal is only a signal.**
+Depth comes from lighter steps (canvas < surface < surface-muted < surface-strong), not shadows. Shadows are black and only matter on floating layers.
 
 ## Typography
 
@@ -68,7 +70,7 @@ To self-host the fonts, download the woff2 files into `src/app/fonts/` and switc
 
 **Concentric rule:** inner radius = outer radius minus the padding between them. `squircle` adds continuous corners where supported.
 
-Elevation stays flat: `shadow-xs/sm/md/lg/glass`, navy tinted. `material` / `material-dark` give iOS frosted glass for bars and chips over photography.
+Elevation stays flat: `shadow-xs/sm/md/lg/glass`, black, for floating layers only. `material` / `material-dark` give iOS frosted glass for bars and chips over photography.
 
 ## Icons
 
@@ -98,16 +100,16 @@ Utilities and animations:
 ## Layout (from the reference)
 
 ```
-html (surface, white)
+html (surface)
 ├─ header         .header-grid   h 64 / 88, columns 1fr auto 1fr
 │   left: New in, Collections   center: wordmark   right: icons (40px) + menu pill (56x36, surface-muted)
-│   over the hero: transparent, ink-on-media, menu pill white
+│   over the hero: transparent, ink-on-media, menu pill surface-inverse
 ├─ hero           full bleed image, header sits on top
 └─ main           .sheet (.sheet-overlap after a hero)  canvas, rounded-sheet top
     ├─ .section           gutter padding
     │   ├─ .section-head  type-title left, "Discover more" pill right (surface on canvas, inverse on panel)
     │   └─ .product-grid  2 / 3 / 4 cols, gap 8px   (.product-grid-dense: 4 / 6 / 12, image only)
-    ├─ .page-x > .panel   white inset container, rounded-panel, its own section-head + grid
+    ├─ .page-x > .panel   surface inset container, rounded-panel, its own section-head + grid
     └─ footer             SEO block + link tabs in a panel
 ```
 
@@ -115,16 +117,17 @@ html (surface, white)
 - **Card ratio:** every card and product image uses `aspect-card` (3:4, token `--aspect-card`). Do not use ad-hoc ratios.
 - **Product card:** media `aspect-card rounded-card`, bookmark top right, carousel dots bottom center, "Sold out" top left with the whole card at ~45% opacity. Meta row `px-3 pt-2.5`: title `type-body-sm font-medium`, price `type-body-sm type-price text-ink-muted`, 32px "+" quick add on the right.
 - **Product page:** `.pdp-grid` = three columns from `lg`: pinned main image (`aspect-card`, width capped so it always fits the viewport height) | vertical list of every view that scrolls with the page (click to swap the main image) | pinned details column (`.pdp-pinned`) that starts at the top and fills the height: purchase card (collection kicker, title, price, 4-per-row size pills, Add to bag + Buy now, perks row), tabs card that grows, "Complete the look" row. Sold out swaps the CTAs for Sold out + Notify me. Below `lg`: swipe carousel, then details.
-- **Mega menu:** drops below the header as a `rounded-panel` canvas sheet (`animate-menu-in`). Collections list left (`type-title`), category groups with white chip pills, "Shop by color" chips with overlapping swatch dots. Menu pill becomes an X.
+- **Mega menu:** drops below the header as a `rounded-panel` canvas sheet (`animate-menu-in`). Collections list left (`type-title`), category groups with surface chip pills, "Shop by color" chips with overlapping swatch dots. Menu pill becomes an X.
 - **Filter drawer:** right side (`animate-drawer-in`), centered overline title + product count, chip groups separated by hairlines, "Sort by" select, sticky footer with outlined "Remove all" + filled "Apply".
 - **Sign in:** centered single column (max 24rem), wordmark top, email field with an inline arrow button, consent checkbox, caption legal line.
 
 ## Rules
 
-1. Black becomes navy (`surface-inverse`). Grey becomes beige. No neutral greys.
-2. Teal is a signal, never a large fill. Small teal text uses `accent-ink`.
-3. Every action is a pill. Rectangles are for media and containers.
-4. Concentric corners. A child never has a larger radius than its parent.
-5. Every interactive element is `pressable`. Overlays use `ease-ios`. Bounce only confirms.
-6. Use `type-*` roles. Amulya for display, headings and titles. Synonym for everything you read.
-7. Photography leads: hairlines over shadows, generous gutters, 8px between cards.
+1. Dark by default. No warm, beige or cream surfaces; neutrals come from the `night` ramp.
+2. Light means action: primary buttons and selected states use `surface-inverse` with `ink-inverse`.
+3. Sky is a signal, never a large fill. Accent text uses `accent-ink`; text on an accent fill uses `ink-on-accent`.
+4. Every action is a pill. Rectangles are for media and containers.
+5. Concentric corners. A child never has a larger radius than its parent.
+6. Every interactive element is `pressable`. Overlays use `ease-ios`. Bounce only confirms.
+7. Use `type-*` roles. Amulya for display, headings and titles. Synonym for everything you read.
+8. Photography leads: hairlines over shadows, generous gutters, 8px between cards.

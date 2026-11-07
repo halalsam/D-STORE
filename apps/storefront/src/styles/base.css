@@ -1,5 +1,6 @@
 @layer base {
   html {
+    color-scheme: dark;
     background-color: var(--color-surface);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -36,7 +37,7 @@
 
   ::selection {
     background-color: var(--color-accent-soft);
-    color: var(--color-navy-900);
+    color: var(--color-accent-soft-ink);
   }
 
   :focus-visible {

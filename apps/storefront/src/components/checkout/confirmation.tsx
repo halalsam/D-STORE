@@ -11,7 +11,7 @@ export function Confirmation({ order, signedIn }: { order: Order; signedIn: bool
   return (
     <div className="mx-auto grid max-w-2xl gap-tile">
       <section className="panel animate-rise-in text-center">
-        <span className="mx-auto grid size-16 animate-pop place-items-center rounded-full bg-accent text-white">
+        <span className="mx-auto grid size-16 animate-pop place-items-center rounded-full bg-accent text-ink-on-accent">
           <Check className="size-7" strokeWidth={2.5} />
         </span>
         <p className="mt-6 type-overline text-ink-muted">Order {order.displayId}</p>

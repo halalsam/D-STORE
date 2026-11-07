@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Popover } from "radix-ui"
-import { Bookmark, MapPin, Menu, Search, ShoppingBag, User, X } from "@/components/ui/icons"
+import { Bookmark, Menu, Search, ShoppingBag, User, X } from "@/components/ui/icons"
 import { useRef, useState, useSyncExternalStore } from "react"
 import { Button } from "@/components/ui/button"
 import { CountBubble } from "@/components/ui/badge"
@@ -70,14 +70,11 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
             aria-label="MotionFit home"
             className="pressable block"
           >
-            <HeaderLogo overlay={overlay} />
+            <HeaderLogo />
           </Link>
 
           {/* Right */}
           <div className="flex items-center justify-end gap-0.5">
-            <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
-              <Link href="/stores" aria-label="Find a store"><MapPin strokeWidth={1.6} /></Link>
-            </Button>
             <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
               <Link href="/search" aria-label="Search"><Search strokeWidth={1.6} /></Link>
             </Button>
@@ -149,7 +146,7 @@ export function SiteHeaderFallback() {
     <header className="header-grid sticky top-0 z-(--z-header) bg-surface text-ink">
       <div />
       <Link href="/" aria-label="MotionFit home" className="block">
-        <HeaderLogo overlay={false} />
+        <HeaderLogo />
       </Link>
       <div className="flex justify-end">
         <span className="ml-1 h-8 w-14 rounded-pill bg-surface-muted md:ml-2" />
@@ -158,18 +155,12 @@ export function SiteHeaderFallback() {
   )
 }
 
-/**
- * Navy logo on the white header, the light one over hero photos (cross-faded
- * so scrolling never flashes). Under 360px only the mark fits beside the icons.
- */
-function HeaderLogo({ overlay }: { overlay: boolean }) {
-  const fade = (on: boolean) => cn("transition-opacity duration-(--duration-base)", on ? "opacity-100" : "opacity-0")
+/** Under 360px only the mark fits beside the icons. */
+function HeaderLogo() {
   return (
     <span className="relative block">
-      <Logo decorative className={cn("hidden h-3 min-[360px]:block sm:h-5 lg:h-6", fade(!overlay))} />
-      <Logo variant="logo-on-dark" decorative className={cn("absolute inset-0 hidden h-3 min-[360px]:block sm:h-5 lg:h-6", fade(overlay))} />
-      <Logo variant="mark" decorative className={cn("h-5 min-[360px]:hidden", fade(!overlay))} />
-      <Logo variant="mark-on-dark" decorative className={cn("absolute inset-0 h-5 min-[360px]:hidden", fade(overlay))} />
+      <Logo decorative className="hidden h-3 min-[360px]:block sm:h-5 lg:h-6" />
+      <Logo variant="mark" decorative className="h-5 min-[360px]:hidden" />
     </span>
   )
 }

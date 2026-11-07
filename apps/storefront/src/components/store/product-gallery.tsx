@@ -38,7 +38,7 @@ export function ProductGallery({ product, views, tag }: { product: Product; view
             >
               <ProductMedia tone={v.tone} src={v.src} silhouette={product.silhouette} alt={alt(i)} className="media-zoom" priority={i < 2} sizes="(min-width: 1024px) 30vw, 90vw" />
               {i === 0 && tag && <span className="absolute top-4 left-4 rounded-xs material-dark px-2.5 py-1 type-caption text-ink-on-media">{tag}</span>}
-              <span className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-white/90 text-ink opacity-0 shadow-sm transition-opacity duration-(--duration-base) group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-surface-inverse/90 text-ink-inverse opacity-0 shadow-sm transition-opacity duration-(--duration-base) group-hover:opacity-100 group-focus-visible:opacity-100">
                 <ZoomIn className="size-4" strokeWidth={1.6} />
               </span>
             </button>

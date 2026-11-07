@@ -49,7 +49,7 @@ export function DsHeader({ overMedia = false }: { overMedia?: boolean }) {
           aria-label="Menu"
           className={
             overMedia
-              ? "pressable ml-1 grid h-9 w-14 md:ml-2 place-items-center rounded-pill bg-white text-ink"
+              ? "pressable ml-1 grid h-9 w-14 md:ml-2 place-items-center rounded-pill bg-surface-inverse text-ink-inverse"
               : "pressable ml-1 grid h-9 w-14 md:ml-2 place-items-center rounded-pill bg-surface-muted"
           }
         >

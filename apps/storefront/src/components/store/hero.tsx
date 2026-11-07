@@ -30,7 +30,7 @@ function ArtDirected({ src, mobileSrc, alt, priority, sizes, className }: { src:
  */
 export function Hero({ kicker, title, cta, src, mobileSrc, alt = "" }: Props) {
   return (
-    <section className="relative isolate -mt-(--header-h) h-[100svh] min-h-[36rem] overflow-hidden bg-navy-950 text-ink-on-media">
+    <section className="relative isolate -mt-(--header-h) h-[100svh] min-h-[36rem] overflow-hidden bg-canvas text-ink-on-media">
       {src ? (
         <ArtDirected src={src} mobileSrc={mobileSrc} alt={alt} priority sizes="100vw" className="-z-10 object-cover" />
       ) : (
@@ -77,7 +77,7 @@ export function CollectionTile({ title, href, tone, blurb, src }: TileProps) {
           <p className="type-heading-md md:type-heading-lg">{title}</p>
           {blurb && <p className="mt-1 max-w-xs type-body-sm opacity-85">{blurb}</p>}
         </div>
-        <span className="pressable grid h-10 shrink-0 place-items-center rounded-pill bg-white px-5 type-body-sm text-ink transition-transform duration-(--duration-spring) ease-spring group-hover:-translate-y-0.5">
+        <span className="pressable grid h-10 shrink-0 place-items-center rounded-pill bg-surface-inverse px-5 type-body-sm text-ink-inverse transition-transform duration-(--duration-spring) ease-spring group-hover:-translate-y-0.5">
           Shop
         </span>
       </div>
@@ -94,7 +94,7 @@ type BannerProps = { title: string; blurb?: string; src: string; mobileSrc?: str
 export function CollectionBanner({ title, blurb, src, mobileSrc }: BannerProps) {
   return (
     <section className="page-x pt-2 md:pt-[calc(var(--spacing-section)*0.5)]">
-      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-panel bg-navy-950 text-ink-on-media md:aspect-[2/1] lg:aspect-[5/2]">
+      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-panel bg-canvas text-ink-on-media md:aspect-[2/1] lg:aspect-[5/2]">
         <ArtDirected src={src} mobileSrc={mobileSrc} alt={`${title} campaign`} priority sizes="100vw" className="-z-10 object-cover object-[center_30%]" />
         <div aria-hidden className="absolute inset-0 -z-10 scrim-bottom" />
         {blurb && <p className="absolute inset-x-0 bottom-0 max-w-xl p-5 type-title md:p-10 md:type-heading-lg">{blurb}</p>}

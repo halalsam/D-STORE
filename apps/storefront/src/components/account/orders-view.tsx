@@ -22,7 +22,7 @@ export function OrdersView({ orders, notice }: { orders: Order[]; notice?: React
               <Link href={`/account/orders/${o.id}`} className="group pressable-soft flex items-center gap-4 rounded-panel bg-surface p-4 transition-shadow hover:shadow-md md:p-5">
                 <div className="flex shrink-0 -space-x-4">
                   {o.lines.slice(0, 3).map((l) => (
-                    <div key={l.handle + l.size} className="relative aspect-card w-14 overflow-hidden rounded-md ring-2 ring-surface md:w-16">
+                    <div key={l.handle + l.size} className="relative aspect-card w-14 overflow-hidden rounded-md bg-surface-muted ring-2 ring-surface md:w-16">
                       <ProductMedia tone={l.tone} src={l.thumbnail} silhouette={l.silhouette} alt={l.title} />
                     </div>
                   ))}
