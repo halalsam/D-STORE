@@ -1,59 +1,62 @@
 import Link from "next/link"
 import { DEMO_MODE } from "@/lib/data/mode"
 import { getNavigation } from "@/lib/data/navigation"
+import { FooterWordmark } from "./footer-wordmark"
 import { NewsletterForm } from "./newsletter-form"
-import { Logo } from "@/components/ui/logo"
 
-const staticColumns = [
-  { title: "Help", links: [["Shipping", "/help/shipping"], ["Returns", "/help/returns"], ["Size guide", "/help/size-guide"], ["Contact", "/help/contact"]] },
-  { title: "Company", links: [["About", "/about"], ["Privacy", "/privacy"]] },
-] as const
+const linkClass = "pressable inline-block type-body-lg font-medium text-ink transition-colors duration-(--duration-fast) hover:text-accent-ink"
+const legalClass = "pressable type-body-sm text-ink-muted transition-colors duration-(--duration-fast) hover:text-ink"
 
 export async function SiteFooter() {
   const nav = await getNavigation()
-  const columns = [{ title: "Shop", links: [...nav.collections.slice(0, 4).map((l) => [l.label, l.href] as const), ["Gift cards", "/products/gift-card"] as const] }, ...staticColumns]
+  const columns = [
+    { title: "Shop", links: [...nav.collections.slice(0, 2).map((l) => [l.label, l.href] as const), ["Gift cards", "/products/gift-card"] as const] },
+    { title: "Help", links: [["Shipping", "/help/shipping"], ["Returns", "/help/returns"], ["Size guide", "/help/size-guide"], ["Contact us", "/help/contact"]] as const },
+    { title: "You", links: [["About MotionFit", "/about"], ["Account", "/account"], ["Orders", "/account/orders"], ["Saved items", "/account/saved"]] as const },
+  ]
+
   return (
-    <footer className="grid gap-tile bg-canvas px-(--spacing-gutter) pb-[max(var(--spacing-gutter),env(safe-area-inset-bottom))]">
-      <div className="panel grid gap-12 py-10 md:py-14 lg:grid-cols-12 lg:gap-x-8 lg:py-16">
-        <div className="max-w-xl lg:col-span-6">
-          <h2 className="type-display-lg text-balance">Early access, first.</h2>
-          <p className="mt-4 max-w-md type-body-lg text-ink">Drops sell out. Get a heads up the day before they go live, and nothing else.</p>
-          <div className="max-w-md">
-            <NewsletterForm />
-          </div>
-        </div>
-
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:col-span-6 lg:self-end">
-          {columns.map((c) => (
-            <div key={c.title}>
-              <h2 className="type-body-sm text-ink-muted">{c.title}</h2>
-              <ul className="mt-3 grid gap-2.5">
-                {c.links.map(([label, href]) => (
-                  <li key={href}>
-                    <Link href={href} className="pressable inline-block type-body-lg text-ink transition-colors duration-(--duration-fast) hover:text-accent-ink">
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+    <footer className="bg-canvas px-(--spacing-gutter) pb-[max(var(--spacing-gutter),env(safe-area-inset-bottom))]">
+      <div className="panel overflow-hidden pt-10 md:pt-14">
+        <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-y-16">
+          <div className="sm:col-span-2 lg:col-span-4">
+            <h2 className="sr-only">Newsletter</h2>
+            <p className="max-w-[34ch] type-body-lg text-ink">
+              Early access to every drop. New releases, restocks and member-only sales, straight to your inbox.
+            </p>
+            <div className="max-w-sm">
+              <NewsletterForm />
             </div>
-          ))}
-        </nav>
-      </div>
-
-      <div className="overflow-hidden rounded-panel bg-accent text-ink-on-accent">
-        <div className="flex flex-col gap-3 px-[clamp(1rem,0.6rem+1.2vw,2.25rem)] pt-5 pb-6 type-body-sm sm:flex-row sm:items-baseline sm:justify-between md:pt-7 md:pb-10">
-          <div className="grid gap-1">
-            <p>© MotionFit. All rights reserved.</p>
-            {DEMO_MODE && <p className="opacity-80">Demo store: BLUORNG catalog for demonstration, no real orders.</p>}
           </div>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="pressable underline-offset-4 hover:underline">Privacy policy</Link>
-            <Link href="/terms" className="pressable underline-offset-4 hover:underline">Terms of service</Link>
+
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:col-span-2 sm:grid-cols-3 lg:col-span-6">
+            {columns.map((c) => (
+              <div key={c.title}>
+                <h2 className="sr-only">{c.title}</h2>
+                <ul className="grid gap-3">
+                  {c.links.map(([label, href]) => (
+                    <li key={href}>
+                      <Link href={href} className={linkClass}>{label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+
+          <div className="grid content-start gap-3 type-body-sm text-ink-muted sm:col-span-2 lg:col-span-2">
+            <p>Free standard delivery across India. Cash on delivery on every order. Returns within 14 days.</p>
+            {DEMO_MODE && <p>Demo store: BLUORNG catalog for demonstration, no real orders.</p>}
+          </div>
+
+          <div className="flex flex-wrap gap-x-6 gap-y-2 sm:col-span-2 lg:col-span-12 lg:grid lg:grid-cols-12 lg:gap-x-6">
+            <Link href="/privacy" className={`${legalClass} lg:col-start-7 lg:col-span-2`}>Privacy policy</Link>
+            <Link href="/terms" className={`${legalClass} lg:col-span-2`}>Terms of service</Link>
+            <p className="w-full type-body-sm text-ink-muted lg:col-span-2 lg:w-auto">© MotionFit. All rights reserved.</p>
           </div>
         </div>
-        {/* Bleeds off the band's bottom edge on purpose: the name closes the page. */}
-        <Logo variant="wordmark-navy" decorative className="-mb-[1.9%] h-auto w-full px-[clamp(0.5rem,0.3rem+0.6vw,1.25rem)]" />
+
+        <FooterWordmark className="mt-12 md:mt-16 lg:mt-20" />
       </div>
     </footer>
   )

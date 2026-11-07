@@ -1,11 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, ArrowRight, ZoomIn } from "@/components/ui/icons"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { ZoomIn } from "@/components/ui/icons"
 import type { Product, Tone } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { ProductLightbox } from "./product-lightbox"
 import { ProductMedia } from "./product-media"
 
 type View = { tone: Tone; src?: string }
@@ -13,7 +12,7 @@ type View = { tone: Tone; src?: string }
 /**
  * Product photos. lg+: a two-column grid that scrolls beside the pinned buy
  * panel (an odd count lets the first photo span both columns). Below lg: a
- * swipe carousel. Any photo opens the zoom sheet, which steps through all.
+ * swipe carousel. Any photo opens the full-screen lightbox.
  */
 export function ProductGallery({ product, views, tag }: { product: Product; views: View[]; tag?: string }) {
   const [zoom, setZoom] = useState<number | null>(null)
@@ -46,25 +45,7 @@ export function ProductGallery({ product, views, tag }: { product: Product; view
         ))}
       </ul>
 
-      <Sheet open={zoom !== null} onOpenChange={(o) => !o && setZoom(null)}>
-        {zoom !== null && (
-          <SheetContent side="adaptive" title={product.title} subtitle={`${zoom + 1} / ${views.length}`} bodyClassName="p-3">
-            <div className="relative mx-auto aspect-card max-h-[calc(100dvh-10rem)] overflow-hidden rounded-lg bg-surface-muted">
-              <ProductMedia key={zoom} tone={views[zoom].tone} src={views[zoom].src} silhouette={product.silhouette} alt={alt(zoom)} className="animate-fade-in" sizes="90vw" />
-              {views.length > 1 && (
-                <>
-                  <Button variant="media" size="icon" aria-label="Previous photo" className="absolute top-1/2 left-3 -translate-y-1/2 shadow-sm" onClick={() => setZoom((zoom - 1 + views.length) % views.length)}>
-                    <ArrowLeft strokeWidth={1.6} />
-                  </Button>
-                  <Button variant="media" size="icon" aria-label="Next photo" className="absolute top-1/2 right-3 -translate-y-1/2 shadow-sm" onClick={() => setZoom((zoom + 1) % views.length)}>
-                    <ArrowRight strokeWidth={1.6} />
-                  </Button>
-                </>
-              )}
-            </div>
-          </SheetContent>
-        )}
-      </Sheet>
+      <ProductLightbox product={product} views={views} alt={alt} start={zoom} onClose={() => setZoom(null)} />
     </div>
   )
 }

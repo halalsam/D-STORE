@@ -7,7 +7,7 @@ import { TextField } from "@/components/ui/text-field"
 import { indianStates } from "@/lib/site"
 import { useShake } from "@/lib/use-shake"
 import type { Address } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import { cn, revealInvalid } from "@/lib/utils"
 
 type Errors = Partial<Record<keyof Address, string>>
 
@@ -50,7 +50,8 @@ export function AddressForm({ id, initial, allowDefault = false, onSubmit, child
 
   const handle = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const f = new FormData(e.currentTarget)
+    const form = e.currentTarget
+    const f = new FormData(form)
     const a: Address = {
       id: initial?.id ?? `addr_${Math.random().toString(36).slice(2, 9)}`,
       label: String(f.get("label") ?? "").trim() || undefined,
@@ -69,6 +70,7 @@ export function AddressForm({ id, initial, allowDefault = false, onSubmit, child
     setErrors(errs)
     if (Object.keys(errs).length) {
       shake()
+      revealInvalid(form)
       return
     }
     onSubmit(a)

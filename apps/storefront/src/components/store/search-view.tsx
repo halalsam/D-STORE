@@ -78,6 +78,12 @@ export function SearchView({ results, latest }: Props) {
     timer.current = setTimeout(() => commit(q), DEBOUNCE_MS)
   }
 
+  const leave = () => {
+    clearTimeout(timer.current)
+    if (window.history.length > 1 && document.referrer.startsWith(window.location.origin)) router.back()
+    else router.push("/")
+  }
+
   const pick = (q: string) => {
     setValue(q)
     commit(q)
@@ -144,6 +150,9 @@ export function SearchView({ results, latest }: Props) {
               <X strokeWidth={1.8} />
             </Button>
           )}
+          <Button type="button" variant="ghost" size="sm" onClick={leave} className="-mr-2 shrink-0">
+            Cancel
+          </Button>
           <span
             aria-hidden
             className="absolute inset-x-0 -bottom-px h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-(--duration-spring) ease-spring group-focus-within:scale-x-100"

@@ -7,9 +7,7 @@ import { cn } from "@/lib/utils"
  */
 const FILES = {
   logo: { src: "/brand/motionfit-logo-on-dark.svg", ratio: 11.61 },
-  wordmark: { src: "/brand/motionfit-wordmark-on-dark.svg", ratio: 9.51 },
-  "wordmark-navy": { src: "/brand/motionfit-wordmark.svg", ratio: 9.51 },
-  mark: { src: "/brand/motionfit-mark-white.svg", ratio: 3.91 },
+  wordmark: { src: "/brand/motionfit-wordmark-on-dark.svg", ratio: 9.51 },  mark: { src: "/brand/motionfit-mark-white.svg", ratio: 3.91 },
 } as const
 
 export function Logo({ variant = "logo", className, decorative = false }: { variant?: keyof typeof FILES; className?: string; decorative?: boolean }) {

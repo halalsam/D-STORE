@@ -26,6 +26,7 @@ import {
   ReturnRequestIcon,
   Search01Icon,
   ShoppingBag01Icon,
+  ShoppingBagAddIcon,
   SmartPhone01Icon,
   SquareLock02Icon,
   StarIcon,
@@ -81,6 +82,7 @@ export const Plus = make(PlusSignIcon, "Plus")
 export const RotateCcw = make(ReturnRequestIcon, "RotateCcw")
 export const Search = make(Search01Icon, "Search")
 export const ShoppingBag = make(ShoppingBag01Icon, "ShoppingBag")
+export const ShoppingBagAdd = make(ShoppingBagAddIcon, "ShoppingBagAdd")
 export const SlidersHorizontal = make(FilterHorizontalIcon, "SlidersHorizontal")
 export const Smartphone = make(SmartPhone01Icon, "Smartphone")
 export const Star = make(StarIcon, "Star")
