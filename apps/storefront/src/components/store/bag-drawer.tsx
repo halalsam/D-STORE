@@ -58,7 +58,7 @@ export function BagDrawer() {
                 className="flex animate-rise-in gap-3 rounded-lg bg-surface p-2"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
-                <div className="relative aspect-card w-20 shrink-0 overflow-hidden rounded-md">
+                <div className="relative aspect-card w-20 shrink-0 overflow-hidden rounded-md bg-surface-muted">
                   <ProductMedia tone={l.tone} src={l.thumbnail} silhouette={l.silhouette} alt={l.title} />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-between py-1 pr-1">

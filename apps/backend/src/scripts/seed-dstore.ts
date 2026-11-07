@@ -179,7 +179,6 @@ export default async function seedDstore({ container }: ExecArgs) {
   const missingOptions = [
     option("Standard delivery", "standard", "3 to 5 business days", 0),
     option("Express delivery", "express", "1 to 2 business days, metro cities", 250),
-    option("Pick up in store", "pickup", "MotionFit Bandra, ready in 24 hours", 0),
   ].filter((o) => !foundOptions.some((f) => f.name === o.name))
   if (missingOptions.length) await createShippingOptionsWorkflow(container).run({ input: missingOptions })
 

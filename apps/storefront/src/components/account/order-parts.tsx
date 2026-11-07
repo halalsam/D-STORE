@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"
 export function LineItem({ line, currency = "inr", compact = false }: { line: OrderLine; currency?: string; compact?: boolean }) {
   return (
     <div className="flex items-center gap-3">
-      <div className={cn("relative aspect-card shrink-0 overflow-hidden rounded-md", compact ? "w-14" : "w-16")}>
+      <div className={cn("relative aspect-card shrink-0 overflow-hidden rounded-md bg-surface-muted", compact ? "w-14" : "w-16")}>
         <ProductMedia tone={line.tone} src={line.thumbnail} silhouette={line.silhouette} alt={line.title} />
         {line.quantity > 1 && (
           <span className="absolute top-1 right-1 grid h-5 min-w-5 place-items-center rounded-full bg-surface-inverse px-1 text-[0.6875rem] text-ink-inverse tabular-nums">
@@ -104,7 +104,7 @@ export function OrderTracker({ status }: { status: OrderStatus }) {
             <span
               className={cn(
                 "grid size-6 place-items-center rounded-full ring-4 ring-surface transition-colors duration-(--duration-base)",
-                done ? "bg-accent text-white" : "bg-surface-strong text-ink-subtle"
+                done ? "bg-accent text-ink-on-accent" : "bg-surface-strong text-ink-subtle"
               )}
               style={{ transitionDelay: `${i * 120}ms` }}
             >

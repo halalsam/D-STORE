@@ -23,9 +23,6 @@ export default function ContactPage() {
           <li>
             Finding your fit: <Link href="/help/size-guide">Size guide</Link>
           </li>
-          <li>
-            Visiting us: <Link href="/stores">Stores</Link>
-          </li>
         </ul>
       </InfoSection>
     </InfoPage>

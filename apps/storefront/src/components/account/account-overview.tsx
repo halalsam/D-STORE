@@ -39,7 +39,7 @@ export function AccountOverview({ customer, orders, addresses, products, storeCr
             <div className="mt-7 flex items-center justify-between gap-4">
               <div className="flex -space-x-3">
                 {latest.lines.slice(0, 4).map((l) => (
-                  <div key={l.handle + l.size} className="relative aspect-card w-12 overflow-hidden rounded-md ring-2 ring-surface">
+                  <div key={l.handle + l.size} className="relative aspect-card w-12 overflow-hidden rounded-md bg-surface-muted ring-2 ring-surface">
                     <ProductMedia tone={l.tone} src={l.thumbnail} silhouette={l.silhouette} alt={l.title} />
                   </div>
                 ))}

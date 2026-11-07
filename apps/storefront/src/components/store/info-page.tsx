@@ -16,8 +16,6 @@ const navs = {
     label: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "Stores", href: "/stores" },
-      { label: "Careers", href: "/careers" },
       { label: "Privacy", href: "/privacy" },
       { label: "Terms", href: "/terms" },
     ],

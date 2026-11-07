@@ -29,7 +29,7 @@ export function Switch({ label, description, className, id, ...props }: Props) {
       >
         <SwitchPrimitive.Thumb
           className={cn(
-            "block size-[1.65rem] rounded-full bg-white shadow-[0_2px_6px_rgb(10_23_48/0.2),0_0_0_0.5px_rgb(10_23_48/0.06)]",
+            "block size-[1.65rem] rounded-full bg-white shadow-[0_2px_6px_rgb(0_0_0/0.35)]",
             "transition-transform duration-(--duration-spring) ease-spring data-[state=checked]:translate-x-[1.2rem]"
           )}
         />

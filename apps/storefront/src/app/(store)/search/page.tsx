@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { SearchView, SearchViewFallback } from "@/components/store/search-view"
-import { listCollections, listProducts } from "@/lib/data/catalog"
+import { listProducts } from "@/lib/data/catalog"
 import { searchProducts } from "@/lib/data/search"
 
 export async function generateMetadata({ searchParams }: PageProps<"/search">): Promise<Metadata> {
@@ -23,10 +23,9 @@ export default function SearchPage({ searchParams }: PageProps<"/search">) {
 async function Results({ searchParams }: { searchParams: PageProps<"/search">["searchParams"] }) {
   const q = (await searchParams).q
   const query = typeof q === "string" ? q : ""
-  const [results, collections, latest] = await Promise.all([
+  const [results, latest] = await Promise.all([
     searchProducts(query),
-    listCollections(),
     listProducts({ collectionHandle: "new-arrivals" }),
   ])
-  return <SearchView results={results} collections={collections} latest={latest.slice(0, 4)} />
+  return <SearchView results={results} latest={latest.slice(0, 4)} />
 }

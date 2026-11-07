@@ -13,7 +13,7 @@ export function ShapeAndDepth() {
                 <div className="grid aspect-square place-items-center rounded-lg bg-canvas">
                   <div
                     style={{ borderRadius: r.px }}
-                    className="squircle size-3/5 bg-sky-200 ring-1 ring-line-strong ring-inset"
+                    className="squircle size-3/5 bg-accent-soft ring-1 ring-line-strong ring-inset"
                   />
                 </div>
                 <div className="flex items-baseline justify-between">
@@ -36,7 +36,7 @@ export function ShapeAndDepth() {
           <div className="mt-6 grid flex-1 place-items-center">
             <div className="w-full max-w-xs rounded-panel bg-canvas p-3.5">
               <div className="rounded-[calc(var(--radius-panel)-0.875rem)] bg-surface p-2.5 shadow-sm">
-                <div className="aspect-card rounded-[calc(var(--radius-panel)-1.5rem)] bg-sky-200" />
+                <div className="aspect-card rounded-[calc(var(--radius-panel)-1.5rem)] bg-surface-strong" />
                 <div className="mt-2.5 flex gap-2">
                   <div className="h-10 flex-1 rounded-pill bg-surface-muted" />
                   <div className="h-10 flex-1 rounded-pill bg-surface-inverse" />

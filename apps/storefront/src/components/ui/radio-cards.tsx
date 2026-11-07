@@ -56,7 +56,7 @@ export function RadioCards({ options, value, onValueChange, label, name, classNa
                   selected && "bg-ink ring-ink"
                 )}
               >
-                <RadioGroup.Indicator className="size-2 animate-pop rounded-full bg-white" />
+                <RadioGroup.Indicator className="size-2 animate-pop rounded-full bg-ink-inverse" />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block type-body font-medium text-ink">{o.title}</span>

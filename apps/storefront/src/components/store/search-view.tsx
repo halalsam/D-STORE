@@ -8,11 +8,10 @@ import { ArrowRight, Search, SlidersHorizontal, X } from "@/components/ui/icons"
 import { Select } from "@/components/ui/select"
 import type { SearchResults } from "@/lib/data/search"
 import { popularSearches } from "@/lib/site"
-import type { Collection, Product } from "@/lib/types"
+import type { Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { applyFilters } from "./collection-view"
 import { activeCount, emptyFilters, FilterDrawer, sortOptions, type Filters } from "./filter-drawer"
-import { CollectionTile } from "./hero"
 import { ProductGrid } from "./product-grid"
 
 const DEBOUNCE_MS = 280
@@ -58,9 +57,9 @@ function useRecent() {
   )
 }
 
-type Props = { results: SearchResults; collections: Collection[]; latest: Product[] }
+type Props = { results: SearchResults; latest: Product[] }
 
-export function SearchView({ results, collections, latest }: Props) {
+export function SearchView({ results, latest }: Props) {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -109,6 +108,7 @@ export function SearchView({ results, collections, latest }: Props) {
     <section className="section pt-4 md:pt-[calc(var(--spacing-section)*0.6)]">
       <form
         role="search"
+        className="max-w-3xl"
         onSubmit={(e) => {
           e.preventDefault()
           commit(value)
@@ -116,8 +116,8 @@ export function SearchView({ results, collections, latest }: Props) {
         }}
       >
         <label htmlFor="search-q" className="type-overline text-ink-muted">Search the store</label>
-        <div className="group relative mt-2 flex items-center gap-3 border-b border-line-strong pb-2 md:mt-3 md:gap-5 md:pb-3">
-          <Search strokeWidth={1.4} className={cn("size-7 shrink-0 text-ink-muted transition-opacity duration-(--duration-base) md:size-10", pending && "opacity-40")} />
+        <div className="group relative mt-2 flex items-center gap-2.5 border-b border-line-strong pb-1.5 md:mt-3 md:gap-3.5 md:pb-2">
+          <Search strokeWidth={1.4} className={cn("size-6 shrink-0 text-ink-muted transition-opacity duration-(--duration-base) md:size-7 lg:size-8", pending && "opacity-40")} />
           <input
             ref={inputRef}
             id="search-q"
@@ -137,7 +137,7 @@ export function SearchView({ results, collections, latest }: Props) {
             spellCheck={false}
             enterKeyHint="search"
             placeholder="Polos, hoodies, denim..."
-            className="h-14 w-full min-w-0 bg-transparent font-display text-[2rem] leading-none font-bold tracking-[-0.03em] text-ink outline-none placeholder:text-ink-subtle/70 md:h-24 md:text-[4.25rem] [&::-webkit-search-cancel-button]:hidden"
+            className="h-12 w-full min-w-0 bg-transparent font-display text-[clamp(1.5rem,1.1rem+1.5vw,2.5rem)] leading-none font-bold tracking-[-0.03em] text-ink outline-none placeholder:text-ink-subtle/70 md:h-14 lg:h-16 [&::-webkit-search-cancel-button]:hidden"
           />
           {value && (
             <Button type="button" variant="soft" size="icon" aria-label="Clear search" onClick={() => pick("")} >
@@ -157,7 +157,7 @@ export function SearchView({ results, collections, latest }: Props) {
           ) : (
             <span>T-shirts, polos, hoodies, bags and caps. Results update as you type.</span>
           )}
-          <span className="hidden items-center gap-1.5 md:flex">
+          <span className="hidden shrink-0 items-center gap-1.5 lg:flex">
             Press <kbd className="rounded-xs bg-surface-muted px-1.5 py-0.5 font-sans text-ink">/</kbd> to search,{" "}
             <kbd className="rounded-xs bg-surface-muted px-1.5 py-0.5 font-sans text-ink">Esc</kbd> to clear
           </span>
@@ -166,7 +166,7 @@ export function SearchView({ results, collections, latest }: Props) {
 
       <div className={cn("mt-8 transition-opacity duration-(--duration-base) ease-standard md:mt-12", pending && "opacity-55")}>
         {!hasQuery ? (
-          <Discover collections={collections} latest={latest} onPick={pick} />
+          <Discover latest={latest} onPick={pick} />
         ) : results.products.length ? (
           <ResultsBody key={results.query} products={results.products} />
         ) : (
@@ -179,7 +179,7 @@ export function SearchView({ results, collections, latest }: Props) {
 
 function TermChips({ terms, onPick, numbered, onPanel }: { terms: string[]; onPick: (q: string) => void; numbered?: boolean; onPanel?: boolean }) {
   return (
-    <ul className="flex flex-wrap justify-center gap-2 md:justify-start">
+    <ul className="flex flex-wrap gap-2">
       {terms.map((t, i) => (
         <li key={t}>
           <button type="button" onClick={() => onPick(t)} className={cn(chipVariants({ tone: onPanel ? "muted" : "surface" }), "group/chip")}>
@@ -193,18 +193,18 @@ function TermChips({ terms, onPick, numbered, onPanel }: { terms: string[]; onPi
   )
 }
 
-function Discover({ collections, latest, onPick }: { collections: Collection[]; latest: Product[]; onPick: (q: string) => void }) {
+function Discover({ latest, onPick }: { latest: Product[]; onPick: (q: string) => void }) {
   const recent = useRecent()
   return (
-    <div className="grid gap-12 md:gap-16">
-      <div className="grid gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-12 md:gap-16">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div>
           <h2 className="mb-3 type-title">Popular searches</h2>
           <TermChips terms={popularSearches} onPick={onPick} numbered />
         </div>
         {recent.length > 0 && (
           <div>
-            <div className="mb-3 flex items-baseline justify-between">
+            <div className="mb-3 flex items-baseline justify-between gap-4">
               <h2 className="type-title">Your recent searches</h2>
               <button type="button" onClick={() => writeRecent([])} className="pressable type-caption text-accent-ink underline underline-offset-4">
                 Clear
@@ -214,17 +214,6 @@ function Discover({ collections, latest, onPick }: { collections: Collection[]; 
           </div>
         )}
       </div>
-
-      {collections.length > 0 && (
-        <div>
-          <h2 className="mb-4 type-title">Collections</h2>
-          <div className="grid grid-cols-2 gap-tile lg:grid-cols-4">
-            {collections.map((c) => (
-              <CollectionTile key={c.id} title={c.title} href={`/collections/${c.handle}`} tone={c.tone} />
-            ))}
-          </div>
-        </div>
-      )}
 
       {latest.length > 0 && (
         <div>
@@ -238,8 +227,8 @@ function Discover({ collections, latest, onPick }: { collections: Collection[]; 
 
 function NoResults({ query, latest, onPick }: { query: string; latest: Product[]; onPick: (q: string) => void }) {
   return (
-    <div className="grid gap-12 md:gap-16">
-      <div className="panel grid justify-items-center px-6 py-14 text-center md:py-20">
+    <div className="grid grid-cols-1 gap-12 md:gap-16">
+      <div className="panel grid justify-items-center px-5 py-12 text-center sm:px-8 md:py-20">
         <p className="type-overline text-ink-muted">No matches</p>
         <h2 className="mt-3 max-w-[18ch] text-balance type-heading-lg md:type-heading-xl">No products match &ldquo;{query}&rdquo;</h2>
         <p className="mt-3 max-w-sm type-body-sm text-ink-muted">Check the spelling or try a broader word like &ldquo;shirt&rdquo; or &ldquo;polo&rdquo;. Popular searches:</p>
@@ -298,11 +287,11 @@ function ResultsBody({ products }: { products: Product[] }) {
 export function SearchViewFallback() {
   return (
     <section className="section pt-4 md:pt-[calc(var(--spacing-section)*0.6)]">
-      <div>
+      <div className="max-w-3xl">
         <div className="h-3 w-28 rounded-pill skeleton" />
-        <div className="mt-4 h-14 border-b border-line-strong md:h-24" />
+        <div className="mt-4 h-14 border-b border-line-strong md:h-16 lg:h-[4.5rem]" />
       </div>
-      <div className="mt-12 product-grid gap-y-6">
+      <div className="mt-8 product-grid gap-y-6 md:mt-12">
         {Array.from({ length: 8 }, (_, i) => <div key={i} className="aspect-card rounded-card skeleton" />)}
       </div>
     </section>

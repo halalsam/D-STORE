@@ -28,7 +28,7 @@ export function Segmented({ options, value, onValueChange, label, iconOnly = fal
     >
       <span
         aria-hidden
-        className="absolute inset-y-1 left-1 rounded-pill bg-surface shadow-sm transition-transform duration-(--duration-spring) ease-spring"
+        className="absolute inset-y-1 left-1 rounded-pill bg-surface-strong shadow-sm transition-transform duration-(--duration-spring) ease-spring"
         style={{
           width: `calc((100% - 0.5rem) / ${options.length})`,
           transform: `translateX(${index * 100}%)`,

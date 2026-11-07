@@ -36,7 +36,7 @@ export function CountBubble({ count, className }: { count: number; className?: s
     <span
       key={count}
       className={cn(
-        "pointer-events-none absolute -top-0.5 -right-0.5 grid h-4 min-w-4 animate-pop place-items-center rounded-full bg-accent px-1 text-[0.625rem] leading-none font-semibold text-white tabular-nums",
+        "pointer-events-none absolute -top-0.5 -right-0.5 grid h-4 min-w-4 animate-pop place-items-center rounded-full bg-accent px-1 text-[0.625rem] leading-none font-semibold text-ink-on-accent tabular-nums",
         className
       )}
     >

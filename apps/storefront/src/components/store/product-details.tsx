@@ -78,7 +78,6 @@ export function ProductAccordion({ product, reviews, reviewCount }: { product: P
           rows={[
             ["Standard", "Free, 3 to 5 business days"],
             ["Express", "₹250, 1 to 2 business days in metro cities"],
-            ["Store pickup", "Free at MotionFit Bandra, ready in 24 hours"],
             ["Returns", "Within 14 days of delivery, unworn with tags. We pick it up from your address."],
           ]}
         />

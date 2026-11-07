@@ -14,10 +14,10 @@ export const chipVariants = cva(
   {
     variants: {
       tone: {
-        /** On canvas or white: muted beige chip (filters). */
+        /** On canvas or surface: muted chip (filters). */
         muted: "bg-surface-muted text-ink hover:bg-surface-strong",
-        /** On canvas: white chip (mega menu). */
-        surface: "bg-surface text-ink hover:bg-beige-50",
+        /** On canvas: surface chip (mega menu). */
+        surface: "bg-surface text-ink hover:bg-surface-muted",
         /** Outlined. */
         outline: "bg-transparent text-ink ring-1 ring-line-strong ring-inset hover:bg-surface-muted",
       },
@@ -58,7 +58,7 @@ export function SwatchStack({ colors, className }: { colors: string[]; className
         <span
           key={c}
           style={{ backgroundColor: c }}
-          className="size-3 rounded-full ring-1 ring-black/5"
+          className="size-3 rounded-full ring-1 ring-line-strong"
         />
       ))}
     </span>

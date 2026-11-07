@@ -33,7 +33,7 @@ export function SizeSelector({ sizes, value, onValueChange, columns = 5, classNa
           aria-label={s.available ? s.label : `${s.label}, sold out`}
           className={cn(
             "pressable grid h-11 place-items-center rounded-pill bg-surface type-caption tracking-[0.04em] text-ink ring-1 ring-line-strong ring-inset",
-            "hover:bg-beige-50",
+            "hover:bg-surface-muted",
             "data-[state=checked]:bg-surface-inverse data-[state=checked]:text-ink-inverse data-[state=checked]:ring-transparent",
             "disabled:bg-surface-muted disabled:text-ink-subtle disabled:line-through disabled:ring-transparent disabled:hover:bg-surface-muted"
           )}

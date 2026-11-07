@@ -21,7 +21,7 @@ export function Checkbox({ label, className, id, ...props }: Props) {
         )}
         {...props}
       >
-        <CheckboxPrimitive.Indicator className="animate-pop text-white">
+        <CheckboxPrimitive.Indicator className="animate-pop text-ink-on-accent">
           <Check className="size-3" strokeWidth={3} />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
