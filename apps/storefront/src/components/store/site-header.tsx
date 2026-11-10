@@ -43,8 +43,8 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
         <header
           className={cn(
             "header-grid sticky top-0 z-(--z-header) transition-[background-color,color,box-shadow] duration-(--duration-base) ease-standard",
-            overlay ? "bg-transparent text-ink-on-media" : "bg-surface text-ink",
-            scrolled && !menuOpen && "shadow-[0_1px_0_var(--color-line)]"
+            overlay ? "bg-transparent text-ink-on-media" : "bg-header text-ink-inverse",
+            scrolled && !menuOpen && "shadow-sm"
           )}
         >
           {/* Left */}
@@ -90,11 +90,11 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
             </Button>
             <Popover.Trigger asChild>
               <Button
-                variant={overlay ? "media" : "soft"}
+                variant="media"
                 size="sm"
                 aria-label={menuOpen ? "Close menu" : "Open menu"}
                 onClick={() => openMenu(false)}
-                className="relative ml-1 w-14 px-0 md:ml-2"
+                className={cn("relative ml-1 w-14 px-0 md:ml-2", !overlay && "bg-header-muted text-ink-inverse hover:bg-navy-600")}
               >
                 <Menu
                   strokeWidth={1.6}
@@ -124,9 +124,9 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
             if ((e.target as HTMLElement).closest("a")) setMenuOpen(false)
           }}
           className={cn(
-            // Edge-to-edge white wrapper continuing the header, rounded at the
+            // Edge-to-edge navy wrapper continuing the header, rounded at the
             // bottom; its corner stays concentric with the panel inside.
-            "z-(--z-header) flex w-(--radix-popper-anchor-width) origin-top flex-col bg-surface px-3 pb-3 shadow-lg",
+            "z-(--z-header) flex w-(--radix-popper-anchor-width) origin-top flex-col bg-header px-3 pb-3 shadow-lg",
             "max-h-[calc(100dvh-var(--header-h))] rounded-b-[calc(var(--radius-panel)+0.75rem)]",
             "data-[state=open]:animate-menu-in data-[state=closed]:animate-menu-out"
           )}
@@ -143,13 +143,13 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
 /** Static stand-in shown only while URL data streams in on runtime-param routes. */
 export function SiteHeaderFallback() {
   return (
-    <header className="header-grid sticky top-0 z-(--z-header) bg-surface text-ink">
+    <header className="header-grid sticky top-0 z-(--z-header) bg-header text-ink-inverse">
       <div />
       <Link href="/" aria-label="MotionFit home" className="block">
         <HeaderLogo />
       </Link>
       <div className="flex justify-end">
-        <span className="ml-1 h-8 w-14 rounded-pill bg-surface-muted md:ml-2" />
+        <span className="ml-1 h-8 w-14 rounded-pill bg-header-muted md:ml-2" />
       </div>
     </header>
   )
@@ -159,8 +159,8 @@ export function SiteHeaderFallback() {
 function HeaderLogo() {
   return (
     <span className="relative block">
-      <Logo decorative className="hidden h-3 min-[360px]:block sm:h-5 lg:h-6" />
-      <Logo variant="mark" decorative className="h-5 min-[360px]:hidden" />
+      <Logo variant="logo-on-dark" decorative className="hidden h-3 min-[360px]:block sm:h-5 lg:h-6" />
+      <Logo variant="mark-on-dark" decorative className="h-5 min-[360px]:hidden" />
     </span>
   )
 }

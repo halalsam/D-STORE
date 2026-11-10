@@ -2,15 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Grip, LayoutGrid, SlidersHorizontal, X } from "@/components/ui/icons"
-import { Segmented } from "@/components/ui/segmented"
+import { SlidersHorizontal, X } from "@/components/ui/icons"
 import { Select } from "@/components/ui/select"
 import { isSoldOut, type Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { activeCount, emptyFilters, FilterDrawer, sortOptions, type Filters } from "./filter-drawer"
 import { ProductGrid } from "./product-grid"
-
-type Density = "default" | "dense"
 
 export function applyFilters(products: Product[], f: Filters) {
   const list = products.filter((p) => {
@@ -29,11 +26,6 @@ export function applyFilters(products: Product[], f: Filters) {
   return list
 }
 
-const densityOptions = [
-  { value: "default", label: "Large grid", icon: <LayoutGrid strokeWidth={1.6} /> },
-  { value: "dense", label: "Dense grid", icon: <Grip strokeWidth={1.6} /> },
-]
-
 /** Active filter values as removable chips. */
 function activeChips(f: Filters) {
   const chips: { key: keyof Filters; value: string; label: string }[] = []
@@ -45,7 +37,6 @@ function activeChips(f: Filters) {
 }
 
 export function CollectionView({ title, products }: { title: string; products: Product[] }) {
-  const [density, setDensity] = useState<Density>("default")
   const [filters, setFilters] = useState<Filters>(emptyFilters)
   const [filterOpen, setFilterOpen] = useState(false)
   const results = useMemo(() => applyFilters(products, filters), [products, filters])
@@ -103,7 +94,6 @@ export function CollectionView({ title, products }: { title: string; products: P
             onValueChange={(sort) => setFilters((f) => ({ ...f, sort }))}
             className="bg-surface"
           />
-          <Segmented label="Grid density" iconOnly value={density} onValueChange={(v) => setDensity(v as Density)} options={densityOptions} />
           {filterButton()}
         </div>
       </div>
@@ -129,7 +119,7 @@ export function CollectionView({ title, products }: { title: string; products: P
       )}
 
       {results.length > 0 ? (
-        <ProductGrid key={`${density}-${results.length}-${filters.sort}`} products={results} density={density} priorityCount={4} />
+        <ProductGrid key={`${results.length}-${filters.sort}`} products={results} priorityCount={4} />
       ) : (
         <div className="panel grid animate-rise-in place-items-center py-20 text-center">
           <p className="type-heading-sm">Nothing matches those filters</p>
@@ -151,15 +141,6 @@ export function CollectionView({ title, products }: { title: string; products: P
             onValueChange={(sort) => setFilters((f) => ({ ...f, sort }))}
             className="h-10 max-w-[9.5rem] px-3.5 [&>span]:truncate"
           />
-          <span aria-hidden className="h-5 w-px bg-line-strong" />
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={density === "default" ? "Switch to dense grid" : "Switch to large grid"}
-            onClick={() => setDensity((d) => (d === "default" ? "dense" : "default"))}
-          >
-            {density === "default" ? <Grip strokeWidth={1.6} /> : <LayoutGrid strokeWidth={1.6} />}
-          </Button>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { DEMO_MODE } from "@/lib/data/mode"
 import { getNavigation } from "@/lib/data/navigation"
-import { FooterWordmark } from "./footer-wordmark"
+import { Logo } from "@/components/ui/logo"
 import { NewsletterForm } from "./newsletter-form"
 
 const linkClass = "pressable inline-block type-body-lg font-medium text-ink transition-colors duration-(--duration-fast) hover:text-accent-ink"
@@ -17,7 +17,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="bg-canvas px-(--spacing-gutter) pb-[max(var(--spacing-gutter),env(safe-area-inset-bottom))]">
-      <div className="panel overflow-hidden pt-10 md:pt-14">
+      <div className="panel overflow-hidden py-10 md:py-14">
         <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-y-16">
           <div className="sm:col-span-2 lg:col-span-4">
             <h2 className="sr-only">Newsletter</h2>
@@ -49,14 +49,15 @@ export async function SiteFooter() {
             {DEMO_MODE && <p>Demo store: BLUORNG catalog for demonstration, no real orders.</p>}
           </div>
 
-          <div className="flex flex-wrap gap-x-6 gap-y-2 sm:col-span-2 lg:col-span-12 lg:grid lg:grid-cols-12 lg:gap-x-6">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-line pt-6 sm:col-span-2 lg:col-span-12 lg:grid lg:grid-cols-12 lg:gap-x-6">
+            <Link href="/" aria-label="MotionFit home" className="pressable w-full lg:col-span-6 lg:w-auto">
+              <Logo decorative className="h-4" />
+            </Link>
             <Link href="/privacy" className={`${legalClass} lg:col-start-7 lg:col-span-2`}>Privacy policy</Link>
             <Link href="/terms" className={`${legalClass} lg:col-span-2`}>Terms of service</Link>
             <p className="w-full type-body-sm text-ink-muted lg:col-span-2 lg:w-auto">© MotionFit. All rights reserved.</p>
           </div>
         </div>
-
-        <FooterWordmark className="mt-12 md:mt-16 lg:mt-20" />
       </div>
     </footer>
   )
