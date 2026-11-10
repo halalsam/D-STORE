@@ -1,6 +1,6 @@
 export const baseSwatches = [
   { name: "Navy", hex: "#2F4156", token: "navy-800", ink: "#FFFFFF", role: "Ink and filled actions" },
-  { name: "Teal", hex: "#567C8D", token: "teal-500", ink: "#F5EFEB", role: "Accent, focus, active" },
+  { name: "Teal", hex: "#567C8D", token: "teal-500", ink: "#FFFFFF", role: "Accent, focus, active" },
   { name: "Sky Blue", hex: "#C8D9E6", token: "sky-200", ink: "#2F4156", role: "Soft highlight, selection" },
   { name: "Mist", hex: "#F2F4F7", token: "mist-100", ink: "#0A1730", role: "Page canvas" },
   { name: "White", hex: "#FFFFFF", token: "white", ink: "#567C8D", role: "Surfaces" },
