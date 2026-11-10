@@ -30,15 +30,54 @@ export async function generateMetadata({ params }: PageProps<"/products/[handle]
 
 function ProductSkeleton() {
   return (
-    <main className="sheet pt-[calc(var(--radius-sheet)*0.5)]">
+    <main className="sheet pt-[calc(var(--radius-sheet)*0.5)]" aria-busy>
       <div className="page-x pdp-layout">
-        <div className="grid grid-cols-2 gap-tile">
-          <div className="aspect-card rounded-card skeleton" />
-          <div className="aspect-card rounded-card skeleton" />
+        <div className="min-w-0">
+          <div className="lg:hidden">
+            <div className="-mx-gutter flex gap-tile overflow-hidden px-gutter">
+              <div className="aspect-card w-[86%] shrink-0 rounded-card skeleton sm:w-[62%]" />
+              <div className="aspect-card w-[86%] shrink-0 rounded-card skeleton sm:w-[62%]" />
+            </div>
+            <div className="mt-3 flex justify-center gap-1.5">
+              <span className="h-1.5 w-4 rounded-full skeleton" />
+              {Array.from({ length: 3 }, (_, i) => <span key={i} className="size-1.5 rounded-full skeleton" />)}
+            </div>
+          </div>
+          <div className="hidden grid-cols-2 gap-tile lg:grid">
+            <div className="aspect-card rounded-card skeleton" />
+            <div className="aspect-card rounded-card skeleton" />
+          </div>
         </div>
-        <div className="grid content-start gap-tile">
-          <div className="h-80 rounded-xl skeleton" />
-          <div className="h-48 rounded-xl skeleton" />
+
+        <div className="flex min-w-0 flex-col gap-tile">
+          <div className="rounded-xl bg-surface p-4 md:p-5">
+            <div className="h-3 w-24 rounded-pill skeleton" />
+            <div className="mt-3 h-6 w-3/4 rounded-sm skeleton" />
+            <div className="mt-2.5 h-5 w-28 rounded-sm skeleton" />
+            <div className="mt-5 h-4 w-12 rounded-sm skeleton" />
+            <div className="mt-3 grid grid-cols-5 gap-1.5">
+              {Array.from({ length: 5 }, (_, i) => <div key={i} className="h-11 rounded-pill skeleton" />)}
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-1.5">
+              <div className="h-14 rounded-pill skeleton" />
+              <div className="h-14 rounded-pill skeleton" />
+            </div>
+          </div>
+          <div className="rounded-xl bg-surface px-5">
+            <div className="py-4">
+              <div className="h-5 w-28 rounded-sm skeleton" />
+              <div className="mt-5 grid gap-2">
+                <div className="h-3.5 w-full rounded-sm skeleton" />
+                <div className="h-3.5 w-11/12 rounded-sm skeleton" />
+                <div className="h-3.5 w-2/3 rounded-sm skeleton" />
+              </div>
+            </div>
+            {Array.from({ length: 3 }, (_, i) => (
+              <div key={i} className="flex h-14 items-center">
+                <div className="h-5 w-32 rounded-sm skeleton" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </main>

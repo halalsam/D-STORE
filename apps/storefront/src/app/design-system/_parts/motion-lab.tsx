@@ -177,7 +177,7 @@ export function MotionLab() {
           <div key={reveal} className="mt-5 grid grid-cols-4 gap-tile">
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="animate-rise-in" style={{ animationDelay: `${i * 45}ms` }}>
-                <div className="aspect-card rounded-card bg-surface-strong" />
+                <div className="aspect-card rounded-card bg-sky-200" />
                 <div className="mt-2 h-2 w-3/4 rounded-pill bg-surface-muted" />
                 <div className="mt-1.5 h-2 w-1/3 rounded-pill bg-surface-muted" />
               </div>

@@ -78,6 +78,12 @@ export function SearchView({ results, latest }: Props) {
     timer.current = setTimeout(() => commit(q), DEBOUNCE_MS)
   }
 
+  const leave = () => {
+    clearTimeout(timer.current)
+    if (window.history.length > 1 && document.referrer.startsWith(window.location.origin)) router.back()
+    else router.push("/")
+  }
+
   const pick = (q: string) => {
     setValue(q)
     commit(q)
@@ -115,39 +121,46 @@ export function SearchView({ results, latest }: Props) {
           inputRef.current?.blur()
         }}
       >
-        <label htmlFor="search-q" className="type-overline text-ink-muted">Search the store</label>
-        <div className="group relative mt-2 flex items-center gap-2.5 border-b border-line-strong pb-1.5 md:mt-3 md:gap-3.5 md:pb-2">
-          <Search strokeWidth={1.4} className={cn("size-6 shrink-0 text-ink-muted transition-opacity duration-(--duration-base) md:size-7 lg:size-8", pending && "opacity-40")} />
-          <input
-            ref={inputRef}
-            id="search-q"
-            name="q"
-            type="search"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape" && value) {
-                e.preventDefault()
-                pick("")
-              }
-            }}
-            autoFocus={!hasQuery}
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            enterKeyHint="search"
-            placeholder="Polos, hoodies, denim..."
-            className="h-12 w-full min-w-0 bg-transparent font-display text-[clamp(1.5rem,1.1rem+1.5vw,2.5rem)] leading-none font-bold tracking-[-0.03em] text-ink outline-none placeholder:text-ink-subtle/70 md:h-14 lg:h-16 [&::-webkit-search-cancel-button]:hidden"
-          />
-          {value && (
-            <Button type="button" variant="soft" size="icon" aria-label="Clear search" onClick={() => pick("")} >
-              <X strokeWidth={1.8} />
-            </Button>
-          )}
-          <span
-            aria-hidden
-            className="absolute inset-x-0 -bottom-px h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-(--duration-spring) ease-spring group-focus-within:scale-x-100"
-          />
+        <label htmlFor="search-q" className="sr-only">Search the store</label>
+        <div className="flex items-center gap-2">
+          <div
+            className={cn(
+              "flex h-12 min-w-0 flex-1 items-center gap-2 rounded-md bg-surface px-4 ring-1 ring-line-strong ring-inset",
+              "transition-[box-shadow] duration-(--duration-fast) ease-standard focus-within:ring-2 focus-within:ring-accent",
+              value && "pr-1.5"
+            )}
+          >
+            <Search strokeWidth={1.6} className={cn("size-[1.15rem] shrink-0 text-ink-muted transition-opacity duration-(--duration-base)", pending && "opacity-40")} />
+            <input
+              ref={inputRef}
+              id="search-q"
+              name="q"
+              type="search"
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape" && value) {
+                  e.preventDefault()
+                  pick("")
+                }
+              }}
+              autoFocus={!hasQuery}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="search"
+              placeholder="Search polos, hoodies, denim..."
+              className="h-[calc(100%-4px)] w-full min-w-0 flex-1 bg-transparent type-body text-ink outline-none [&::-webkit-search-cancel-button]:hidden"
+            />
+            {value && (
+              <Button type="button" variant="ghost" size="icon" aria-label="Clear search" onClick={() => pick("")} className="size-9">
+                <X strokeWidth={1.8} />
+              </Button>
+            )}
+          </div>
+          <Button type="button" variant="ghost" size="sm" onClick={leave} className="shrink-0">
+            Cancel
+          </Button>
         </div>
         <p className="mt-3 flex min-h-5 items-center justify-between gap-4 type-caption text-ink-muted" aria-live="polite">
           {hasQuery ? (
@@ -288,8 +301,7 @@ export function SearchViewFallback() {
   return (
     <section className="section pt-4 md:pt-[calc(var(--spacing-section)*0.6)]">
       <div className="max-w-3xl">
-        <div className="h-3 w-28 rounded-pill skeleton" />
-        <div className="mt-4 h-14 border-b border-line-strong md:h-16 lg:h-[4.5rem]" />
+        <div className="h-12 rounded-md skeleton" />
       </div>
       <div className="mt-8 product-grid gap-y-6 md:mt-12">
         {Array.from({ length: 8 }, (_, i) => <div key={i} className="aspect-card rounded-card skeleton" />)}

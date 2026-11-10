@@ -21,9 +21,9 @@ const toc = [
 ] as const
 
 const rules = [
-  ["Dark by default", "Canvas is night-900. Depth comes from lighter steps: surface, surface-muted, surface-strong. No warm or beige tones."],
-  ["Light means action", "The primary action and selected states use surface-inverse (frost) with ink-inverse text."],
-  ["Sky is a signal", "Focus, active lines and links. Not a fill for large areas; text on an accent fill uses ink-on-accent."],
+  ["Black becomes navy", "Anywhere the reference uses black (selected size, Buy now, Discover more), use surface-inverse."],
+  ["Grey becomes mist", "The page sheet is canvas, chips are surface-muted. Neutrals come from the navy-tinted mist ramp, never warm beige."],
+  ["Teal is a signal", "Focus, active lines and links. Not a fill for large areas, and small teal text uses accent-ink."],
   ["Pills for actions", "Every button and chip is rounded-pill. Rectangles are reserved for media and containers."],
   ["Concentric corners", "Nested radius = outer minus padding. A card in a panel never has a larger radius than the panel."],
   ["Press, then spring", "Interactive elements get pressable. Overlays use the ios curve. Bounce only confirms an action."],
@@ -35,18 +35,18 @@ export default function DesignSystemPage() {
   return (
     <div className="min-h-dvh bg-surface">
       {/* Hero: header sits over the media, then the sheet slides over it */}
-      <div className="relative isolate overflow-hidden bg-night-950 text-ink-on-media">
+      <div className="relative isolate overflow-hidden bg-surface-inverse text-ink-on-media">
         <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(70%_80%_at_85%_10%,color-mix(in_oklab,var(--color-teal-500)_70%,transparent),transparent_70%),radial-gradient(60%_70%_at_10%_100%,color-mix(in_oklab,var(--color-sky-300)_35%,transparent),transparent_70%)]" />
         <div className="sticky top-0"><DsHeader overMedia /></div>
         <div className="page-x pt-[10vh] pb-[calc(var(--radius-sheet)+4rem)]">
-          <p className="animate-rise-in type-overline text-accent-ink">MotionFit / Foundations v1</p>
+          <p className="animate-rise-in type-overline text-sky-200">MotionFit / Foundations v1</p>
           <h1 className="mt-5 max-w-[11ch] animate-rise-in type-display-2xl [animation-delay:60ms]">
             Design system
           </h1>
           <div className="mt-10 flex flex-wrap items-end justify-between gap-8">
-            <p className="max-w-md animate-rise-in type-body-lg text-ink-muted [animation-delay:120ms]">
-              Tokens, type, shape and motion for the storefront. Night, frost and
-              sky, Amulya over Synonym, rounded like iOS and moving like it too.
+            <p className="max-w-md animate-rise-in type-body-lg text-sky-100 [animation-delay:120ms]">
+              Tokens, type, shape and motion for the storefront. Navy, teal, sky
+              and mist, Amulya over Synonym, rounded like iOS and moving like it too.
             </p>
             <nav className="flex animate-rise-in flex-wrap gap-2 [animation-delay:180ms]">
               {toc.map(([id, label]) => (
@@ -60,7 +60,7 @@ export default function DesignSystemPage() {
       </div>
 
       <main className="sheet sheet-overlap pb-section">
-        <DsSection id="colour" index="01" title="Colour" kicker="Five swatches, four tonal ramps, one semantic layer on top.">
+        <DsSection id="colour" index="01" title="Colour" kicker="Five brand swatches, four tonal ramps, one semantic layer on top.">
           <ColorPalette />
         </DsSection>
         <DsSection id="type" index="02" title="Typography" kicker="Amulya Bold for the voice. Synonym Regular for reading.">

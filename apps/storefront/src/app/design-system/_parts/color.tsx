@@ -12,7 +12,7 @@ export function ColorPalette() {
             style={{ backgroundColor: s.hex, color: s.ink, animationDelay: `${i * 45}ms` }}
             className={
               "relative flex aspect-card animate-rise-in flex-col justify-end overflow-hidden rounded-card p-5 " +
-              (s.hairline ? "hairline" : "")
+              (s.hex === "#FFFFFF" || s.hex === "#F2F4F7" ? "hairline" : "")
             }
           >
             <span className="absolute top-5 left-5 rotate-180 type-overline tracking-[0.18em] opacity-80 [writing-mode:vertical-rl]">
@@ -68,7 +68,7 @@ export function ColorPalette() {
         </div>
         <div className="grid gap-x-8 md:grid-cols-2 xl:grid-cols-3">
           {semantic.map((t) => {
-            const onCanvas = contrast(t.hex, t.on)
+            const onCanvas = contrast(t.hex, "#F2F4F7")
             const isText = t.group !== "Surface"
             return (
               <div key={t.token} className="flex items-center gap-4 border-b border-line py-3.5">

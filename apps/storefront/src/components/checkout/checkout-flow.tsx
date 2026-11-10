@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState, useTransition, type ReactNode } from "react"
+import { useEffect, useRef, useState, useTransition, type ReactNode, type Ref } from "react"
 import { AddressForm } from "@/components/account/address-form"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -17,7 +17,7 @@ import { formatPrice } from "@/lib/format"
 import { paymentMethods } from "@/lib/site"
 import { setBag as setClientBag } from "@/lib/stores/bag"
 import { emptyBag, type Address, type Bag } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import { cn, revealInvalid, scrollBehavior } from "@/lib/utils"
 import { ActionBar } from "./action-bar"
 import { OrderSummary } from "./order-summary"
 import { openRazorpay } from "./razorpay"
@@ -54,10 +54,10 @@ function oneLine(a: AddressFields) {
   return [`${a.firstName} ${a.lastName}`.trim(), a.line1, a.line2, `${a.city} ${a.postalCode}`].filter(Boolean).join(", ")
 }
 
-function StepHeading({ title, description }: { title: string; description?: string }) {
+function StepHeading({ title, description, ref }: { title: string; description?: string; ref?: Ref<HTMLHeadingElement> }) {
   return (
     <div className="mb-6">
-      <h1 className="type-heading-md md:type-heading-lg">{title}</h1>
+      <h1 ref={ref} tabIndex={-1} className="type-heading-md outline-none md:type-heading-lg">{title}</h1>
       {description && <p className="mt-1.5 max-w-[60ch] type-body-sm text-ink-muted">{description}</p>}
     </div>
   )
@@ -82,6 +82,28 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
   const [pending, start] = useTransition()
   const [placing, setPlacing] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
+  const stickyRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  const shownStep = useRef(step)
+
+  // On a new step, bring its choices into view under the sticky stepper
+  // (the recap above stays one scroll up on phones) and move focus there.
+  useEffect(() => {
+    if (shownStep.current === step) return
+    shownStep.current = step
+    const heading = headingRef.current
+    const sticky = stickyRef.current
+    if (!heading || !sticky) return
+    const desktop = window.matchMedia("(min-width: 64rem)").matches
+    const target = desktop ? (sectionRef.current ?? heading) : heading
+    const offset = parseFloat(getComputedStyle(sticky).top) + sticky.offsetHeight + 16
+    const rectTop = target.getBoundingClientRect().top
+    if (rectTop < offset || rectTop > window.innerHeight * 0.4) {
+      window.scrollTo({ top: Math.max(0, rectTop + window.scrollY - offset), behavior: scrollBehavior() })
+    }
+    heading.focus({ preventScroll: true })
+  }, [step])
 
   useEffect(() => {
     if (searchParams.get("payment") === "failed") toast("Payment was not completed. Choose a method and try again.", "error")
@@ -95,7 +117,6 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
   const go = (next: Step) => {
     setDirection(order(next) >= order(step) ? "next" : "back")
     setStep(next)
-    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   if (bag.lines.length === 0 && !placing) {
@@ -130,7 +151,10 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
     })
 
   const continueFromDetails = () => {
-    if (!EMAIL.test(email)) return setEmailError("Enter a valid email")
+    if (!EMAIL.test(email)) {
+      setEmailError("Enter a valid email")
+      return revealInvalid(document)
+    }
     setEmailError(undefined)
     if (addressChoice === "new") {
       ;(document.getElementById("checkout-address") as HTMLFormElement | null)?.requestSubmit()
@@ -214,7 +238,7 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
 
   return (
     <>
-      <div className="sticky top-(--header-h) z-(--z-sheet) -mx-gutter bg-canvas px-gutter pt-1 pb-3 md:pt-3">
+      <div ref={stickyRef} className="sticky top-(--header-h) z-(--z-sheet) -mx-gutter bg-canvas px-gutter pt-1 pb-3 md:pt-3">
         <div className="mx-auto max-w-6xl">
           <Stepper steps={steps} current={step} onJump={pending || placing ? undefined : go} />
         </div>
@@ -233,13 +257,13 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
           <Expand open={summaryOpen}><div className="px-5 pb-5">{summary}</div></Expand>
         </div>
 
-        <section className="min-w-0 overflow-x-clip">
+        <section ref={sectionRef} className="min-w-0 overflow-x-clip">
           {step !== "details" && step !== "review" && <StepRecap rows={recap} className="mb-8" />}
 
           <div key={step} className={direction === "next" ? "animate-step-next" : "animate-step-back"}>
             {step === "details" && (
               <>
-                <StepHeading title="Your details" description="Where should we send your order and its updates?" />
+                <StepHeading ref={headingRef} title="Your details" description="Where should we send your order and its updates?" />
                 <div className="grid gap-6">
                   {!session && (
                     <p className="rounded-lg bg-surface px-4 py-3 type-body-sm text-ink-muted ring-1 ring-line ring-inset">
@@ -307,7 +331,7 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
 
             {step === "delivery" && (
               <>
-                <StepHeading title="Delivery method" />
+                <StepHeading ref={headingRef} title="Delivery method" />
                 {options.length ? (
                   <RadioCards
                     label="Delivery method"
@@ -337,7 +361,7 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
 
             {step === "payment" && (
               <>
-                <StepHeading title="Payment" description="Choose how you'd like to pay. You confirm the amount on the next step." />
+                <StepHeading ref={headingRef} title="Payment" description="Choose how you'd like to pay. You confirm the amount on the next step." />
                 {covered ? (
                   <p className="rounded-lg bg-success-soft px-4 py-3 type-body-sm text-success">Your gift card or store credit covers this order. Nothing more to pay.</p>
                 ) : (
@@ -365,7 +389,7 @@ export function CheckoutFlow({ initialBag, session, demo = false, storeCredit = 
 
             {step === "review" && (
               <>
-                <StepHeading title="Review and pay" />
+                <StepHeading ref={headingRef} title="Review and pay" />
                 <StepRecap rows={recap} />
                 {demo && (
                   <p className="mt-5 rounded-lg bg-accent-soft px-4 py-3 type-body-sm text-accent-soft-ink">

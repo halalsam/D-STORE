@@ -17,8 +17,9 @@
 @theme {
   /* ---------------------------------------------------------------
    * Color: primitives
-   * Brand swatches (logo): navy-800, sky-400. The night ramp is the dark
-   * neutral family every surface is built from (navy tinted, never warm).
+   * Brand swatches (logo): navy-800, sky-400. teal-500 is the deep sky used
+   * where white text sits on the accent. Mist is the cool, navy-tinted
+   * neutral ramp for light surfaces.
    * ------------------------------------------------------------- */
   --color-*: initial;
 
@@ -54,71 +55,71 @@
   --color-sky-50: #f7fafd;
   --color-sky-100: #ecf4fa;
   --color-sky-200: #daeaf4;
-  --color-sky-300: #93c3e2;
+  --color-sky-300: #c0daec;
   --color-sky-400: #7ab3d7; /* MotionFit sky */
   --color-sky-500: #5e8daf;
   --color-sky-600: #496f90;
   --color-sky-700: #385876;
-  --color-sky-800: #1c3348;
-  --color-sky-900: #14202f;
-  --color-sky-950: #0e1724;
+  --color-sky-800: #294461;
+  --color-sky-900: #1d324e;
+  --color-sky-950: #152742;
 
-  --color-night-50: #e8ecf2;
-  --color-night-100: #c9d0db;
-  --color-night-200: #a4adbc;
-  --color-night-300: #7f899a;
-  --color-night-400: #5b6577;
-  --color-night-500: #3a4354;
-  --color-night-600: #262d3c;
-  --color-night-700: #1b212e;
-  --color-night-800: #121722;
-  --color-night-900: #0a0e16;
-  --color-night-950: #06090f;
+  --color-mist-50: #f8f9fb;
+  --color-mist-100: #f2f4f7;
+  --color-mist-200: #e8ebf0;
+  --color-mist-300: #dadfe6;
+  --color-mist-400: #c3cad4;
+  --color-mist-500: #a3acb9;
+  --color-mist-600: #7f8999;
+  --color-mist-700: #636d7d;
+  --color-mist-800: #4b5464;
+  --color-mist-900: #363e4c;
+  --color-mist-950: #242a35;
 
   /* ---------------------------------------------------------------
-   * Color: semantic (dark theme)
-   * Depth comes from lighter steps, not shadows: canvas < surface <
-   * surface-muted < surface-strong. "Inverse" is the light fill used for
-   * the primary action and selected states.
+   * Color: semantic (light theme, navy header)
+   * Black in the reference layout maps to navy. Grey maps to mist.
    * ------------------------------------------------------------- */
 
   /* Surfaces, back to front */
-  --color-canvas: var(--color-night-900); /* the rounded page sheet */
-  --color-surface: var(--color-night-800); /* header, cards, panels */
-  --color-surface-muted: var(--color-night-700); /* chips, inputs, menu pill */
-  --color-surface-strong: var(--color-night-600); /* pressed chip, disabled fill */
-  --color-surface-inverse: var(--color-night-50); /* filled CTA, selected pill */
-  --color-surface-inverse-hover: var(--color-white);
-  --color-surface-tint: var(--color-sky-900); /* soft brand highlight */
+  --color-canvas: var(--color-mist-100); /* the rounded page sheet */
+  --color-surface: var(--color-white); /* cards, panels */
+  --color-surface-muted: var(--color-mist-200); /* chips, inputs, menu pill */
+  --color-surface-strong: var(--color-mist-300); /* pressed chip, disabled fill */
+  --color-surface-inverse: var(--color-navy-800); /* filled CTA, selected pill */
+  --color-surface-inverse-hover: var(--color-navy-900);
+  --color-surface-tint: var(--color-sky-100); /* soft brand highlight */
+  --color-header: var(--color-navy-800); /* navbar */
+  --color-header-muted: var(--color-navy-700); /* menu pill on the navbar */
 
   /* Text and icons */
-  --color-ink: var(--color-night-50); /* 16.3:1 on canvas, 15.1:1 on surface */
-  --color-ink-muted: var(--color-night-200); /* 7.9:1 on surface, 6.1:1 on surface-strong */
-  --color-ink-subtle: var(--color-night-300); /* 5.1:1 on surface: placeholders, meta */
-  --color-ink-inverse: var(--color-night-900); /* text on surface-inverse */
+  --color-ink: var(--color-navy-800); /* 16.5:1 on canvas, 17.8:1 on surface */
+  --color-ink-muted: var(--color-navy-600); /* 7.3:1 on canvas, secondary text */
+  --color-ink-subtle: var(--color-navy-400); /* placeholders, decorative only */
+  --color-ink-inverse: var(--color-white);
   --color-ink-on-media: var(--color-white); /* text over photography */
-  --color-ink-on-accent: var(--color-navy-900); /* 8.6:1 on accent */
+  --color-ink-on-accent: var(--color-white);
 
   /* Lines */
-  --color-line: color-mix(in oklab, var(--color-night-50) 11%, transparent);
-  --color-line-strong: color-mix(in oklab, var(--color-night-50) 22%, transparent);
+  --color-line: color-mix(in oklab, var(--color-navy-800) 11%, transparent);
+  --color-line-strong: color-mix(in oklab, var(--color-navy-800) 22%, transparent);
 
   /* Brand accent */
-  --color-accent: var(--color-sky-400); /* fills, focus, active underline */
-  --color-accent-ink: var(--color-sky-300); /* accent text, 9.5:1 on surface */
-  --color-accent-soft: var(--color-sky-800); /* selected chip, tags, selection */
-  --color-accent-soft-ink: var(--color-sky-100);
+  --color-accent: var(--color-teal-500); /* fills, focus, active underline */
+  --color-accent-ink: var(--color-teal-600); /* accent text on canvas */
+  --color-accent-soft: var(--color-sky-200); /* selected chip, tags, selection */
+  --color-accent-soft-ink: var(--color-navy-800);
 
-  /* Feedback: light enough to read as text on dark, soft fills stay dark */
-  --color-success: #5dba8a;
-  --color-success-soft: #10261c;
-  --color-warning: #e0a852;
-  --color-warning-soft: #2b2010;
-  --color-danger: #f0766a;
-  --color-danger-soft: #2e1513;
+  /* Feedback (desaturated to sit with the palette) */
+  --color-success: #3f7a5e;
+  --color-success-soft: #dcebe2;
+  --color-warning: #a8772a;
+  --color-warning-soft: #f4e8d3;
+  --color-danger: #b0463c;
+  --color-danger-soft: #f5dfdb;
 
-  --color-focus: var(--color-sky-400);
-  --color-scrim: color-mix(in oklab, var(--color-black) 62%, transparent);
+  --color-focus: var(--color-teal-500);
+  --color-scrim: color-mix(in oklab, var(--color-navy-950) 42%, transparent);
 
   /* ---------------------------------------------------------------
    * Typography
@@ -202,17 +203,16 @@
   --radius-sheet: var(--radius-3xl);
 
   /* ---------------------------------------------------------------
-   * Elevation: on dark, only floating layers (menus, drawers, toasts)
-   * cast a shadow. Resting cards separate by a lighter surface step.
+   * Elevation: navy tinted, soft, mostly flat
    * ------------------------------------------------------------- */
   --shadow-*: initial;
-  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.3);
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px rgb(0 0 0 / 0.2);
-  --shadow-md: 0 2px 4px rgb(0 0 0 / 0.3), 0 10px 28px rgb(0 0 0 / 0.35);
-  --shadow-lg: 0 4px 10px rgb(0 0 0 / 0.3),
-    0 28px 56px -10px rgb(0 0 0 / 0.55);
-  --shadow-glass: inset 0 0 0 0.5px rgb(255 255 255 / 0.1),
-    0 8px 32px rgb(0 0 0 / 0.35);
+  --shadow-xs: 0 1px 2px rgb(10 23 48 / 0.06);
+  --shadow-sm: 0 1px 2px rgb(10 23 48 / 0.05), 0 2px 8px rgb(10 23 48 / 0.05);
+  --shadow-md: 0 2px 4px rgb(10 23 48 / 0.04), 0 10px 28px rgb(10 23 48 / 0.08);
+  --shadow-lg: 0 4px 10px rgb(10 23 48 / 0.04),
+    0 28px 56px -10px rgb(10 23 48 / 0.16);
+  --shadow-glass: inset 0 0 0 0.5px rgb(255 255 255 / 0.55),
+    0 8px 32px rgb(10 23 48 / 0.12);
 
   /* ---------------------------------------------------------------
    * Layout

@@ -1,16 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import { Popover, Toggle } from "radix-ui"
-import { ArrowLeft, ArrowRight, Bookmark, Plus } from "@/components/ui/icons"
+import { Toggle } from "radix-ui"
+import { ArrowLeft, ArrowRight, Bookmark } from "@/components/ui/icons"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/ui/price"
 import { isSoldOut, type Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { useBag } from "@/lib/stores/bag"
 import { toggleSaved, useSaved } from "@/lib/stores/saved"
 import { ProductMedia, productViews } from "./product-media"
+import { QuickAdd } from "./quick-add"
 
 type Props = {
   product: Product
@@ -153,75 +153,5 @@ export function SaveToggle({
         className="size-[1.15rem] transition-[fill,transform] duration-(--duration-spring) ease-spring group-data-[state=on]/save:scale-110 group-data-[state=on]/save:fill-current"
       />
     </Toggle.Root>
-  )
-}
-
-/** "+" opens a size picker; choosing a size adds to the bag. */
-function QuickAdd({ product }: { product: Product }) {
-  const { add } = useBag()
-  const [open, setOpen] = useState(false)
-  const [pending, setPending] = useState<string | null>(null)
-  const single = product.sizes.length === 1
-
-  if (single) {
-    return (
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={`Add ${product.title} to bag`}
-        loading={pending !== null}
-        onClick={async () => {
-          setPending(product.sizes[0].label)
-          await add(product, product.sizes[0].label)
-          setPending(null)
-        }}
-        className="-mr-1.5"
-      >
-        <Plus strokeWidth={1.4} className="size-5!" />
-      </Button>
-    )
-  }
-
-  return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label={`Quick add ${product.title}`} className="-mr-1.5 data-[state=open]:bg-surface-muted [&[data-state=open]_svg]:rotate-45">
-          <Plus strokeWidth={1.4} className="size-5! transition-transform duration-(--duration-spring) ease-spring" />
-        </Button>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          side="top"
-          align="end"
-          sideOffset={8}
-          collisionPadding={12}
-          className="z-(--z-overlay) w-60 origin-(--radix-popover-content-transform-origin) rounded-xl bg-surface p-2 shadow-lg ring-1 ring-line data-[state=open]:animate-scale-in data-[state=closed]:animate-scale-out"
-        >
-          <p className="px-1.5 pt-0.5 pb-2 type-overline text-ink-muted">Select size</p>
-          <div className="grid grid-cols-4 gap-1">
-            {product.sizes.map((s) => (
-              <button
-                key={s.label}
-                disabled={!s.available || pending !== null}
-                onClick={async () => {
-                  setPending(s.label)
-                  const ok = await add(product, s.label)
-                  setPending(null)
-                  if (ok) setOpen(false)
-                }}
-                className="pressable relative h-9 rounded-pill bg-surface-muted type-caption hover:bg-surface-inverse hover:text-ink-inverse disabled:bg-transparent disabled:text-ink-subtle disabled:line-through"
-              >
-                <span className={pending === s.label ? "invisible" : undefined}>{s.label}</span>
-                {pending === s.label && (
-                  <span className="absolute inset-0 grid place-items-center">
-                    <span className="size-3.5 animate-spin rounded-full border-2 border-current border-r-transparent" />
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
   )
 }
