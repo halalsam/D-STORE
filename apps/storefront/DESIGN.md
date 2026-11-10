@@ -14,14 +14,14 @@ Default Tailwind colours, radii, shadows, eases and fonts are **removed**. Anyth
 
 ## Colour
 
-Light theme with a dark navy navbar. Swatches: Navy `#0A1730` (navbar, ink, filled actions), Sky `#7AB3D7` (brand), Teal `#496F90` (accent), Cream `#FEF4F0` (canvas), White. Primitive ramps: `navy`, `teal`, `sky`, `beige`. Components use the **semantic** tokens only:
+Light theme with a dark navy navbar. Swatches: Navy `#0A1730` (navbar, ink, filled actions), Sky `#7AB3D7` (brand), Teal `#496F90` (accent), Mist `#F2F4F7` (canvas), White. Primitive ramps: `navy`, `teal`, `sky`, `mist` (cool, navy-tinted neutrals). Components use the **semantic** tokens only:
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `canvas` | beige-100 | Rounded page sheet |
+| `canvas` | mist-100 | Rounded page sheet |
 | `surface` | white | Cards, inset panels |
-| `surface-muted` | beige-200 | Chips, inputs, menu pill, media placeholders |
-| `surface-strong` | beige-300 | Pressed chip, disabled fill |
+| `surface-muted` | mist-200 | Chips, inputs, menu pill, media placeholders |
+| `surface-strong` | mist-300 | Pressed chip, disabled fill |
 | `surface-inverse` (+ `-hover`) | navy-800 / navy-900 | Filled CTA, selected size pill, toasts |
 | `surface-tint` | sky-100 | Soft brand highlight |
 | `header` / `header-muted` | navy-800 / navy-700 | Navbar and its menu pill |
@@ -120,7 +120,7 @@ html (surface, white)
 
 ## Rules
 
-1. Light pages, navy navbar (`header`). Black becomes navy, grey becomes beige. No neutral greys.
+1. Light pages, navy navbar (`header`). Black becomes navy, grey becomes mist. No warm beige or cream surfaces.
 2. Navy means action: primary buttons and selected states use `surface-inverse` with `ink-inverse`.
 3. Teal is a signal, never a large fill. Accent text uses `accent-ink`; text on an accent fill uses `ink-on-accent`.
 4. Every action is a pill. Rectangles are for media and containers.

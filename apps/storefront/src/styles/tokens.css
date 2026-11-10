@@ -17,8 +17,9 @@
 @theme {
   /* ---------------------------------------------------------------
    * Color: primitives
-   * Brand swatches (logo): navy-800, sky-400, beige-100 (cream). teal-500 is
-   * the deep sky used where white text sits on the accent.
+   * Brand swatches (logo): navy-800, sky-400. teal-500 is the deep sky used
+   * where white text sits on the accent. Mist is the cool, navy-tinted
+   * neutral ramp for light surfaces.
    * ------------------------------------------------------------- */
   --color-*: initial;
 
@@ -63,28 +64,28 @@
   --color-sky-900: #1d324e;
   --color-sky-950: #152742;
 
-  --color-beige-50: #fff9f7;
-  --color-beige-100: #fef4f0; /* MotionFit cream */
-  --color-beige-200: #f4eae5;
-  --color-beige-300: #e9ded9;
-  --color-beige-400: #d5c9c3;
-  --color-beige-500: #bdafa9;
-  --color-beige-600: #8d827d;
-  --color-beige-700: #786d68;
-  --color-beige-800: #655a55;
-  --color-beige-900: #554a45;
-  --color-beige-950: #493d38;
+  --color-mist-50: #f8f9fb;
+  --color-mist-100: #f2f4f7;
+  --color-mist-200: #e8ebf0;
+  --color-mist-300: #dadfe6;
+  --color-mist-400: #c3cad4;
+  --color-mist-500: #a3acb9;
+  --color-mist-600: #7f8999;
+  --color-mist-700: #636d7d;
+  --color-mist-800: #4b5464;
+  --color-mist-900: #363e4c;
+  --color-mist-950: #242a35;
 
   /* ---------------------------------------------------------------
    * Color: semantic (light theme, navy header)
-   * Black in the reference layout maps to navy. Grey maps to beige.
+   * Black in the reference layout maps to navy. Grey maps to mist.
    * ------------------------------------------------------------- */
 
   /* Surfaces, back to front */
-  --color-canvas: var(--color-beige-100); /* the rounded page sheet */
+  --color-canvas: var(--color-mist-100); /* the rounded page sheet */
   --color-surface: var(--color-white); /* cards, panels */
-  --color-surface-muted: var(--color-beige-200); /* chips, inputs, menu pill */
-  --color-surface-strong: var(--color-beige-300); /* pressed chip, disabled fill */
+  --color-surface-muted: var(--color-mist-200); /* chips, inputs, menu pill */
+  --color-surface-strong: var(--color-mist-300); /* pressed chip, disabled fill */
   --color-surface-inverse: var(--color-navy-800); /* filled CTA, selected pill */
   --color-surface-inverse-hover: var(--color-navy-900);
   --color-surface-tint: var(--color-sky-100); /* soft brand highlight */

@@ -4,14 +4,14 @@ export function TypeSpecimen() {
   return (
     <div className="grid gap-tile lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       {/* Pairing card */}
-      <div className="relative flex min-h-[28rem] flex-col justify-between overflow-hidden rounded-panel bg-surface-inverse p-7 text-beige-100 md:p-10">
+      <div className="relative flex min-h-[28rem] flex-col justify-between overflow-hidden rounded-panel bg-surface-inverse p-7 text-mist-100 md:p-10">
         <p className="type-caption text-sky-200/80">
-          <span className="font-display font-bold text-beige-100">Amulya</span> Bold
+          <span className="font-display font-bold text-mist-100">Amulya</span> Bold
           <span className="mx-2 opacity-60">+</span>
-          <span className="font-medium text-beige-100">Synonym</span> Regular
+          <span className="font-medium text-mist-100">Synonym</span> Regular
         </p>
         <div>
-          <p className="type-display-lg text-beige-100">Streetwear that keeps its cool</p>
+          <p className="type-display-lg text-mist-100">Streetwear that keeps its cool</p>
           <p className="mt-6 max-w-md type-body-lg text-sky-200">
             Heavyweight cotton, washed for a lived-in hand, cut boxy through the
             shoulder. Amulya carries the voice, Synonym does the reading.

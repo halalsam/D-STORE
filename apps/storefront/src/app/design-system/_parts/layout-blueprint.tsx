@@ -4,7 +4,7 @@ import { DsHeader } from "./ds-header"
 const tones = [
   "bg-[linear-gradient(160deg,var(--color-sky-300),var(--color-teal-600))]",
   "bg-[linear-gradient(160deg,var(--color-navy-700),var(--color-navy-950))]",
-  "bg-[linear-gradient(160deg,var(--color-beige-300),var(--color-beige-500))]",
+  "bg-[linear-gradient(160deg,var(--color-mist-300),var(--color-mist-500))]",
   "bg-[linear-gradient(160deg,var(--color-teal-300),var(--color-navy-800))]",
 ]
 

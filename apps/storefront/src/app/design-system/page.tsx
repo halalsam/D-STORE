@@ -22,7 +22,7 @@ const toc = [
 
 const rules = [
   ["Black becomes navy", "Anywhere the reference uses black (selected size, Buy now, Discover more), use surface-inverse."],
-  ["Grey becomes beige", "The page sheet is canvas, chips are surface-muted. Never introduce a neutral grey."],
+  ["Grey becomes mist", "The page sheet is canvas, chips are surface-muted. Neutrals come from the navy-tinted mist ramp, never warm beige."],
   ["Teal is a signal", "Focus, active lines and links. Not a fill for large areas, and small teal text uses accent-ink."],
   ["Pills for actions", "Every button and chip is rounded-pill. Rectangles are reserved for media and containers."],
   ["Concentric corners", "Nested radius = outer minus padding. A card in a panel never has a larger radius than the panel."],
@@ -46,7 +46,7 @@ export default function DesignSystemPage() {
           <div className="mt-10 flex flex-wrap items-end justify-between gap-8">
             <p className="max-w-md animate-rise-in type-body-lg text-sky-100 [animation-delay:120ms]">
               Tokens, type, shape and motion for the storefront. Navy, teal, sky
-              and beige, Amulya over Synonym, rounded like iOS and moving like it too.
+              and mist, Amulya over Synonym, rounded like iOS and moving like it too.
             </p>
             <nav className="flex animate-rise-in flex-wrap gap-2 [animation-delay:180ms]">
               {toc.map(([id, label]) => (

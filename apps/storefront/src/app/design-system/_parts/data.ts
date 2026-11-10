@@ -2,7 +2,7 @@ export const baseSwatches = [
   { name: "Navy", hex: "#2F4156", token: "navy-800", ink: "#FFFFFF", role: "Ink and filled actions" },
   { name: "Teal", hex: "#567C8D", token: "teal-500", ink: "#F5EFEB", role: "Accent, focus, active" },
   { name: "Sky Blue", hex: "#C8D9E6", token: "sky-200", ink: "#2F4156", role: "Soft highlight, selection" },
-  { name: "Beige", hex: "#F5EFEB", token: "beige-100", ink: "#2F4156", role: "Page canvas" },
+  { name: "Mist", hex: "#F2F4F7", token: "mist-100", ink: "#0A1730", role: "Page canvas" },
   { name: "White", hex: "#FFFFFF", token: "white", ink: "#567C8D", role: "Surfaces" },
 ] as const
 
@@ -12,23 +12,23 @@ export const ramps = {
   navy: ["#EFF1F2", "#D5D9DE", "#BBC1C9", "#A2ABB5", "#8994A1", "#717E8E", "#5A697B", "#445568", "#2F4156", "#273647", "#1F2B39"],
   teal: ["#ECF0F2", "#CDD8DD", "#AEC0C9", "#90A9B5", "#7392A1", "#567C8D", "#4C6D7D", "#425E6D", "#38505E", "#2F424F", "#263540"],
   sky: ["#F2F6F9", "#DDE8F0", "#C8D9E6", "#B5CADB", "#A3BBCD", "#7E9BB2", "#607E96", "#4B6479", "#3A4E60", "#2C3B49", "#1F2B36"],
-  beige: ["#FBF9F7", "#F5EFEB", "#ECE4DE", "#DED4CC", "#C7BAB0", "#A89A90", "#857A73", "#655D59", "#4A4543", "#33302F", "#221F1E"],
+  mist: ["#F8F9FB", "#F2F4F7", "#E8EBF0", "#DADFE6", "#C3CAD4", "#A3ACB9", "#7F8999", "#636D7D", "#4B5464", "#363E4C", "#242A35"],
 } as const
 
 export const anchors: Record<keyof typeof ramps, number> = {
   navy: 800,
   teal: 500,
   sky: 200,
-  beige: 100,
+  mist: 100,
 }
 
 export { steps }
 
 export const semantic = [
-  { group: "Surface", token: "canvas", maps: "beige-100", hex: "#F5EFEB", use: "Rounded page sheet behind content" },
+  { group: "Surface", token: "canvas", maps: "mist-100", hex: "#F2F4F7", use: "Rounded page sheet behind content" },
   { group: "Surface", token: "surface", maps: "white", hex: "#FFFFFF", use: "Header, cards, inset panels" },
-  { group: "Surface", token: "surface-muted", maps: "beige-200", hex: "#ECE4DE", use: "Chips, inputs, menu pill" },
-  { group: "Surface", token: "surface-strong", maps: "beige-300", hex: "#DED4CC", use: "Pressed chip, disabled fill" },
+  { group: "Surface", token: "surface-muted", maps: "mist-200", hex: "#E8EBF0", use: "Chips, inputs, menu pill" },
+  { group: "Surface", token: "surface-strong", maps: "mist-300", hex: "#DADFE6", use: "Pressed chip, disabled fill" },
   { group: "Surface", token: "surface-inverse", maps: "navy-800", hex: "#2F4156", use: "Filled CTA, selected size" },
   { group: "Surface", token: "surface-tint", maps: "sky-100", hex: "#DDE8F0", use: "Brand highlight blocks" },
   { group: "Ink", token: "ink", maps: "navy-800", hex: "#2F4156", use: "Primary text and icons" },
