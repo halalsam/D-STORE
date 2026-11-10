@@ -17,7 +17,7 @@ export function DsHeader({ overMedia = false }: { overMedia?: boolean }) {
       className={
         overMedia
           ? "header-grid text-ink-on-media"
-          : "header-grid bg-surface text-ink"
+          : "header-grid bg-header text-ink-inverse"
       }
     >
       <div className="md:hidden">
@@ -30,7 +30,7 @@ export function DsHeader({ overMedia = false }: { overMedia?: boolean }) {
         <Link href="#layout" className="pressable opacity-90 hover:opacity-100">Collections</Link>
       </nav>
       <Link href="/design-system" aria-label="MotionFit design system" className="block">
-        <Logo decorative className="h-3 sm:h-5 lg:h-6" />
+        <Logo variant="logo-on-dark" decorative className="h-3 sm:h-5 lg:h-6" />
       </Link>
       <div className="flex items-center justify-end gap-1">
         {icons.map(({ Icon, label, mobile }) => (
@@ -49,8 +49,8 @@ export function DsHeader({ overMedia = false }: { overMedia?: boolean }) {
           aria-label="Menu"
           className={
             overMedia
-              ? "pressable ml-1 grid h-9 w-14 md:ml-2 place-items-center rounded-pill bg-surface-inverse text-ink-inverse"
-              : "pressable ml-1 grid h-9 w-14 md:ml-2 place-items-center rounded-pill bg-surface-muted"
+              ? "pressable ml-1 grid h-9 w-14 md:ml-2 place-items-center rounded-pill bg-white text-ink"
+              : "pressable ml-1 grid h-9 w-14 md:ml-2 place-items-center rounded-pill bg-header-muted"
           }
         >
           <Menu className="size-5" strokeWidth={1.6} />

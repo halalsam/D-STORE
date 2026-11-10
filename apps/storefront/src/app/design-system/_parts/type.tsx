@@ -4,22 +4,22 @@ export function TypeSpecimen() {
   return (
     <div className="grid gap-tile lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       {/* Pairing card */}
-      <div className="relative flex min-h-[28rem] flex-col justify-between overflow-hidden rounded-panel bg-surface-tint p-7 text-ink md:p-10">
-        <p className="type-caption text-accent-ink">
-          <span className="font-display font-bold text-ink">Amulya</span> Bold
+      <div className="relative flex min-h-[28rem] flex-col justify-between overflow-hidden rounded-panel bg-surface-inverse p-7 text-beige-100 md:p-10">
+        <p className="type-caption text-sky-200/80">
+          <span className="font-display font-bold text-beige-100">Amulya</span> Bold
           <span className="mx-2 opacity-60">+</span>
-          <span className="font-medium text-ink">Synonym</span> Regular
+          <span className="font-medium text-beige-100">Synonym</span> Regular
         </p>
         <div>
-          <p className="type-display-lg text-ink">Streetwear that keeps its cool</p>
-          <p className="mt-6 max-w-md type-body-lg text-ink-muted">
+          <p className="type-display-lg text-beige-100">Streetwear that keeps its cool</p>
+          <p className="mt-6 max-w-md type-body-lg text-sky-200">
             Heavyweight cotton, washed for a lived-in hand, cut boxy through the
             shoulder. Amulya carries the voice, Synonym does the reading.
           </p>
         </div>
         <div className="flex items-end justify-between">
-          <p className="font-display text-[7rem] leading-[0.75] font-bold tracking-[-0.05em] text-accent/60">Aa</p>
-          <p className="font-sans text-[7rem] leading-[0.75] text-ink/20">Aa</p>
+          <p className="font-display text-[7rem] leading-[0.75] font-bold tracking-[-0.05em] text-teal-500/60">Aa</p>
+          <p className="font-sans text-[7rem] leading-[0.75] text-sky-200/40">Aa</p>
         </div>
       </div>
 

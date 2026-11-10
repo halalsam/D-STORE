@@ -14,29 +14,26 @@ Default Tailwind colours, radii, shadows, eases and fonts are **removed**. Anyth
 
 ## Colour
 
-The storefront is dark only (`color-scheme: dark`). Swatches: Night `#0A0E16` (canvas), Surface `#121722`, Frost `#E8ECF2` (ink and filled actions), Sky `#7AB3D7` (accent), Navy `#0A1730` (logo). Primitive ramps: `night` (navy-tinted neutrals every surface is built from), `navy`, `sky`, `teal`. Components use the **semantic** tokens only:
+Light theme with a dark navy navbar. Swatches: Navy `#0A1730` (navbar, ink, filled actions), Sky `#7AB3D7` (brand), Teal `#496F90` (accent), Cream `#FEF4F0` (canvas), White. Primitive ramps: `navy`, `teal`, `sky`, `beige`. Components use the **semantic** tokens only:
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `canvas` | night-900 | Rounded page sheet, drawers |
-| `surface` | night-800 | Header, cards, inset panels |
-| `surface-muted` | night-700 | Chips, inputs, menu pill, media placeholders |
-| `surface-strong` | night-600 | Pressed chip, disabled fill, segmented thumb |
-| `surface-inverse` (+ `-hover`) | night-50 / white | Filled CTA, selected size pill, toasts |
-| `surface-tint` | sky-900 | Soft brand highlight |
-| `ink` | night-50 | Primary text (16.3:1 on canvas, 15.1:1 on surface) |
-| `ink-muted` | night-200 | Prices, secondary text (7.9:1 on surface) |
-| `ink-subtle` | night-300 | Placeholders, meta (5.1:1 on surface) |
-| `ink-inverse` | night-900 | Text on `surface-inverse` |
-| `ink-on-media` | white | Text on photos |
-| `ink-on-accent` | navy-900 | Text on accent fills (8.6:1) |
-| `line` / `line-strong` | night-50 at 11% / 22% | Hairlines, outlined buttons |
-| `accent` | sky-400 | Focus ring, active indicators, checked controls |
-| `accent-ink` | sky-300 | Accent text and links (9.5:1) |
-| `accent-soft` / `accent-soft-ink` | sky-800 / sky-100 | Selected chip, tags, text selection |
-| `success` / `warning` / `danger` (+ `-soft`) | custom | Light tones for text, dark `-soft` fills |
-
-Depth comes from lighter steps (canvas < surface < surface-muted < surface-strong), not shadows. Shadows are black and only matter on floating layers.
+| `canvas` | beige-100 | Rounded page sheet |
+| `surface` | white | Cards, inset panels |
+| `surface-muted` | beige-200 | Chips, inputs, menu pill, media placeholders |
+| `surface-strong` | beige-300 | Pressed chip, disabled fill |
+| `surface-inverse` (+ `-hover`) | navy-800 / navy-900 | Filled CTA, selected size pill, toasts |
+| `surface-tint` | sky-100 | Soft brand highlight |
+| `header` / `header-muted` | navy-800 / navy-700 | Navbar and its menu pill |
+| `ink` | navy-800 | Primary text (16.5:1 on canvas) |
+| `ink-muted` | navy-600 | Prices, secondary text (7.3:1 on canvas) |
+| `ink-subtle` | navy-400 | Placeholders, decoration only |
+| `ink-inverse` / `ink-on-media` / `ink-on-accent` | white | Text on navy, photos, accent fills |
+| `line` / `line-strong` | navy at 11% / 22% | Hairlines, outlined buttons |
+| `accent` | teal-500 | Focus ring, active indicators, checked controls |
+| `accent-ink` | teal-600 | Accent text and links |
+| `accent-soft` / `accent-soft-ink` | sky-200 / navy-800 | Selected chip, tags, text selection |
+| `success` / `warning` / `danger` (+ `-soft`) | custom | Stock, pre-order, errors, sale |
 
 ## Typography
 
@@ -70,7 +67,7 @@ To self-host the fonts, download the woff2 files into `src/app/fonts/` and switc
 
 **Concentric rule:** inner radius = outer radius minus the padding between them. `squircle` adds continuous corners where supported.
 
-Elevation stays flat: `shadow-xs/sm/md/lg/glass`, black, for floating layers only. `material` / `material-dark` give iOS frosted glass for bars and chips over photography.
+Elevation stays flat: `shadow-xs/sm/md/lg/glass`, navy tinted. `material` / `material-dark` give iOS frosted glass for bars and chips over photography.
 
 ## Icons
 
@@ -100,17 +97,17 @@ Utilities and animations:
 ## Layout (from the reference)
 
 ```
-html (surface)
-├─ header         .header-grid   h 64 / 88, columns 1fr auto 1fr
-│   left: New in, Collections   center: wordmark   right: icons (40px) + menu pill (56x36, surface-muted)
-│   over the hero: transparent, ink-on-media, menu pill surface-inverse
+html (surface, white)
+├─ header         .header-grid   bg-header (navy), h 64 / 88, columns 1fr auto 1fr
+│   left: New in, Collections   center: wordmark   right: icons (40px) + menu pill (56x36, header-muted)
+│   over the hero: transparent, ink-on-media, menu pill white
 ├─ hero           full bleed image, header sits on top
 └─ main           .sheet (.sheet-overlap after a hero)  canvas, rounded-sheet top
     ├─ .section           gutter padding
     │   ├─ .section-head  type-title left, "Discover more" pill right (surface on canvas, inverse on panel)
     │   └─ .product-grid  2 / 3 / 4 cols, gap 8px   (.product-grid-dense: 4 / 6 / 12, image only)
     ├─ .page-x > .panel   surface inset container, rounded-panel, its own section-head + grid
-    └─ footer             SEO block + link tabs in a panel
+    └─ footer             sign-up + link columns in a panel, small logo in the legal row
 ```
 
 - **Gutter** `px-gutter` 16 to 28px. **Grid gap** `gap-tile` 8px. **Section spacing** `py-section`.
@@ -123,9 +120,9 @@ html (surface)
 
 ## Rules
 
-1. Dark by default. No warm, beige or cream surfaces; neutrals come from the `night` ramp.
-2. Light means action: primary buttons and selected states use `surface-inverse` with `ink-inverse`.
-3. Sky is a signal, never a large fill. Accent text uses `accent-ink`; text on an accent fill uses `ink-on-accent`.
+1. Light pages, navy navbar (`header`). Black becomes navy, grey becomes beige. No neutral greys.
+2. Navy means action: primary buttons and selected states use `surface-inverse` with `ink-inverse`.
+3. Teal is a signal, never a large fill. Accent text uses `accent-ink`; text on an accent fill uses `ink-on-accent`.
 4. Every action is a pill. Rectangles are for media and containers.
 5. Concentric corners. A child never has a larger radius than its parent.
 6. Every interactive element is `pressable`. Overlays use `ease-ios`. Bounce only confirms.

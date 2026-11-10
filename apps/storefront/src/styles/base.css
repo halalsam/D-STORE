@@ -1,6 +1,5 @@
 @layer base {
   html {
-    color-scheme: dark;
     background-color: var(--color-surface);
     color: var(--color-ink);
     font-family: var(--font-sans);
